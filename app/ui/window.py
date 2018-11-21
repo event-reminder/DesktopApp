@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import *
 
-from app.utils import popup
-from app.utils import creator
+from app.ui.utils import creator, popup
 
 
 class Window(QMainWindow):
