@@ -7,6 +7,6 @@ from app.ui.window import Window
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
-	w = Window()
-	w.show()
+	window = Window()
+	window.show()
 	sys.exit(app.exec_())
