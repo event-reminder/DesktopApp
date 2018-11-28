@@ -1,19 +1,25 @@
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
+from app.ui import settings
 from app.ui.utils import creator, popup
+from app.ui.widgets.calendar_widget import CalendarWidget
 
 
 class Window(QMainWindow):
 
-	def __init__(self):
-		super().__init__()
-		self.window().setWindowTitle("Reminder Desktop")
-		self.setFixedSize(1024, 768)
-#		self.setWindowIcon(QIcon('python.png'))
-	#	self.main_widget = Main()
-#		self.setCentralWidget(self.main)
-
+	def __init__(self, parent=None):
+		super(Window, self).__init__(parent=parent)
+		self.window().setWindowTitle(settings.APP_NAME)
+		self.resize(settings.APP_WIDTH, settings.APP_HEIGHT)
+		self.setWindowIcon(QIcon(settings.APP_ICON))
+		self.calendar = CalendarWidget(self, self.width(), self.height())
+		self.setCentralWidget(self.calendar)
 		self.setup_navigation_menu()
+
+	def resizeEvent(self, event):
+		self.calendar.resize_handler()
+		QMainWindow.resizeEvent(self, event)
 
 	def setup_navigation_menu(self):
 		self.statusBar()
