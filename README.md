@@ -4,7 +4,7 @@
 
 To start with this project, run the following:
 ```bash
-$ pip install requirements.txt
+$ pip install -r requirements.txt
 $ ./qt-app.sh
 ```
 
