@@ -15,7 +15,7 @@ def disconnect():
 
 def create_event(title: str, description: str=None, e_date=None, e_time=None):
 	if database_instance.is_closed():
-		raise Exception('connect to the database first')
+		database_instance.connect()
 	data = {
 		'title': title
 	}
@@ -30,7 +30,7 @@ def create_event(title: str, description: str=None, e_date=None, e_time=None):
 
 def get_events(e_date=None, e_time=None):
 	if database_instance.is_closed():
-		raise Exception('connect to the database first')
+		database_instance.connect()
 	if e_date is not None and e_time is not None:
 		result = EventModel.select().where((EventModel.time == e_time) & (EventModel.date == e_date))
 	elif e_date is not None:
