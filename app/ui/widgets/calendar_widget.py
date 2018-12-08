@@ -1,10 +1,13 @@
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
+import peewee
+
 from datetime import datetime
 
 from app.reminder.db import storage
 
+from app.ui.utils.popup import error
 from app.ui.widgets.ui_models.create_event import CreateEventDialogUI
 
 
@@ -33,11 +36,16 @@ class CalendarWidget(QCalendarWidget):
 		self.resize(self.parent.width(), self.parent.height())
 
 	def save_event_reminder_handler(self, title, date, time, description):
-		self.status_bar.showMessage('Status: Loading...')
-		storage.connect()
+		try:
+			self.status_bar.showMessage('Status: Saving...')
+			storage.connect()
+			storage.create_event(title, date, time, description)
+			storage.disconnect()
+		except peewee.PeeweeException as exc:
+			error(self, 'Database error: {}'.format(exc))
+		except Exception as exc:
+			error(self, 'Error occurred: {}'.format(exc))
 		self.reset_status()
-		storage.create_event(title, date, time, description)
-		storage.disconnect()
 
 	def show_date(self, date):
 		if datetime.now().date() <= date:
