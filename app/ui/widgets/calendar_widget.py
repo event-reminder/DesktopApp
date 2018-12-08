@@ -5,7 +5,7 @@ from datetime import datetime
 
 from app.reminder.db import storage
 
-from app.ui.widgets.ui_models import CreateEventDialogUI
+from app.ui.widgets.ui_models.create_event import CreateEventDialogUI
 
 
 class CalendarWidget(QCalendarWidget):
