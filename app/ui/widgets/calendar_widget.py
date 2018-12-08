@@ -1,3 +1,4 @@
+from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
@@ -10,6 +11,7 @@ from app.reminder.db import storage
 from app.ui.utils.popup import error
 from app.ui.widgets.ui_models.create_event import CreateEventDialogUI
 from app.ui.widgets.ui_models.retrieve_events import RetrieveEventsDialogUI
+from app.settings.custom_settings import MARKED_DATE_COLOR, MARKED_DATE_LETTER_COLOR
 
 
 class CalendarWidget(QCalendarWidget):
@@ -19,6 +21,7 @@ class CalendarWidget(QCalendarWidget):
 		self.parent = parent
 		self.setGeometry(0, 0, width, height)
 		self.setGridVisible(True)
+
 		# noinspection PyUnresolvedReferences
 		self.clicked[QDate].connect(self.show_events)
 		self.status_bar = None
@@ -30,6 +33,7 @@ class CalendarWidget(QCalendarWidget):
 		self.event_creation_dialog.ui = CreateEventDialogUI(
 			self.event_creation_dialog, self.save_event_reminder_handler
 		)
+		self.mark_days_with_events()
 
 	def contextMenuEvent(self, event):
 		date = self.selectedDate().toPyDate()
@@ -51,6 +55,20 @@ class CalendarWidget(QCalendarWidget):
 
 	def set_status(self, msg):
 		self.status_bar.showMessage('Status: {}'.format(msg))
+
+	def mark_days_with_events(self):
+		try:
+			events = storage.get_events()
+			brush = QBrush(QColor(MARKED_DATE_COLOR))
+			for event in events:
+				day = self.dateTextFormat(event.date)
+				day.setBackground(brush)
+				day.setForeground(QBrush(QColor(MARKED_DATE_LETTER_COLOR)))
+				self.setDateTextFormat(event.date, day)
+		except peewee.PeeweeException as exc:
+			error(self, 'Database error: {}'.format(exc))
+		except Exception as exc:
+			error(self, 'Error occurred: {}'.format(exc))
 
 	def save_event_reminder_handler(self, title, date, time, description):
 		try:
@@ -79,6 +97,7 @@ class CalendarWidget(QCalendarWidget):
 			if len(events) > 0:
 				self.reset_status()
 				self.event_retrieving_dialog.ui.set_data(events, py_date)
+				self.event_retrieving_dialog.ui.set_calendar_widget(self)
 				self.event_retrieving_dialog.exec_()
 				return True
 		self.set_status('there is not any events for {}'.format(py_date))
@@ -88,6 +107,7 @@ class CalendarWidget(QCalendarWidget):
 		if datetime.now().date() <= date:
 			self.reset_status()
 			self.event_creation_dialog.ui.reset_inputs(date)
+			self.event_creation_dialog.ui.set_calendar_widget(self)
 			self.event_creation_dialog.exec_()
 		else:
 			self.set_status('can\'t set reminder to the past')

@@ -1,19 +1,26 @@
+from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from app.ui.utils import popup
 from app.ui.utils.creator import new_button
+from app.settings.custom_settings import (
+	DEFAULT_DATE_COLOR,
+	DEFAULT_MARKED_DATE_LETTER_COLOR
+)
 
 
 class EventWidget(QWidget):
-	def __init__(self, delete_handler, parent: QListWidget):
+	def __init__(self, delete_handler, parent: QListWidget, reset_date_handler):
 		super(EventWidget, self).__init__(parent)
 		self.titleLabel = QLabel()
 		self.timeLabel = QLabel()
 		self.parent = parent
 		self.setLayout(self.get_content())
 		self.id = -1
+		self.date = None
 		self.delete_handler = delete_handler
+		self.reset_date_handler = reset_date_handler
 
 	def get_content(self):
 		layout = QVBoxLayout()
@@ -21,10 +28,11 @@ class EventWidget(QWidget):
 		layout.addWidget(self.titleLabel)
 		return layout
 
-	def set_data(self, pk, title, time):
+	def set_data(self, pk, title, time, date):
 		self.timeLabel.setText('Event #{} at {}'.format(pk, time[:5]))
 		self.titleLabel.setText(title)
 		self.id = pk
+		self.date = date
 
 	def contextMenuEvent(self, event):
 		menu = QMenu(self)
@@ -35,6 +43,8 @@ class EventWidget(QWidget):
 			if ret_action == QMessageBox.Yes:
 				self.delete_handler(self.id)
 				self.parent.takeItem(self.parent.currentRow())
+				if self.parent.count() < 1:
+					self.reset_date_handler(self.date)
 
 
 class RetrieveEventsDialogUI:
@@ -44,6 +54,7 @@ class RetrieveEventsDialogUI:
 		self.parent = parent
 		self.parent.setFixedSize(500, 400)
 		self.list_view = QListWidget()
+		self.calendar = None
 		self.parent.setLayout(self.get_content())
 
 	def get_content(self):
@@ -55,14 +66,33 @@ class RetrieveEventsDialogUI:
 		content.addWidget(scroll_view)
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
+		btn_new_event = new_button('New', 100, 50, self.handle_create_event)
+		buttons.addWidget(btn_new_event, 0, Qt.AlignRight)
 		btn_close = new_button('Close', 100, 50, self.close_btn_click)
 		buttons.addWidget(btn_close, 0, Qt.AlignRight)
 		content.addLayout(buttons)
 		return content
 
+	def set_calendar_widget(self, calendar):
+		self.calendar = calendar
+
+	def handle_create_event(self):
+		self.list_view.clear()
+		self.parent.close()
+		self.calendar.create_event()
+
+	def reset_day(self, date):
+		brush = QBrush(QColor(DEFAULT_DATE_COLOR))
+		day = self.calendar.dateTextFormat(date)
+		day.setBackground(brush)
+		day.setForeground(QBrush(QColor(DEFAULT_MARKED_DATE_LETTER_COLOR)))
+		self.calendar.setDateTextFormat(date, day)
+		self.list_view.clear()
+		self.parent.close()
+
 	def append_event_item(self, data_item):
-		item = EventWidget(self.delete_events_handler, self.list_view)
-		item.set_data(data_item.id, data_item.title, data_item.time)
+		item = EventWidget(self.delete_events_handler, self.list_view, self.reset_day)
+		item.set_data(data_item.id, data_item.title, data_item.time, data_item.date)
 		item.setToolTip(self.get_tool_tip(data_item.description))
 		list_widget_item = QListWidgetItem(self.list_view)
 		list_widget_item.setSizeHint(item.sizeHint())
@@ -86,5 +116,5 @@ class RetrieveEventsDialogUI:
 		return result
 
 	def close_btn_click(self):
-		self.parent.close()
 		self.list_view.clear()
+		self.parent.close()

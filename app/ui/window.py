@@ -2,21 +2,35 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from app.ui import settings
 from app.ui.utils import creator
+from app.settings.app_settings import (
+	APP_NAME,
+	APP_ICON,
+	APP_WIDTH,
+	APP_HEIGHT
+)
+from app.settings.custom_settings import (
+	APP_FONT,
+	ALWAYS_ON_TOP,
+	MOUSE_LEAVE_OPACITY,
+	MOUSE_ENTER_OPACITY
+)
 from app.ui.widgets.calendar_widget import CalendarWidget
 
 
 class Window(QMainWindow):
 
 	def __init__(self):
-		super().__init__(None, Qt.WindowStaysOnTopHint)
-		self.window().setWindowTitle(settings.APP_NAME)
-		self.resize(settings.APP_WIDTH, settings.APP_HEIGHT)
-		self.setWindowIcon(QIcon(settings.APP_ICON))
+		if ALWAYS_ON_TOP:
+			super().__init__(None, Qt.WindowStaysOnTopHint)
+		else:
+			super().__init__()
+		self.window().setWindowTitle(APP_NAME)
+		self.resize(APP_WIDTH, APP_HEIGHT)
+		self.setWindowIcon(QIcon(APP_ICON))
 		self.calendar = CalendarWidget(self, self.width(), self.height())
 		self.calendar.setLocale(QLocale(QLocale.English))
-		self.calendar.setFont(QFont('16'))
+		self.calendar.setFont(QFont(APP_FONT))
 		self.calendar.set_status_bar(self.statusBar())
 		self.setCentralWidget(self.calendar)
 		self.setup_navigation_menu()
@@ -25,7 +39,6 @@ class Window(QMainWindow):
 	def resizeEvent(self, event):
 		self.calendar.resize_handler()
 		QMainWindow.resizeEvent(self, event)
-		self.statusBar().showMessage('w: {}, h: {}'.format(self.width(), self.height()))
 
 	def setup_navigation_menu(self):
 		self.statusBar()
@@ -39,7 +52,7 @@ class Window(QMainWindow):
 		)
 
 	def enterEvent(self, event):
-		self.setWindowOpacity(1)
+		self.setWindowOpacity(MOUSE_ENTER_OPACITY)
 
 	def leaveEvent(self, event):
-		self.setWindowOpacity(0.2)
+		self.setWindowOpacity(MOUSE_LEAVE_OPACITY)

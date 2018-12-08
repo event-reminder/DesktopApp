@@ -1,5 +1,5 @@
-APP_WIDTH = 336
-APP_HEIGHT = 201
+APP_WIDTH = 1024    # 336
+APP_HEIGHT = 768    # 201
 
 APP_NAME = 'Reminder Desktop'
 

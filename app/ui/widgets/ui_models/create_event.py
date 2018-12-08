@@ -1,3 +1,4 @@
+from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
@@ -5,6 +6,7 @@ from datetime import datetime, timedelta
 
 from app.ui.utils import popup
 from app.ui.utils.creator import new_button
+from app.settings.custom_settings import MARKED_DATE_COLOR, MARKED_DATE_LETTER_COLOR
 
 
 class CreateEventDialogUI:
@@ -13,6 +15,7 @@ class CreateEventDialogUI:
 		self.save_event_handler = save_event_handler
 		self.parent = parent
 		self.parent.setFixedSize(500, 400)
+		self.calendar = None
 
 		self.title_input = QLineEdit(self.parent)
 		self.description_input = QTextEdit(self.parent)
@@ -31,9 +34,17 @@ class CreateEventDialogUI:
 		content.addWidget(self.date_input)
 		content.addWidget(QLabel('Time:'), alignment=Qt.AlignLeft)
 		content.addWidget(self.time_input)
+		buttons = QHBoxLayout()
+		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
+		btn_close = new_button('Close', 100, 50, self.close_btn_click)
+		buttons.addWidget(btn_close, 0, Qt.AlignRight)
 		btn_save = new_button('Save', 100, 50, self.save_btn_click)
-		content.addWidget(btn_save, 0, Qt.AlignRight)
+		buttons.addWidget(btn_save, 0, Qt.AlignRight)
+		content.addLayout(buttons)
 		return content
+
+	def set_calendar_widget(self, calendar):
+		self.calendar = calendar
 
 	def reset_inputs(self, date):
 		self.parent.setWindowTitle('New Event | {}'.format(date.strftime('%Y-%m-%d')))
@@ -56,13 +67,21 @@ class CreateEventDialogUI:
 			return False
 		return True
 
+	def close_btn_click(self):
+		self.parent.close()
+
 	def save_btn_click(self):
 		if self.validate_inputs():
+			date = self.date_input.date().toPyDate()
 			self.save_event_handler(
 				self.title_input.text(),
-				self.date_input.date().toPyDate(),
+				date,
 				self.time_input.time().toPyTime(),
 				self.description_input.toPlainText()
 			)
 			popup.info(self.parent, 'Save successfully!')
 			self.parent.close()
+			day = self.calendar.dateTextFormat(date)
+			day.setBackground(QBrush(QColor(MARKED_DATE_COLOR)))
+			day.setForeground(QBrush(QColor(MARKED_DATE_LETTER_COLOR)))
+			self.calendar.setDateTextFormat(date, day)
