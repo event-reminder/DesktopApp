@@ -1,4 +1,5 @@
 from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from app.ui import settings
@@ -9,11 +10,13 @@ from app.ui.widgets.calendar_widget import CalendarWidget
 class Window(QMainWindow):
 
 	def __init__(self):
-		super().__init__()
+		super().__init__(None, Qt.WindowStaysOnTopHint)
 		self.window().setWindowTitle(settings.APP_NAME)
 		self.resize(settings.APP_WIDTH, settings.APP_HEIGHT)
 		self.setWindowIcon(QIcon(settings.APP_ICON))
 		self.calendar = CalendarWidget(self, self.width(), self.height())
+		self.calendar.setLocale(QLocale(QLocale.English))
+		self.calendar.setFont(QFont('16'))
 		self.calendar.set_status_bar(self.statusBar())
 		self.setCentralWidget(self.calendar)
 		self.setup_navigation_menu()
@@ -22,6 +25,7 @@ class Window(QMainWindow):
 	def resizeEvent(self, event):
 		self.calendar.resize_handler()
 		QMainWindow.resizeEvent(self, event)
+		self.statusBar().showMessage('w: {}, h: {}'.format(self.width(), self.height()))
 
 	def setup_navigation_menu(self):
 		self.statusBar()
@@ -33,3 +37,9 @@ class Window(QMainWindow):
 		file_menu.addAction(
 			creator.new_action(self, '&New Event', 'Ctrl+N', 'Create event', self.calendar.create_event)
 		)
+
+	def enterEvent(self, event):
+		self.setWindowOpacity(1)
+
+	def leaveEvent(self, event):
+		self.setWindowOpacity(0.2)

@@ -44,7 +44,7 @@ class CalendarWidget(QCalendarWidget):
 		self.status_bar = status_bar
 
 	def resize_handler(self):
-		self.resize(self.parent.width(), self.parent.height())
+		self.resize(self.parent.width(), self.parent.height() - 20)
 
 	def reset_status(self):
 		self.set_status('Ok')
