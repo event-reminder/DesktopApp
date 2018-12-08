@@ -25,6 +25,14 @@ def create_event(title: str, e_date, e_time, description: str):
 	event.save()
 
 
+def delete_event(pk):
+	if database_instance.is_closed():
+		database_instance.connect()
+	event = EventModel.get_by_id(pk)
+	if event:
+		event.delete_instance(recursive=True)
+
+
 def get_events(e_date=None, e_time=None):
 	if database_instance.is_closed():
 		database_instance.connect()

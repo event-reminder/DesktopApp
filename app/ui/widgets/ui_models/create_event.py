@@ -17,7 +17,6 @@ class CreateEventDialogUI:
 		self.title_input = QLineEdit(self.parent)
 		self.description_input = QTextEdit(self.parent)
 		self.date_input = QDateEdit(self.parent)
-		self.date_input.setEnabled(False)
 		self.time_input = QTimeEdit(self.parent)
 
 		self.parent.setLayout(self.get_content())
@@ -37,7 +36,7 @@ class CreateEventDialogUI:
 		return content
 
 	def reset_inputs(self, date):
-		self.parent.setWindowTitle('New Event | {}'.format(date.toPyDate().strftime('%Y-%m-%d')))
+		self.parent.setWindowTitle('New Event | {}'.format(date.strftime('%Y-%m-%d')))
 		self.date_input.setDate(QDate(date))
 		curr_time = (datetime.now() + timedelta(minutes=3)).time().replace(second=0, microsecond=0)
 		self.time_input.setTime(QTime(curr_time))

@@ -2,7 +2,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from app.ui import settings
-from app.ui.utils import creator, popup
+from app.ui.utils import creator
 from app.ui.widgets.calendar_widget import CalendarWidget
 
 
@@ -30,7 +30,6 @@ class Window(QMainWindow):
 
 	def setup_file_menu(self, main_menu):
 		file_menu = main_menu.addMenu('&File')
-		file_menu.addAction(creator.new_action(self, '&Open', 'Ctrl+O', 'Open file', self.hello_world))
-
-	def hello_world(self):
-		popup.question(self, 'Would you like to say \"Hello, World!\"?', 'Hello, World!')
+		file_menu.addAction(
+			creator.new_action(self, '&New Event', 'Ctrl+N', 'Create event', self.calendar.create_event)
+		)
