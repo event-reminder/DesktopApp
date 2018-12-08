@@ -1,3 +1,4 @@
 peewee==3.7.1
 PyQt5==5.11.3
 service==0.5.1
+notify2==0.3.1
