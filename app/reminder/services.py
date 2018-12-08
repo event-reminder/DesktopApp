@@ -1,32 +1,40 @@
 import time
+import logging
 
 from service import Service
 
-import logging
+from app.settings.app_settings import APP_LOG_PATH
 
 
 class ReminderService(Service):
 
-	def run(self):
-		logger = logging.getLogger()
-		logger.setLevel(logging.INFO)
+	def __init__(self, *args, **kwargs):
+		super(ReminderService, self).__init__(*args, **kwargs)
 
-		# create a file handler
-		handler = logging.FileHandler('./log.txt')
+		self.info_logger = logging.getLogger()
+		self.info_logger.setLevel(logging.INFO)
+		handler = logging.FileHandler('./result_log.txt')
 		handler.setLevel(logging.INFO)
-
-		# create a logging format
-		formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+		formatter = logging.Formatter('%(asctime)s: Event - %(message)s')
 		handler.setFormatter(formatter)
+		self.info_logger.addHandler(handler)
 
-		# add the handlers to the logger
-		logger.addHandler(handler)
+		self.err_logger = logging.getLogger()
+		self.err_logger.setLevel(logging.ERROR)
+		handler = logging.FileHandler(APP_LOG_PATH)
+		handler.setLevel(logging.ERROR)
+		handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+		self.err_logger.addHandler(handler)
 
+	def run(self):
 		i = 0
-		while i < 5:
-			i += 1
+		while i < 5 and not self.got_sigterm():
+			try:
+				i += 1
 
-			# TODO: send notification
-			logger.info('Service info: {}'.format(i))
+				# TODO: send notification
+				self.info_logger.info('Service info: {}'.format(i))
 
-			time.sleep(2)
+				time.sleep(5)
+			except Exception as exc:
+				self.err_logger.error(exc)
