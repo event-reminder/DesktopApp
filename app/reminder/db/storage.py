@@ -13,19 +13,16 @@ def disconnect():
 		database_instance.close()
 
 
-def create_event(title: str, description: str=None, e_date=None, e_time=None):
+def create_event(title: str, e_date, e_time, description: str):
 	if database_instance.is_closed():
 		database_instance.connect()
-	data = {
-		'title': title
-	}
-	if description:
-		data['description'] = description
-	if e_time:
-		data['time'] = e_time
-	if e_date:
-		data['date'] = e_date
-	EventModel.create(**data)
+	event = EventModel.create(
+		title=title,
+		time=e_time,
+		date=e_date,
+		description=description
+	)
+	event.save()
 
 
 def get_events(e_date=None, e_time=None):
@@ -40,16 +37,3 @@ def get_events(e_date=None, e_time=None):
 	else:
 		result = EventModel.select()
 	return [item for item in result]
-
-
-"""
-if __name__ == '__main__':
-	from datetime import date, time
-	event_date = date(2018, 12, 14)
-	event_time = time(0, 0)
-
-	connect()
-#	create_event('Some other deadline efregrgerg', 'Need to finissfdfrefrreh the task', event_date, event_time)
-	print(get_events(e_time=event_time))
-	disconnect()
-"""

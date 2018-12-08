@@ -8,14 +8,16 @@ from app.ui.widgets.calendar_widget import CalendarWidget
 
 class Window(QMainWindow):
 
-	def __init__(self, parent=None):
-		super(Window, self).__init__(parent=parent)
+	def __init__(self):
+		super().__init__()
 		self.window().setWindowTitle(settings.APP_NAME)
 		self.resize(settings.APP_WIDTH, settings.APP_HEIGHT)
 		self.setWindowIcon(QIcon(settings.APP_ICON))
 		self.calendar = CalendarWidget(self, self.width(), self.height())
+		self.calendar.set_status_bar(self.statusBar())
 		self.setCentralWidget(self.calendar)
 		self.setup_navigation_menu()
+		self.statusBar().showMessage('Status: Ok')
 
 	def resizeEvent(self, event):
 		self.calendar.resize_handler()

@@ -10,7 +10,7 @@ def info(target, msg):
 
 
 def fatal(target, msg):
-	return QMessageBox.information(target, 'Fatal', msg, QMessageBox.Ok)
+	return QMessageBox.warning(target, 'Fatal', msg, QMessageBox.Ok)
 
 
 def question(target, title, msg):

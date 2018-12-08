@@ -1,7 +1,11 @@
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from app.ui.utils import popup
+from datetime import datetime
+
+from app.reminder.db import storage
+
+from app.ui.widgets.ui_models import CreateEventDialogUI
 
 
 class CalendarWidget(QCalendarWidget):
@@ -11,20 +15,34 @@ class CalendarWidget(QCalendarWidget):
 		self.parent = parent
 		self.setGeometry(0, 0, width, height)
 		self.setGridVisible(True)
-		events = self.get_click_events()
-		for event in events:
-			self.clicked[event['item']].connect(event['handler'])
+		# noinspection PyUnresolvedReferences
+		self.clicked[QDate].connect(self.show_date)
+		self.status_bar = None
+		self.event_creation_dialog = QDialog(flags=self.windowFlags())
+		self.event_creation_dialog.ui = CreateEventDialogUI(
+			self.event_creation_dialog, self.save_event_reminder_handler
+		)
 
-	def get_click_events(self):
-		return [
-			{
-				'item': QDate,
-				'handler': self.show_date
-			}
-		]
+	def set_status_bar(self, status_bar):
+		self.status_bar = status_bar
+
+	def reset_status(self):
+		self.status_bar.showMessage('Status: Ok')
 
 	def resize_handler(self):
 		self.resize(self.parent.width(), self.parent.height())
 
+	def save_event_reminder_handler(self, title, date, time, description):
+		self.status_bar.showMessage('Status: Loading...')
+		storage.connect()
+		self.reset_status()
+		storage.create_event(title, date, time, description)
+		storage.disconnect()
+
 	def show_date(self, date):
-		popup.question(self, 'Current Date', date.toString())
+		if datetime.now().date() <= date:
+			self.reset_status()
+			self.event_creation_dialog.ui.reset_inputs(date)
+			self.event_creation_dialog.exec_()
+		else:
+			self.status_bar.showMessage('Status: can\'t set reminder to the past')
