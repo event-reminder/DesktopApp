@@ -2,8 +2,13 @@ from app.reminder.db.models import EventModel
 from app.reminder.db.models import database_instance
 
 
+def create_if_not_exist():
+	if len(database_instance.get_tables()) < 1:
+		database_instance.create_tables([EventModel])
+
+
 def connect():
-	database_instance.create_tables([EventModel])
+	create_if_not_exist()
 	if database_instance.is_closed():
 		database_instance.connect()
 

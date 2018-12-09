@@ -8,7 +8,7 @@ from datetime import datetime
 
 from app.reminder.db import storage
 
-from app.ui.utils.popup import error
+from app.ui.utils.popup import error, info
 from app.ui.widgets.ui_models.create_event import CreateEventDialogUI
 from app.ui.widgets.ui_models.retrieve_events import RetrieveEventsDialogUI
 from app.settings.custom_settings import MARKED_DATE_COLOR, MARKED_DATE_LETTER_COLOR
@@ -34,6 +34,11 @@ class CalendarWidget(QCalendarWidget):
 			self.event_creation_dialog, self.save_event_reminder_handler
 		)
 		self.mark_days_with_events()
+		storage.connect()
+
+	def closeEvent(self, event):
+		super(CalendarWidget, self).closeEvent(event)
+		storage.disconnect()
 
 	def contextMenuEvent(self, event):
 		date = self.selectedDate().toPyDate()
@@ -65,8 +70,8 @@ class CalendarWidget(QCalendarWidget):
 				day.setBackground(brush)
 				day.setForeground(QBrush(QColor(MARKED_DATE_LETTER_COLOR)))
 				self.setDateTextFormat(event.date, day)
-		except peewee.PeeweeException as exc:
-			error(self, 'Database error: {}'.format(exc))
+		except peewee.PeeweeException:
+			info(self, 'Can\'t find related database, it will be created automatically')
 		except Exception as exc:
 			error(self, 'Error occurred: {}'.format(exc))
 
@@ -93,13 +98,16 @@ class CalendarWidget(QCalendarWidget):
 	def show_events(self, date):
 		py_date = date.toPyDate()
 		if datetime.now().date() <= py_date:
-			events = storage.get_events(py_date)
-			if len(events) > 0:
-				self.reset_status()
-				self.event_retrieving_dialog.ui.set_data(events, py_date)
-				self.event_retrieving_dialog.ui.set_calendar_widget(self)
-				self.event_retrieving_dialog.exec_()
-				return True
+			try:
+				events = storage.get_events(py_date)
+				if len(events) > 0:
+					self.reset_status()
+					self.event_retrieving_dialog.ui.set_data(events, py_date)
+					self.event_retrieving_dialog.ui.set_calendar_widget(self)
+					self.event_retrieving_dialog.exec_()
+					return True
+			except peewee.PeeweeException as exc:
+				error(self, 'Database error: {}'.format(exc))
 		self.set_status('there is not any events for {}'.format(py_date))
 
 	def create_event(self):
