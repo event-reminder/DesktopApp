@@ -8,6 +8,12 @@ def start_reminder_service():
 	if not service.is_running():
 		service.start()
 
+	# import time
+	# time.sleep(.5)
+	# print(service.get_pid())
+	# time.sleep(1)
+	# print(service.get_pid())
+
 
 if __name__ == '__main__':
 	start_reminder_service()
