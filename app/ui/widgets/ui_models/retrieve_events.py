@@ -93,13 +93,15 @@ class RetrieveEventsDialogUI:
 	def append_event_item(self, data_item):
 		item = EventWidget(self.delete_events_handler, self.list_view, self.reset_day)
 		item.set_data(data_item.id, data_item.title, data_item.time, data_item.date)
-		item.setToolTip(self.get_tool_tip(data_item.description))
+		if len(data_item.description) > 0:
+			item.setToolTip(self.get_tool_tip(data_item.description))
 		list_widget_item = QListWidgetItem(self.list_view)
 		list_widget_item.setSizeHint(item.sizeHint())
 		self.list_view.addItem(list_widget_item)
 		self.list_view.setItemWidget(list_widget_item, item)
 
 	def set_data(self, data, date):
+		self.list_view.clear()
 		self.parent.setWindowTitle('Events for {}'.format(date))
 		if data is not None:
 			for data_item in data:
