@@ -2,6 +2,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
+from app.ui.utils.creator import new_button
 from app.settings.app_settings import APP_ICON
 
 
@@ -36,6 +37,9 @@ class NotificationWidget(QWidget):
 		description_label.setWordWrap(True)
 
 		right_layout.addWidget(description_label)
+
+		right_layout.addWidget(new_button('Close', 100, 50, self.close), alignment=Qt.AlignRight | Qt.AlignBottom)
+
 		main_layout.addLayout(right_layout)
 		self.setLayout(main_layout)
 
