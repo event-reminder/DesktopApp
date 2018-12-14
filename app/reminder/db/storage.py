@@ -18,8 +18,22 @@ def disconnect():
 		database_instance.close()
 
 
+def exists(pk):
+	return EventModel.get_by_id(pk) is not None
+
+
+def get_by_id(pk):
+	try:
+		return EventModel.get_by_id(pk)
+	except Exception as exc:
+		print(exc)
+	return None
+
+
 def create_event(title: str, e_date, e_time, description: str):
+	connected_locally = False
 	if database_instance.is_closed():
+		connected_locally = True
 		database_instance.connect()
 	event = EventModel.create(
 		title=title,
@@ -28,18 +42,50 @@ def create_event(title: str, e_date, e_time, description: str):
 		description=description
 	)
 	event.save()
+	if connected_locally:
+		disconnect()
+
+
+def update_event(pk, title=None, e_date=None, e_time=None, description=None, is_past=None):
+	connected_locally = False
+	if database_instance.is_closed():
+		connected_locally = True
+		database_instance.connect()
+	event = get_by_id(pk)
+	if event:
+		data = {}
+		if title:
+			data['title'] = title
+		if e_time:
+			data['time'] = e_time
+		if e_date:
+			data['date'] = e_date
+		if description:
+			data['description'] = description
+		if is_past:
+			data['is_past'] = is_past
+		event.update(**data)
+		event.save()
+	if connected_locally:
+		disconnect()
 
 
 def delete_event(pk):
+	connected_locally = False
 	if database_instance.is_closed():
+		connected_locally = True
 		database_instance.connect()
-	event = EventModel.get_by_id(pk)
+	event = get_by_id(pk)
 	if event:
 		event.delete_instance(recursive=True)
+	if connected_locally:
+		disconnect()
 
 
 def get_events(e_date=None, e_time=None):
+	connected_locally = False
 	if database_instance.is_closed():
+		connected_locally = True
 		database_instance.connect()
 	if e_date is not None and e_time is not None:
 		result = EventModel.select().where((EventModel.time == e_time) & (EventModel.date == e_date))
@@ -49,4 +95,6 @@ def get_events(e_date=None, e_time=None):
 		result = EventModel.select().where(EventModel.time == e_time)
 	else:
 		result = EventModel.select()
+	if connected_locally:
+		disconnect()
 	return [item for item in result]

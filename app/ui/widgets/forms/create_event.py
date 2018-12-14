@@ -9,7 +9,7 @@ from app.ui.utils.creator import new_button
 from app.settings.custom_settings import MARKED_DATE_COLOR, MARKED_DATE_LETTER_COLOR
 
 
-class CreateEventDialogUI:
+class CreateEventForm:
 
 	def __init__(self, parent, save_event_handler):
 		self.save_event_handler = save_event_handler

@@ -2,13 +2,12 @@ import sys
 import time
 import datetime
 
-from threading import Thread
-
 from PyQt5.QtWidgets import *
 
 from app.reminder.db import storage
 
 from app.reminder.daemon_service import Service
+from app.settings import custom_settings as settings
 from app.reminder.notify.notification import QNotification
 
 
@@ -23,8 +22,10 @@ class ReminderService(Service):
 					events = storage.get_events(datetime.date.today())
 					for event in events:
 						if event.time <= datetime.datetime.now().time().strftime('%H:%M:00'):
+							storage.update_event(pk=event.id, is_past=True)
 							self.send_notification(event)
-							storage.delete_event(event.id)
+							if settings.REMOVE_EVENT_AFTER_TIME_UP:
+								storage.delete_event(event.id)
 				except Exception as exc:
 					with open('./errors_file.txt', 'a') as the_file:
 						the_file.write('Service error: {}\n'.format(exc))

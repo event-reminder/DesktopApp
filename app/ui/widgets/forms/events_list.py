@@ -2,55 +2,17 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from app.ui.utils import popup
 from app.ui.utils.creator import new_button
 from app.settings.custom_settings import (
 	DEFAULT_DATE_COLOR,
 	DEFAULT_MARKED_DATE_LETTER_COLOR
 )
+from app.ui.widgets.event_widget import EventWidget
 
 
-class EventWidget(QWidget):
-	def __init__(self, delete_handler, parent: QListWidget, reset_date_handler):
-		super(EventWidget, self).__init__(parent)
-		self.titleLabel = QLabel()
-		self.timeLabel = QLabel()
-		self.parent = parent
-		self.setLayout(self.get_content())
-		self.id = -1
-		self.date = None
-		self.delete_handler = delete_handler
-		self.reset_date_handler = reset_date_handler
+class EventsListForm:
 
-	def get_content(self):
-		layout = QVBoxLayout()
-		layout.addWidget(self.timeLabel)
-		layout.addWidget(self.titleLabel)
-		return layout
-
-	def set_data(self, pk, title, time, date):
-		self.timeLabel.setText('Event #{} at {}'.format(pk, time[:5]))
-		self.titleLabel.setText(title)
-		self.id = pk
-		self.date = date
-
-	def contextMenuEvent(self, event):
-		menu = QMenu(self)
-		delete_action = menu.addAction('Delete')
-		action = menu.exec_(self.mapToGlobal(event.pos()))
-		if action == delete_action:
-			ret_action = popup.question(self.parent, 'Deleting an event', 'Do you really want to delete the event?')
-			if ret_action == QMessageBox.Yes:
-				self.delete_handler(self.id)
-				self.parent.takeItem(self.parent.currentRow())
-				if self.parent.count() < 1:
-					self.reset_date_handler(self.date)
-
-
-class RetrieveEventsDialogUI:
-
-	def __init__(self, parent, delete_events_handler):
-		self.delete_events_handler = delete_events_handler
+	def __init__(self, parent):
 		self.parent = parent
 		self.parent.setFixedSize(500, 400)
 		self.list_view = QListWidget()
@@ -91,7 +53,7 @@ class RetrieveEventsDialogUI:
 		self.parent.close()
 
 	def append_event_item(self, data_item):
-		item = EventWidget(self.delete_events_handler, self.list_view, self.reset_day)
+		item = EventWidget(self.list_view, self.reset_day)
 		item.set_data(data_item.id, data_item.title, data_item.time, data_item.date)
 		if len(data_item.description) > 0:
 			item.setToolTip(self.get_tool_tip(data_item.description))

@@ -9,8 +9,8 @@ from datetime import datetime
 from app.reminder.db import storage
 
 from app.ui.utils.popup import error, info
-from app.ui.widgets.ui_models.create_event import CreateEventDialogUI
-from app.ui.widgets.ui_models.retrieve_events import RetrieveEventsDialogUI
+from app.ui.widgets.forms.events_list import EventsListForm
+from app.ui.widgets.forms.create_event import CreateEventForm
 from app.settings.custom_settings import MARKED_DATE_COLOR, MARKED_DATE_LETTER_COLOR
 
 
@@ -26,11 +26,9 @@ class CalendarWidget(QCalendarWidget):
 		self.clicked[QDate].connect(self.show_events)
 		self.status_bar = None
 		self.event_retrieving_dialog = QDialog(flags=self.windowFlags())
-		self.event_retrieving_dialog.ui = RetrieveEventsDialogUI(
-			self.event_retrieving_dialog, self.delete_event_reminder_handler
-		)
+		self.event_retrieving_dialog.ui = EventsListForm(self.event_retrieving_dialog)
 		self.event_creation_dialog = QDialog(flags=self.windowFlags())
-		self.event_creation_dialog.ui = CreateEventDialogUI(
+		self.event_creation_dialog.ui = CreateEventForm(
 			self.event_creation_dialog, self.save_event_reminder_handler
 		)
 		self.mark_days_with_events()
@@ -86,14 +84,6 @@ class CalendarWidget(QCalendarWidget):
 		except Exception as exc:
 			error(self, 'Error occurred: {}'.format(exc))
 		self.reset_status()
-
-	def delete_event_reminder_handler(self, pk):
-		try:
-			storage.delete_event(pk)
-		except peewee.PeeweeException as exc:
-			error(self, 'Database error: {}'.format(exc))
-		except Exception as exc:
-			error(self, 'Error occurred: {}'.format(exc))
 
 	def show_events(self, date):
 		py_date = date.toPyDate()

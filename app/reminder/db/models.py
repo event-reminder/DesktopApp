@@ -8,6 +8,7 @@ class EventModel(peewee.Model):
 	date = peewee.DateField(formats=['%Y-%m-%d'])
 	time = peewee.TimeField(formats=['%H:%M'])
 	description = peewee.TextField()
+	is_past = peewee.BooleanField(default=False)
 
 	def __str__(self):
 		return """Event Model:
