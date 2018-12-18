@@ -136,7 +136,7 @@ def find_syslog():
 	for path in ['/dev/log', '/var/run/syslog']:
 		if os.path.exists(path):
 			return path
-	return ('127.0.0.1', 514)
+	return '127.0.0.1', 514
 
 
 def _block(predicate, timeout):
@@ -474,4 +474,3 @@ class Service(object):
 		check whether SIGTERM has been received.
 		"""
 		pass
-
