@@ -1,18 +1,16 @@
-# {{{ http://code.activestate.com/recipes/577911/ (r2)
 import os
 
 import portalocker as locker
 
 
 class PidFile(object):
-	"""Context manager that locks a pid file.  Implemented as class
-	not generator because daemon.py is calling .__exit__() with no parameters
-	instead of the None, None, None specified by PEP-343."""
-	# pylint: disable=R0903
-
+	
 	def __init__(self, path):
 		self.path = path
 		self.pidfile = open(self.path, 'a+')
+		
+	def __enter__(self):
+		self.create()
 
 	def create(self):
 		try:
@@ -30,7 +28,6 @@ class PidFile(object):
 		try:
 			self.pidfile.close()
 		except IOError as err:
-			# ok if file was just closed elsewhere
 			if err.errno != 9:
 				raise
 
