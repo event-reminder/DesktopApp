@@ -36,6 +36,35 @@ class Window(QMainWindow):
 		self.setup_navigation_menu()
 		self.statusBar().showMessage('Status: Ok')
 
+		self.tray_icon = self.init_tray_icon()
+
+	def closeEvent(self, event):
+		event.ignore()
+		self.hide()
+
+		self.tray_icon.showMessage(
+			APP_NAME,
+			'Application was minimized to Tray',
+			QSystemTrayIcon.Information,
+			3000
+		)
+
+	def init_tray_icon(self):
+		tray_icon = QSystemTrayIcon(self)
+		tray_icon.setIcon(QIcon(APP_ICON))
+		actions = {
+			QAction('Open {}'.format(APP_NAME), self): self.show,
+			QAction('Minimize To Tray', self): self.hide,
+			QAction('Close {}'.format(APP_NAME), self): qApp.quit,
+		}
+		tray_menu = QMenu()
+		for action, func in actions.items():
+			action.triggered.connect(func)
+			tray_menu.addAction(action)
+		tray_icon.setContextMenu(tray_menu)
+		tray_icon.show()
+		return tray_icon
+
 	def resizeEvent(self, event):
 		self.calendar.resize_handler()
 		QMainWindow.resizeEvent(self, event)
