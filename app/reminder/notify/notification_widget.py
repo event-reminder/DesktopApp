@@ -8,10 +8,8 @@ from app.settings.app_settings import APP_ICON
 
 class NotificationWidget(QWidget):
 
-	def __init__(self, title, description, add_timer_func, remove_timer_func):
+	def __init__(self, title, description):
 		super().__init__(flags=Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
-		self.__add_timer_func = add_timer_func
-		self.__remove_timer_func = remove_timer_func
 		self.setup_ui(title, description)
 
 	def setup_ui(self, title, description):
@@ -38,15 +36,17 @@ class NotificationWidget(QWidget):
 
 		right_layout.addWidget(description_label)
 
-		right_layout.addWidget(new_button('Close', 100, 50, self.close), alignment=Qt.AlignRight | Qt.AlignBottom)
+		right_layout.addWidget(new_button('Close', 100, 50, self.hide), alignment=Qt.AlignRight | Qt.AlignBottom)
 
 		main_layout.addLayout(right_layout)
 		self.setLayout(main_layout)
 
 	def enterEvent(self, event):
 		super().enterEvent(event)
-		self.__remove_timer_func()
+
+		# TODO: stop timer
 
 	def leaveEvent(self, event):
 		super().leaveEvent(event)
-		self.__add_timer_func()
+
+		# TODO: start timer

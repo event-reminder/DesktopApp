@@ -3,12 +3,12 @@ import sys
 from PyQt5.QtWidgets import *
 
 from app.ui.window import Window
-from app.reminder.runner import start_reminder_service
+from app.reminder.service import ReminderService
 
 
 if __name__ == '__main__':
-	start_reminder_service()
 	app = QApplication(sys.argv)
+	ReminderService(app, app).start()
 	window = Window()
 	window.show()
 	sys.exit(app.exec_())
