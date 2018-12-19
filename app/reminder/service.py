@@ -42,7 +42,7 @@ class ReminderService(QThread):
 	def __send_notification(self, event):
 		# app = QApplication(sys.argv)
 		notification = QNotification(
-			title=event.title, description=event.description, app=self.app,
+			title=event.title, description=event.description, app=self.app, timeout=5000
 		)
 		notification.show()
 		# if app.exec_() != 0:

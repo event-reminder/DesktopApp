@@ -8,9 +8,13 @@ from app.settings.app_settings import APP_ICON
 
 class NotificationWidget(QWidget):
 
-	def __init__(self, title, description):
+	def __init__(self, title, description, timeout):
 		super().__init__(flags=Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
 		self.setup_ui(title, description)
+		self.timer = QTimer()
+		self.timer.timeout.connect(self.close)  # TODO: check if only notification widget is closed
+		self.timeout = timeout
+		self.__add_timer()
 
 	def setup_ui(self, title, description):
 		main_layout = QHBoxLayout()
@@ -36,7 +40,7 @@ class NotificationWidget(QWidget):
 
 		right_layout.addWidget(description_label)
 
-		right_layout.addWidget(new_button('Close', 100, 50, self.hide), alignment=Qt.AlignRight | Qt.AlignBottom)
+		right_layout.addWidget(new_button('Close', 100, 50, self.close), alignment=Qt.AlignRight | Qt.AlignBottom)
 
 		main_layout.addLayout(right_layout)
 		self.setLayout(main_layout)
@@ -44,9 +48,17 @@ class NotificationWidget(QWidget):
 	def enterEvent(self, event):
 		super().enterEvent(event)
 
+		self.__rm_timer()
 		# TODO: stop timer
 
 	def leaveEvent(self, event):
 		super().leaveEvent(event)
 
+		self.__add_timer()
 		# TODO: start timer
+
+	def __add_timer(self):
+		self.timer.start(self.timeout)
+
+	def __rm_timer(self):
+		self.timer.stop()
