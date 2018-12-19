@@ -1,7 +1,7 @@
 import time
 import datetime
 
-from PyQt5.QtCore import *
+from PyQt5.QtCore import QThread
 
 from app.reminder.db import storage
 from app.settings import custom_settings as settings
@@ -37,13 +37,9 @@ class ReminderService(QThread):
 			with open('./fatal_errors_file.txt', 'a') as the_file:
 				the_file.write('Fatal error: {}\n'.format(exc))
 		storage.disconnect()
-		# self.signal.emit()
 
 	def __send_notification(self, event):
-		# app = QApplication(sys.argv)
 		notification = QNotification(
-			title=event.title, description=event.description, app=self.app, timeout=5000
+			title=event.title, description=event.description, app=self.app, timeout=5000, flags=None
 		)
-		notification.show()
-		# if app.exec_() != 0:
-		#	raise RuntimeError('notification is finished with non-zero exit code')
+		notification.exec()

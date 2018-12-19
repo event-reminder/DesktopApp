@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import *
 from app.ui.utils import creator
 from app.settings.app_settings import (
 	APP_NAME,
-	APP_ICON,
+	APP_ICON_LIGHT,
 	APP_WIDTH,
 	APP_HEIGHT
 )
@@ -27,43 +27,52 @@ class Window(QMainWindow):
 			super().__init__()
 		self.window().setWindowTitle(APP_NAME)
 		self.resize(APP_WIDTH, APP_HEIGHT)
-		self.setWindowIcon(QIcon(APP_ICON))
-		self.calendar = CalendarWidget(self, self.width(), self.height())
-		self.calendar.setLocale(QLocale(QLocale.English))
-		self.calendar.setFont(QFont(APP_FONT))
-		self.calendar.set_status_bar(self.statusBar())
+		self.setWindowIcon(QIcon(APP_ICON_LIGHT))
+		self.calendar = self.init_calendar()
 		self.setCentralWidget(self.calendar)
 		self.setup_navigation_menu()
 		self.statusBar().showMessage('Status: Ok')
-
+		self.open_action = QAction('Open {}'.format(APP_NAME), self)
+		self.hide_action = QAction('Minimize To Tray', self)
+		self.close_action = QAction('Quit {}'.format(APP_NAME), self)
 		self.tray_icon = self.init_tray_icon()
 
 	def closeEvent(self, event):
 		event.ignore()
 		self.hide()
 
-		self.tray_icon.showMessage(
-			APP_NAME,
-			'Application was minimized to Tray',
-			QSystemTrayIcon.Information,
-			3000
-		)
-
 	def init_tray_icon(self):
 		tray_icon = QSystemTrayIcon(self)
-		tray_icon.setIcon(QIcon(APP_ICON))
+		tray_icon.setIcon(QIcon(APP_ICON_LIGHT))
 		actions = {
-			QAction('Open {}'.format(APP_NAME), self): self.show,
-			QAction('Minimize To Tray', self): self.hide,
-			QAction('Close {}'.format(APP_NAME), self): qApp.quit,
+			self.open_action: self.show,
+			self.hide_action: self.hide,
+			self.close_action: qApp.quit
 		}
 		tray_menu = QMenu()
-		for action, func in actions.items():
-			action.triggered.connect(func)
-			tray_menu.addAction(action)
+		for key, value in actions.items():
+			key.triggered.connect(value)
+			tray_menu.addAction(key)
 		tray_icon.setContextMenu(tray_menu)
 		tray_icon.show()
 		return tray_icon
+
+	def init_calendar(self):
+		calendar = CalendarWidget(self, self.width(), self.height())
+		calendar.setLocale(QLocale(QLocale.English))
+		calendar.setFont(QFont(APP_FONT))
+		calendar.set_status_bar(self.statusBar())
+		return calendar
+
+	def hide(self):
+		super().hide()
+		self.hide_action.setEnabled(False)
+		self.open_action.setEnabled(True)
+
+	def show(self):
+		super().show()
+		self.hide_action.setEnabled(True)
+		self.open_action.setEnabled(False)
 
 	def resizeEvent(self, event):
 		self.calendar.resize_handler()
@@ -81,7 +90,9 @@ class Window(QMainWindow):
 		)
 
 	def enterEvent(self, event):
+		super().enterEvent(event)
 		self.setWindowOpacity(MOUSE_ENTER_OPACITY)
 
 	def leaveEvent(self, event):
+		super().leaveEvent(event)
 		self.setWindowOpacity(MOUSE_LEAVE_OPACITY)
