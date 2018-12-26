@@ -1,6 +1,7 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
-from PyQt5.QtCore import Qt, QTimer
 
+from app.timer.timer import Timer
 from app.ui.utils.popup import error
 from app.reminder.notify.notification_ui import NotificationUI
 
@@ -15,9 +16,8 @@ class Notification(QDialog):
 		self.ui = self.__build_ui(title, description)
 		self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
 
-		self.timer = QTimer()
-		self.timer.timeout.connect(self.__close_dialog)
-		self.timer.start(timeout)
+		self.timer = Timer(timeout, self.__close_dialog)
+		self.timer.start()
 		# self.timeout = timeout
 
 	def __build_ui(self, title, description):
@@ -31,4 +31,12 @@ class Notification(QDialog):
 			error(self, exc)
 
 	def __close_dialog(self):
-		self.hide()     # TODO: need to close instead of hide() because of overflowing
+		self.hide()
+
+	def enterEvent(self, event):
+		super().enterEvent(event)
+		self.timer.stop()
+
+	def leaveEvent(self, event):
+		super().leaveEvent(event)
+		self.timer.start()

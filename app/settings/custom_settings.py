@@ -16,7 +16,7 @@ SHOW_CALENDAR_ON_STARTUP = True
 
 IS_DARK_THEME = False
 
-NOTIFICATION_TIMEOUT = 10   # in seconds
+NOTIFICATION_TIMEOUT = 5   # in seconds
 
 
 DB_PATH = '~/'

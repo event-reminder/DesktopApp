@@ -5,9 +5,13 @@ from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QColor, QBrush
 
 from app.reminder.db import storage
+from app.settings.custom_settings import (
+	DEFAULT_DATE_COLOR,
+	NOTIFICATION_TIMEOUT,
+	DEFAULT_MARKED_DATE_LETTER_COLOR
+)
 from app.settings import custom_settings as settings
 from app.reminder.notify.notification import Notification
-from app.settings.custom_settings import DEFAULT_DATE_COLOR, DEFAULT_MARKED_DATE_LETTER_COLOR, NOTIFICATION_TIMEOUT
 
 
 class ReminderService(QThread):
@@ -49,8 +53,8 @@ class ReminderService(QThread):
 			flags=None,
 			app=self.app,
 			title=event.title,
-			description=event.description,
-			timeout=NOTIFICATION_TIMEOUT * 1000
+			timeout=NOTIFICATION_TIMEOUT,
+			description=event.description
 		)
 		notification.exec()
 
