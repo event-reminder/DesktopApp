@@ -16,8 +16,11 @@ SHOW_CALENDAR_ON_STARTUP = True
 
 IS_DARK_THEME = False
 
+NOTIFICATION_TIMEOUT = 10   # in seconds
 
-DB_PATH = '~/event_reminder.db'
+
+DB_PATH = '~/'
+DB_FILE = 'event_reminder.db'
 
 DEBUG = True
 
@@ -27,4 +30,4 @@ if DEBUG:
 
 	ALWAYS_ON_TOP = False
 
-	DB_PATH = './event_reminder.db'
+	DB_PATH = './event-reminder-tmp/'
