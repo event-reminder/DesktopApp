@@ -1,4 +1,4 @@
-## Reminder Desktop
+## Event Reminder
 
 ##### Cross-platform desktop application which helps to finish all tasks in time.
 
