@@ -1,6 +1,6 @@
 import unittest
 
-from app.timer.timer import Timer
+from app.utils.timer import Timer
 
 
 class TestStringMethods(unittest.TestCase):

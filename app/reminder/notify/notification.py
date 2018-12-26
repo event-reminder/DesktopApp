@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
 
-from app.timer.timer import Timer
+from app.utils.timer import Timer
 from app.ui.utils.popup import error
 from app.reminder.notify.notification_ui import NotificationUI
 
