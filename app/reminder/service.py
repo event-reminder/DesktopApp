@@ -5,7 +5,7 @@ from PyQt5.QtCore import QThread
 
 from app.reminder.db import storage
 from app.settings import custom_settings as settings
-from app.reminder.notify.notification import QNotification
+from app.reminder.notify.notification import Notification
 
 
 class ReminderService(QThread):
@@ -39,7 +39,7 @@ class ReminderService(QThread):
 		storage.disconnect()
 
 	def __send_notification(self, event):
-		notification = QNotification(
+		notification = Notification(
 			title=event.title, description=event.description, app=self.app, timeout=5000, flags=None
 		)
 		notification.exec()

@@ -17,7 +17,7 @@ SHOW_CALENDAR_ON_STARTUP = True
 IS_DARK_THEME = False
 
 
-DB_PATH = '~/reminder_desktop.db'
+DB_PATH = '~/event_reminder.db'
 
 DEBUG = True
 
@@ -27,4 +27,4 @@ if DEBUG:
 
 	ALWAYS_ON_TOP = False
 
-	DB_PATH = './reminder_desktop.db'
+	DB_PATH = './event_reminder.db'

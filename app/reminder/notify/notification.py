@@ -5,7 +5,7 @@ from app.ui.utils.popup import error
 from app.reminder.notify.notification_ui import NotificationUI
 
 
-class QNotification(QDialog):
+class Notification(QDialog):
 
 	def __init__(self, title, description, app, timeout, flags, *args, **kwargs):
 		super().__init__(flags, *args, **kwargs)
