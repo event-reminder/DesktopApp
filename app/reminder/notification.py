@@ -1,3 +1,5 @@
+from app.settings.app_settings import APP_ICON_LIGHT
+
 try:
 	import win10toast
 except ImportError:
