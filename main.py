@@ -10,7 +10,7 @@ from app.settings.custom_settings import SHOW_CALENDAR_ON_STARTUP
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	window = Window()
-	ReminderService(app, window, window.calendar).start()
+	ReminderService(window, window.calendar).start()
 	if SHOW_CALENDAR_ON_STARTUP:
 		window.show()
 	sys.exit(app.exec_())
