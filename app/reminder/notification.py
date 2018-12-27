@@ -1,11 +1,9 @@
-from app.settings.app_settings import APP_ICON_LIGHT
+import platform
 
 try:
-	import win10toast
+	from win10toast import ToastNotifier
 except ImportError:
-	pass
-
-import platform
+	ToastNotifier = None
 
 
 class Notification:
@@ -14,13 +12,14 @@ class Notification:
 	URGENCY_NORMAL = 'normal'
 	URGENCY_CRITICAL = 'critical'
 
-	def __init__(self, title, description, urgency=URGENCY_LOW, icon_path=None):
+	def __init__(self, title, description, duration=5, urgency=URGENCY_LOW, icon_path=None):
 		if urgency not in [self.URGENCY_LOW, self.URGENCY_NORMAL, self.URGENCY_CRITICAL]:
 			raise ValueError('invalid urgency was given: {}'.format(urgency))
 		self.__WINDOWS = 'Windows'
 		self.__LINUX = 'Linux'
 		self.__title = title
 		self.__description = description
+		self.__duration = duration
 		self.__urgency = urgency
 		self.__icon_path = icon_path
 
@@ -38,14 +37,20 @@ class Notification:
 		command = [
 			'notify-send', '"{}"'.format(self.__title),
 			'"{}"'.format(self.__description),
-			'-u', self.__urgency
+			'-u', self.__urgency,
+			'-t', '{}'.format(self.__duration * 1000)
 		]
 		if self.__icon_path is not None:
 			command += ['-i', self.__icon_path]
 		subprocess.call(command)
 
 	def __send_windows(self):
-
-		# TODO: implement windows notifications
-
-		pass
+		if ToastNotifier is None:
+			raise SystemError('notifications are not supported, can\'t import necessary library')
+		ToastNotifier().show_toast(
+			threaded=True,
+			title=self.__title,
+			msg=self.__description,
+			duration=self.__duration,
+			icon_path=self.__icon_path
+		)

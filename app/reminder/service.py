@@ -7,11 +7,12 @@ from PyQt5.QtGui import QColor, QBrush
 from app.reminder.db import storage
 from app.settings.custom_settings import (
 	DEFAULT_DATE_COLOR,
+	NOTIFICATION_DURATION,
 	DEFAULT_MARKED_DATE_LETTER_COLOR
 )
 from app.reminder.notification import Notification
-from app.settings.app_settings import APP_ICON_LIGHT
 from app.settings import custom_settings as settings
+from app.settings.app_settings import APP_ICON_LIGHT_ICO
 
 
 class ReminderService(QThread):
@@ -51,9 +52,10 @@ class ReminderService(QThread):
 	def __send_notification(event):
 		Notification(
 			title=event.title,
+			icon_path=APP_ICON_LIGHT_ICO,
 			description=event.description,
-			urgency=Notification.URGENCY_CRITICAL,
-			icon_path=APP_ICON_LIGHT
+			duration=NOTIFICATION_DURATION,
+			urgency=Notification.URGENCY_CRITICAL
 		).send()
 
 	def __reset_date(self, date):
