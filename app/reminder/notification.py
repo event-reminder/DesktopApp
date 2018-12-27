@@ -1,13 +1,7 @@
 import platform
 
-try:
-	from win10toast import ToastNotifier
-except ImportError:
-	ToastNotifier = None
-
 
 class Notification:
-
 	URGENCY_LOW = 'low'
 	URGENCY_NORMAL = 'normal'
 	URGENCY_CRITICAL = 'critical'
@@ -22,6 +16,7 @@ class Notification:
 		self.__duration = duration
 		self.__urgency = urgency
 		self.__icon_path = icon_path
+		self.__is_windows = False
 
 	def send(self):
 		system = platform.system()
@@ -45,12 +40,14 @@ class Notification:
 		subprocess.call(command)
 
 	def __send_windows(self):
-		if ToastNotifier is None:
-			raise SystemError('notifications are not supported, can\'t import necessary library')
-		ToastNotifier().show_toast(
-			threaded=True,
-			title=self.__title,
-			msg=self.__description,
-			duration=self.__duration,
-			icon_path=self.__icon_path
-		)
+		try:
+			import win10toast
+			win10toast.ToastNotifier().show_toast(
+				threaded=True,
+				title=self.__title,
+				msg=self.__description,
+				duration=self.__duration,
+				icon_path=self.__icon_path
+			)
+		except ImportError:
+			raise ImportError('notifications are not supported, can\'t import necessary library')

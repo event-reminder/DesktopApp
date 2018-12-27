@@ -1,5 +1,6 @@
 import time
 import datetime
+import platform
 
 from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QColor, QBrush
@@ -12,7 +13,7 @@ from app.settings.custom_settings import (
 )
 from app.reminder.notification import Notification
 from app.settings import custom_settings as settings
-from app.settings.app_settings import APP_ICON_LIGHT_ICO
+from app.settings.app_settings import APP_ICON_LIGHT_ICO, APP_ICON_LIGHT, APP_NAME
 
 
 class ReminderService(QThread):
@@ -51,9 +52,9 @@ class ReminderService(QThread):
 	@staticmethod
 	def __send_notification(event):
 		Notification(
-			title=event.title,
-			icon_path=APP_ICON_LIGHT_ICO,
-			description=event.description,
+			title=APP_NAME,
+			icon_path=APP_ICON_LIGHT if 'Linux' in platform.system() else APP_ICON_LIGHT_ICO,
+			description='{}\n\n{}'.format(event.title, event.description),
 			duration=NOTIFICATION_DURATION,
 			urgency=Notification.URGENCY_CRITICAL
 		).send()
