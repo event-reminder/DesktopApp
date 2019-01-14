@@ -3,17 +3,17 @@ import datetime
 import platform
 
 from PyQt5.QtCore import QThread
-from PyQt5.QtGui import QColor, QBrush
+
+from pynotifier import Notification
 
 from app.reminder.db import storage
-from app.settings.custom_settings import (
-	DEFAULT_DATE_COLOR,
-	NOTIFICATION_DURATION,
-	DEFAULT_MARKED_DATE_LETTER_COLOR
-)
-from app.reminder.notification import Notification
 from app.settings import custom_settings as settings
-from app.settings.app_settings import APP_ICON_LIGHT_ICO, APP_ICON_LIGHT, APP_NAME
+from app.settings.custom_settings import NOTIFICATION_DURATION
+from app.settings.app_settings import (
+	APP_NAME,
+	APP_ICON_LIGHT,
+	APP_ICON_LIGHT_ICO
+)
 
 
 class ReminderService(QThread):
@@ -31,16 +31,7 @@ class ReminderService(QThread):
 			while True:
 				try:
 					time.sleep(1)
-					today = datetime.date.today()
-					events = storage.get_events(today)
-					for event in events:
-						if event.time <= datetime.datetime.now().time().strftime('%H:%M:00'):
-							storage.update_event(pk=event.id, is_past=True)
-							self.__send_notification(event)
-							if settings.REMOVE_EVENT_AFTER_TIME_UP:
-								storage.delete_event(event.id)
-								if len(storage.get_events(today)) < 1:
-									self.__reset_date(today)
+					self.process_events()
 				except Exception as exc:
 					with open('./errors_file.txt', 'a') as the_file:
 						the_file.write('Service error: {}\n'.format(exc))
@@ -48,6 +39,16 @@ class ReminderService(QThread):
 			with open('./fatal_errors_file.txt', 'a') as the_file:
 				the_file.write('Fatal error: {}\n'.format(exc))
 		storage.disconnect()
+
+	def process_events(self):
+		events = storage.get_events(datetime.date.today())
+		for event in events:
+			if event.time <= datetime.datetime.now().time().strftime('%H:%M:00'):
+				storage.update_event(pk=event.id, is_past=True)
+				self.__send_notification(event)
+				if settings.REMOVE_EVENT_AFTER_TIME_UP:
+					storage.delete_event(event.id)
+					self.calendar.update()
 
 	@staticmethod
 	def __send_notification(event):
@@ -58,10 +59,3 @@ class ReminderService(QThread):
 			duration=NOTIFICATION_DURATION,
 			urgency=Notification.URGENCY_CRITICAL
 		).send()
-
-	def __reset_date(self, date):
-		brush = QBrush(QColor(DEFAULT_DATE_COLOR))
-		day = self.calendar.dateTextFormat(date)
-		day.setBackground(brush)
-		day.setForeground(QBrush(QColor(DEFAULT_MARKED_DATE_LETTER_COLOR)))
-		self.calendar.setDateTextFormat(date, day)

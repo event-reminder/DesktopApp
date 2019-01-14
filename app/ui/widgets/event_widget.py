@@ -1,13 +1,22 @@
 import peewee
-from PyQt5.QtWidgets import *
 
-from app.reminder.db import storage
+from PyQt5.QtWidgets import (
+	QMenu,
+	QLabel,
+	QWidget,
+	QListWidget,
+	QVBoxLayout,
+	QMessageBox
+)
+
 from app.ui.utils import popup
+from app.reminder.db import storage
 from app.ui.utils.popup import error
 
 
 class EventWidget(QWidget):
-	def __init__(self, parent: QListWidget, reset_date_handler):
+
+	def __init__(self, parent: QListWidget, update_calendar_handler):
 		super(EventWidget, self).__init__(parent)
 		self.titleLabel = QLabel()
 		self.timeLabel = QLabel()
@@ -16,7 +25,7 @@ class EventWidget(QWidget):
 		self.menu, self.menu_actions = self.setup_menu()
 		self.id = -1
 		self.date = None
-		self.reset_date_handler = reset_date_handler
+		self.update_calendar_handler = update_calendar_handler
 
 	def setup_content(self):
 		layout = QVBoxLayout()
@@ -52,8 +61,7 @@ class EventWidget(QWidget):
 				except Exception as exc:
 					error(self, 'Error occurred: {}'.format(exc))
 				self.parent.takeItem(self.parent.currentRow())
-				if self.parent.count() < 1:
-					self.reset_date_handler(self.date)
+				self.update_calendar_handler(self.parent.count() < 1)
 		else:
 			popup.info(self.parent, 'Event is already removed!')
 

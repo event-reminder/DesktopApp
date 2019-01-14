@@ -1,13 +1,12 @@
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-
 import peewee
 
 from datetime import datetime
 
-from app.reminder.db import storage
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
+from app.reminder.db import storage
 from app.ui.utils.popup import error, info
 from app.ui.widgets.forms.events_list import EventsListForm
 from app.ui.widgets.forms.create_event import CreateEventForm
@@ -31,8 +30,22 @@ class CalendarWidget(QCalendarWidget):
 		self.event_creation_dialog.ui = CreateEventForm(
 			self.event_creation_dialog, self.save_event_reminder_handler
 		)
-		self.mark_days_with_events()
-		storage.connect()
+		self.marked_dates = []
+		self.update()
+
+	@staticmethod
+	def events_to_dates(events):
+		return [event.date for event in events]
+
+	def update(self, *__args):
+		super().update()
+		try:
+			storage.connect()
+			self.marked_dates = self.events_to_dates(storage.get_events())
+		except peewee.PeeweeException:
+			info(self, 'Can\'t find related database, it will be created automatically')
+		except Exception as exc:
+			error(self, 'Error occurred: {}'.format(exc))
 
 	def closeEvent(self, event):
 		super(CalendarWidget, self).closeEvent(event)
@@ -47,6 +60,28 @@ class CalendarWidget(QCalendarWidget):
 			if action == create_action:
 				self.create_event()
 
+	def paintCell(self, painter, rect, date, **kwargs):
+		QCalendarWidget.paintCell(self, painter, rect, date)
+		if date.toPyDate() in self.marked_dates:
+			self.paint_date(date, painter, rect, self.marked_dates.count(date.toPyDate()))
+
+	def paint_date(self, date, painter, rect, num):
+		ellipse_rect = QRect(rect.x() + 3, rect.y() + 3, 20, 20)
+		text_rect = QRect(ellipse_rect.x() - 3.1, ellipse_rect.y() + 7, 20, 20)
+		if self.monthShown() == date.month():
+			painter.setBrush(QColor(MARKED_DATE_COLOR))
+		else:
+			painter.setBrush(QColor(196, 196, 196))
+		painter.setPen(Qt.NoPen)
+		painter.drawEllipse(ellipse_rect)
+		if self.monthShown() == date.month():
+			painter.setBrush(QColor(MARKED_DATE_LETTER_COLOR))
+		else:
+			painter.setBrush(QColor(255, 255, 255))
+		painter.setPen(QPen(QColor(255, 255, 255)))
+		painter.drawText(text_rect.center(), str(num))
+		self.cell_is_painted = True
+
 	def set_status_bar(self, status_bar):
 		self.status_bar = status_bar
 
@@ -58,20 +93,6 @@ class CalendarWidget(QCalendarWidget):
 
 	def set_status(self, msg):
 		self.status_bar.showMessage('Status: {}'.format(msg))
-
-	def mark_days_with_events(self):
-		try:
-			events = storage.get_events()
-			brush = QBrush(QColor(MARKED_DATE_COLOR))
-			for event in events:
-				day = self.dateTextFormat(event.date)
-				day.setBackground(brush)
-				day.setForeground(QBrush(QColor(MARKED_DATE_LETTER_COLOR)))
-				self.setDateTextFormat(event.date, day)
-		except peewee.PeeweeException:
-			info(self, 'Can\'t find related database, it will be created automatically')
-		except Exception as exc:
-			error(self, 'Error occurred: {}'.format(exc))
 
 	def save_event_reminder_handler(self, title, date, time, description):
 		try:

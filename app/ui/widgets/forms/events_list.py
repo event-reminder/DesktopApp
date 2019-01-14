@@ -1,12 +1,13 @@
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (
+	QListWidget,
+	QVBoxLayout,
+	QScrollArea,
+	QHBoxLayout,
+	QListWidgetItem
+)
 
 from app.ui.utils.creator import new_button
-from app.settings.custom_settings import (
-	DEFAULT_DATE_COLOR,
-	DEFAULT_MARKED_DATE_LETTER_COLOR
-)
 from app.ui.widgets.event_widget import EventWidget
 
 
@@ -17,9 +18,9 @@ class EventsListForm:
 		self.parent.setFixedSize(500, 400)
 		self.list_view = QListWidget()
 		self.calendar = None
-		self.parent.setLayout(self.get_content())
+		self.setup_ui()
 
-	def get_content(self):
+	def setup_ui(self):
 		content = QVBoxLayout()
 		scroll_view = QScrollArea()
 		scroll_view.setWidget(self.list_view)
@@ -33,7 +34,7 @@ class EventsListForm:
 		btn_close = new_button('Close', 100, 50, self.close_btn_click)
 		buttons.addWidget(btn_close, 0, Qt.AlignRight)
 		content.addLayout(buttons)
-		return content
+		self.parent.setLayout(content)
 
 	def set_calendar_widget(self, calendar):
 		self.calendar = calendar
@@ -43,17 +44,14 @@ class EventsListForm:
 		self.parent.close()
 		self.calendar.create_event()
 
-	def reset_day(self, date):
-		brush = QBrush(QColor(DEFAULT_DATE_COLOR))
-		day = self.calendar.dateTextFormat(date)
-		day.setBackground(brush)
-		day.setForeground(QBrush(QColor(DEFAULT_MARKED_DATE_LETTER_COLOR)))
-		self.calendar.setDateTextFormat(date, day)
-		self.list_view.clear()
-		self.parent.close()
+	def update_day(self, clear_list=False):
+		self.calendar.update()
+		if clear_list:
+			self.list_view.clear()
+			self.parent.close()
 
 	def append_event_item(self, data_item):
-		item = EventWidget(self.list_view, self.reset_day)
+		item = EventWidget(self.list_view, self.update_day)
 		item.set_data(data_item.id, data_item.title, data_item.time, data_item.date)
 		if len(data_item.description) > 0:
 			item.setToolTip(self.get_tool_tip(data_item.description))

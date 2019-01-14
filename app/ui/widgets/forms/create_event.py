@@ -1,12 +1,22 @@
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import (
+	Qt,
+	QDate,
+	QTime
+)
+from PyQt5.QtWidgets import (
+	QLabel,
+	QLineEdit,
+	QDateEdit,
+	QTimeEdit,
+	QTextEdit,
+	QVBoxLayout,
+	QHBoxLayout
+)
 
 from datetime import datetime, timedelta
 
 from app.ui.utils import popup
 from app.ui.utils.creator import new_button
-from app.settings.custom_settings import MARKED_DATE_COLOR, MARKED_DATE_LETTER_COLOR
 
 
 class CreateEventForm:
@@ -22,9 +32,9 @@ class CreateEventForm:
 		self.date_input = QDateEdit(self.parent)
 		self.time_input = QTimeEdit(self.parent)
 
-		self.parent.setLayout(self.get_content())
+		self.setup_ui()
 
-	def get_content(self):
+	def setup_ui(self):
 		content = QVBoxLayout()
 		content.addWidget(QLabel('Title:'), alignment=Qt.AlignLeft)
 		content.addWidget(self.title_input)
@@ -36,12 +46,12 @@ class CreateEventForm:
 		content.addWidget(self.time_input)
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
-		btn_close = new_button('Close', 100, 50, self.close_btn_click)
+		btn_close = new_button('Close', 100, 50, self.parent.close)
 		buttons.addWidget(btn_close, 0, Qt.AlignRight)
 		btn_save = new_button('Save', 100, 50, self.save_btn_click)
 		buttons.addWidget(btn_save, 0, Qt.AlignRight)
 		content.addLayout(buttons)
-		return content
+		self.parent.setLayout(content)
 
 	def set_calendar_widget(self, calendar):
 		self.calendar = calendar
@@ -67,9 +77,6 @@ class CreateEventForm:
 			return False
 		return True
 
-	def close_btn_click(self):
-		self.parent.close()
-
 	def save_btn_click(self):
 		if self.validate_inputs():
 			date = self.date_input.date().toPyDate()
@@ -81,7 +88,4 @@ class CreateEventForm:
 			)
 			popup.info(self.parent, 'Save successfully!')
 			self.parent.close()
-			day = self.calendar.dateTextFormat(date)
-			day.setBackground(QBrush(QColor(MARKED_DATE_COLOR)))
-			day.setForeground(QBrush(QColor(MARKED_DATE_LETTER_COLOR)))
-			self.calendar.setDateTextFormat(date, day)
+			self.calendar.update()
