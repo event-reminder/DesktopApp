@@ -2,10 +2,10 @@
 
 ##### Cross-platform desktop application which helps to finish all tasks in time.
 
-To start with this project, run the following:
+To start with this project (development only), run the following:
 ```bash
 $ pip install -r requirements.txt
-$ ./qt-app.sh
+$ make run
 ```
 
 #### Author:
