@@ -6,14 +6,8 @@ from PyQt5.QtCore import QThread
 
 from pynotifier import Notification
 
+from app.settings import Settings
 from app.reminder.db import storage
-from app.settings import custom_settings as settings
-from app.settings.custom_settings import NOTIFICATION_DURATION
-from app.settings.app_settings import (
-	APP_NAME,
-	APP_ICON_LIGHT,
-	APP_ICON_LIGHT_ICO
-)
 
 
 class ReminderService(QThread):
@@ -21,6 +15,7 @@ class ReminderService(QThread):
 	def __init__(self, parent, calendar):
 		super().__init__(parent=parent)
 		self.calendar = calendar
+		self.settings = Settings()
 
 	def __del__(self):
 		self.wait()
@@ -46,16 +41,15 @@ class ReminderService(QThread):
 			if event.time <= datetime.datetime.now().time().strftime('%H:%M:00'):
 				storage.update_event(pk=event.id, is_past=True)
 				self.__send_notification(event)
-				if settings.REMOVE_EVENT_AFTER_TIME_UP:
+				if self.settings.user.remove_event_after_time_up:
 					storage.delete_event(event.id)
 					self.calendar.update()
 
-	@staticmethod
-	def __send_notification(event):
+	def __send_notification(self, event):
 		Notification(
-			title=APP_NAME,
-			icon_path=APP_ICON_LIGHT if 'Linux' in platform.system() else APP_ICON_LIGHT_ICO,
+			title=self.settings.app.name,
+			icon_path=self.settings.app.icon('Linux' not in platform.system()),
 			description='{}\n\n{}'.format(event.title, event.description),
-			duration=NOTIFICATION_DURATION,
+			duration=self.settings.user.notification_duration,
 			urgency=Notification.URGENCY_CRITICAL
 		).send()

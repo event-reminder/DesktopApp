@@ -1,7 +1,7 @@
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QAction, QPushButton
 
 
-def new_action(target, title, shortcut, tip, fn):
+def create_action(target, title, shortcut, tip, fn):
 	action = QAction(title, target)
 	action.setShortcut(shortcut)
 	action.setStatusTip(tip)
@@ -9,7 +9,7 @@ def new_action(target, title, shortcut, tip, fn):
 	return action
 
 
-def new_button(name, w, h, fn):
+def create_button(name, w, h, fn):
 	btn = QPushButton(name)
 	btn.resize(w, h)
 	btn.clicked.connect(fn)

@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import (
 from datetime import datetime, timedelta
 
 from app.ui.utils import popup
-from app.ui.utils.creator import new_button
+from app.ui.utils import create_button
 
 
 class CreateEventForm:
@@ -46,9 +46,9 @@ class CreateEventForm:
 		content.addWidget(self.time_input)
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
-		btn_close = new_button('Close', 100, 50, self.parent.close)
+		btn_close = create_button('Close', 100, 50, self.parent.close)
 		buttons.addWidget(btn_close, 0, Qt.AlignRight)
-		btn_save = new_button('Save', 100, 50, self.save_btn_click)
+		btn_save = create_button('Save', 100, 50, self.save_btn_click)
 		buttons.addWidget(btn_save, 0, Qt.AlignRight)
 		content.addLayout(buttons)
 		self.parent.setLayout(content)

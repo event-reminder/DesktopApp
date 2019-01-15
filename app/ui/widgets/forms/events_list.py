@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import (
 	QListWidgetItem
 )
 
-from app.ui.utils.creator import new_button
+from app.ui.utils import create_button
 from app.ui.widgets.event_widget import EventWidget
 
 
@@ -29,9 +29,9 @@ class EventsListForm:
 		content.addWidget(scroll_view)
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
-		btn_new_event = new_button('New', 100, 50, self.handle_create_event)
+		btn_new_event = create_button('New', 100, 50, self.handle_create_event)
 		buttons.addWidget(btn_new_event, 0, Qt.AlignRight)
-		btn_close = new_button('Close', 100, 50, self.close_btn_click)
+		btn_close = create_button('Close', 100, 50, self.close_btn_click)
 		buttons.addWidget(btn_close, 0, Qt.AlignRight)
 		content.addLayout(buttons)
 		self.parent.setLayout(content)

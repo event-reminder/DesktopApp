@@ -8,9 +8,8 @@ from PyQt5.QtWidgets import *
 
 from app.reminder.db import storage
 from app.ui.utils.popup import error, info
-from app.ui.widgets.forms.events_list import EventsListForm
-from app.ui.widgets.forms.create_event import CreateEventForm
-from app.settings.custom_settings import MARKED_DATE_COLOR, MARKED_DATE_LETTER_COLOR
+from app.ui.widgets.forms import EventsListForm, CreateEventForm, SettingsForm
+from app.settings import UserSettings, AppSettings
 
 
 class CalendarWidget(QCalendarWidget):
@@ -24,12 +23,25 @@ class CalendarWidget(QCalendarWidget):
 		# noinspection PyUnresolvedReferences
 		self.clicked[QDate].connect(self.show_events)
 		self.status_bar = None
+
+		app_settings = AppSettings()
+
 		self.event_retrieving_dialog = QDialog(flags=self.windowFlags())
+		self.event_retrieving_dialog.setPalette(app_settings.theme)
 		self.event_retrieving_dialog.ui = EventsListForm(self.event_retrieving_dialog)
+
 		self.event_creation_dialog = QDialog(flags=self.windowFlags())
+		self.event_creation_dialog.setPalette(app_settings.theme)
 		self.event_creation_dialog.ui = CreateEventForm(
 			self.event_creation_dialog, self.save_event_reminder_handler
 		)
+
+		self.settings_dialog = QDialog(flags=self.windowFlags())
+		self.settings_dialog.setPalette(app_settings.theme)
+		self.settings_dialog.ui = SettingsForm(self.settings_dialog)
+
+		self.setPalette(app_settings.theme)
+
 		self.marked_dates = []
 		self.update()
 
@@ -65,22 +77,29 @@ class CalendarWidget(QCalendarWidget):
 		if date.toPyDate() in self.marked_dates:
 			self.paint_date(date, painter, rect, self.marked_dates.count(date.toPyDate()))
 
+	@staticmethod
+	def get_badge_width(num):
+		minimum = 20
+		if num > 9:
+			minimum += 9
+		return minimum + (55 if num > 1 else 50)
+
 	def paint_date(self, date, painter, rect, num):
-		ellipse_rect = QRect(rect.x() + 3, rect.y() + 3, 20, 20)
+		settings = UserSettings()
+		ellipse_rect = QRect(rect.x() + 3, rect.y() + 3, self.get_badge_width(num), 20)
 		text_rect = QRect(ellipse_rect.x() - 3.1, ellipse_rect.y() + 7, 20, 20)
 		if self.monthShown() == date.month():
-			painter.setBrush(QColor(MARKED_DATE_COLOR))
+			painter.setBrush(QColor(settings.badge_color))
 		else:
 			painter.setBrush(QColor(196, 196, 196))
 		painter.setPen(Qt.NoPen)
-		painter.drawEllipse(ellipse_rect)
+		painter.drawRect(ellipse_rect)
 		if self.monthShown() == date.month():
-			painter.setBrush(QColor(MARKED_DATE_LETTER_COLOR))
+			painter.setBrush(QColor(settings.badge_letter_color))
 		else:
 			painter.setBrush(QColor(255, 255, 255))
 		painter.setPen(QPen(QColor(255, 255, 255)))
-		painter.drawText(text_rect.center(), str(num))
-		self.cell_is_painted = True
+		painter.drawText(text_rect.center(), '{} event{}'.format(num, 's' if num > 1 else ''))
 
 	def set_status_bar(self, status_bar):
 		self.status_bar = status_bar
@@ -130,3 +149,7 @@ class CalendarWidget(QCalendarWidget):
 			self.event_creation_dialog.exec_()
 		else:
 			self.set_status('can\'t set reminder to the past')
+
+	def open_settings(self):
+		self.settings_dialog.ui.set_calendar_widget(self)
+		self.settings_dialog.exec_()

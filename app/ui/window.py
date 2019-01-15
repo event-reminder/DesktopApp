@@ -1,53 +1,57 @@
-from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from app.ui.utils import creator
-from app.settings.app_settings import (
-	APP_NAME,
-	APP_ICON_LIGHT,
-	APP_WIDTH,
-	APP_HEIGHT
-)
-from app.settings.custom_settings import (
-	APP_FONT,
-	ALWAYS_ON_TOP,
-	MOUSE_LEAVE_OPACITY,
-	MOUSE_ENTER_OPACITY
-)
+from app.ui import utils
+from app.settings import Settings
 from app.ui.widgets.calendar_widget import CalendarWidget
 
 
 class Window(QMainWindow):
 
 	def __init__(self):
-		if ALWAYS_ON_TOP:
+		self.settings = Settings()
+		if self.settings.user.is_always_on_top:
 			super().__init__(None, Qt.WindowStaysOnTopHint)
 		else:
 			super().__init__()
-		self.window().setWindowTitle(APP_NAME)
-		self.resize(APP_WIDTH, APP_HEIGHT)
-		self.setWindowIcon(QIcon(APP_ICON_LIGHT))
+		self.window().setWindowTitle(self.settings.app.name)
+		self.resize(self.settings.app.size)
+
+		print(self.settings.app.pos)
+
+		self.move(self.settings.app.pos)
+		self.setWindowIcon(self.settings.app.icon())
 		self.calendar = self.init_calendar()
 		self.setCentralWidget(self.calendar)
 		self.setup_navigation_menu()
 		self.statusBar().showMessage('Status: Ok')
-		self.open_action = QAction('Open {}'.format(APP_NAME), self)
+
+		self.open_action = QAction('Open {}'.format(self.settings.app.name), self)
 		self.hide_action = QAction('Minimize To Tray', self)
-		self.close_action = QAction('Quit {}'.format(APP_NAME), self)
+		self.close_action = QAction('Quit {}'.format(self.settings.app.name), self)
+
 		self.tray_icon = self.init_tray_icon()
+
+		self.setPalette(self.settings.app.theme)
 
 	def closeEvent(self, event):
 		event.ignore()
 		self.hide()
 
+	def quit_app(self):
+		self.settings.app.autocommit(False)
+		self.settings.app.set_pos(self.pos())
+		self.settings.app.set_size(self.size())
+		self.settings.app.commit()
+		qApp.quit()
+
 	def init_tray_icon(self):
 		tray_icon = QSystemTrayIcon(self)
-		tray_icon.setIcon(QIcon(APP_ICON_LIGHT))
+		tray_icon.setIcon(self.settings.app.icon())
 		actions = {
 			self.open_action: self.show,
 			self.hide_action: self.hide,
-			self.close_action: qApp.quit
+			self.close_action: self.quit_app
 		}
 		tray_menu = QMenu()
 		for key, value in actions.items():
@@ -60,7 +64,7 @@ class Window(QMainWindow):
 	def init_calendar(self):
 		calendar = CalendarWidget(self, self.width(), self.height())
 		calendar.setLocale(QLocale(QLocale.English))
-		calendar.setFont(QFont(APP_FONT))
+		calendar.setFont(self.settings.user.font)
 		calendar.set_status_bar(self.statusBar())
 		return calendar
 
@@ -86,13 +90,16 @@ class Window(QMainWindow):
 	def setup_file_menu(self, main_menu):
 		file_menu = main_menu.addMenu('&File')
 		file_menu.addAction(
-			creator.new_action(self, '&New Event', 'Ctrl+N', 'Create event', self.calendar.create_event)
+			utils.create_action(self, 'New Event', 'Ctrl+N', 'Create event', self.calendar.create_event)
+		)
+		file_menu.addAction(
+			utils.create_action(self, 'Settings...', 'Ctrl+Alt+S', 'Settings', self.calendar.open_settings)
 		)
 
 	def enterEvent(self, event):
 		super().enterEvent(event)
-		self.setWindowOpacity(MOUSE_ENTER_OPACITY)
+		self.setWindowOpacity(self.settings.user.mouse_enter_opacity)
 
 	def leaveEvent(self, event):
 		super().leaveEvent(event)
-		self.setWindowOpacity(MOUSE_LEAVE_OPACITY)
+		self.setWindowOpacity(self.settings.user.mouse_leave_opacity)
