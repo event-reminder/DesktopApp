@@ -113,11 +113,11 @@ class CalendarWidget(QCalendarWidget):
 	def set_status(self, msg):
 		self.status_bar.showMessage('Status: {}'.format(msg))
 
-	def save_event_reminder_handler(self, title, date, time, description):
+	def save_event_reminder_handler(self, title, date, time, description, repeat_weekly):
 		try:
 			self.status_bar.showMessage('Status: Saving...')
 			storage.connect()
-			storage.create_event(title, date, time, description)
+			storage.create_event(title, date, time, description, repeat_weekly)
 			storage.disconnect()
 		except peewee.PeeweeException as exc:
 			error(self, 'Database error: {}'.format(exc))

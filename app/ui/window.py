@@ -16,9 +16,6 @@ class Window(QMainWindow):
 			super().__init__()
 		self.window().setWindowTitle(self.settings.app.name)
 		self.resize(self.settings.app.size)
-
-		print(self.settings.app.pos)
-
 		self.move(self.settings.app.pos)
 		self.setWindowIcon(self.settings.app.icon())
 		self.calendar = self.init_calendar()

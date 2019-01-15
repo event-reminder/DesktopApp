@@ -1,5 +1,5 @@
 import time
-import datetime
+from datetime import datetime, date, timedelta
 import platform
 
 from PyQt5.QtCore import QThread
@@ -30,25 +30,36 @@ class ReminderService(QThread):
 				except Exception as exc:
 					with open('./errors_file.txt', 'a') as the_file:
 						the_file.write('Service error: {}\n'.format(exc))
+					print('Service error: {}\n'.format(exc))
 		except Exception as exc:
 			with open('./fatal_errors_file.txt', 'a') as the_file:
 				the_file.write('Fatal error: {}\n'.format(exc))
+			print('Service error: {}\n'.format(exc))
 		storage.disconnect()
 
 	def process_events(self):
-		events = storage.get_events(datetime.date.today())
+		events = storage.get_events(date.today())
 		for event in events:
-			if event.time <= datetime.datetime.now().time().strftime('%H:%M:00'):
-				storage.update_event(pk=event.id, is_past=True)
+			now = datetime.now()
+			if event.time <= now.time().strftime('%H:%M:00') and event.date <= now.date():
 				self.__send_notification(event)
-				if self.settings.user.remove_event_after_time_up:
-					storage.delete_event(event.id)
+				if event.repeat_weekly is True:
+					storage.update_event(
+						pk=event.id,
+						e_date=event.date + timedelta(days=7)
+					)
 					self.calendar.update()
+				else:
+					e = storage.update_event(pk=event.id, is_past=True)
+					print(e.is_past)
+					if self.settings.user.remove_event_after_time_up:
+						storage.delete_event(event.id)
+						self.calendar.update()
 
 	def __send_notification(self, event):
 		Notification(
 			title=self.settings.app.name,
-			icon_path=self.settings.app.icon('Linux' not in platform.system()),
+			icon_path=self.settings.app.icon('Linux' not in platform.system(), q_icon=False),
 			description='{}\n\n{}'.format(event.title, event.description),
 			duration=self.settings.user.notification_duration,
 			urgency=Notification.URGENCY_CRITICAL

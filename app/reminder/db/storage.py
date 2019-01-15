@@ -30,7 +30,7 @@ def get_by_id(pk):
 	return None
 
 
-def create_event(title: str, e_date, e_time, description: str):
+def create_event(title: str, e_date, e_time, description: str, repeat_weekly: bool):
 	connected_locally = False
 	if database_instance.is_closed():
 		connected_locally = True
@@ -39,14 +39,15 @@ def create_event(title: str, e_date, e_time, description: str):
 		title=title,
 		time=e_time,
 		date=e_date,
-		description=description
+		description=description,
+		repeat_weekly=repeat_weekly
 	)
 	event.save()
 	if connected_locally:
 		disconnect()
 
 
-def update_event(pk, title=None, e_date=None, e_time=None, description=None, is_past=None):
+def update_event(pk, title=None, e_date=None, e_time=None, description=None, is_past=None, repeat_weekly=None):
 	connected_locally = False
 	if database_instance.is_closed():
 		connected_locally = True
@@ -64,10 +65,12 @@ def update_event(pk, title=None, e_date=None, e_time=None, description=None, is_
 			data['description'] = description
 		if is_past:
 			data['is_past'] = is_past
-		event.update(**data)
-		event.save()
+		if repeat_weekly:
+			data['repeat_weekly'] = repeat_weekly
+		event.update(**data).execute()
 	if connected_locally:
 		disconnect()
+	return event
 
 
 def delete_event(pk):

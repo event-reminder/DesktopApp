@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import (
 	QDateEdit,
 	QTimeEdit,
 	QTextEdit,
+	QCheckBox,
 	QVBoxLayout,
 	QHBoxLayout
 )
@@ -31,6 +32,7 @@ class CreateEventForm:
 		self.description_input = QTextEdit(self.parent)
 		self.date_input = QDateEdit(self.parent)
 		self.time_input = QTimeEdit(self.parent)
+		self.repeat_weekly_input = QCheckBox('Repeat weekly', self.parent)
 
 		self.setup_ui()
 
@@ -44,6 +46,8 @@ class CreateEventForm:
 		content.addWidget(self.date_input)
 		content.addWidget(QLabel('Time:'), alignment=Qt.AlignLeft)
 		content.addWidget(self.time_input)
+		self.repeat_weekly_input.toggle()
+		content.addWidget(self.repeat_weekly_input)
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
 		btn_close = create_button('Close', 100, 50, self.parent.close)
@@ -79,12 +83,12 @@ class CreateEventForm:
 
 	def save_btn_click(self):
 		if self.validate_inputs():
-			date = self.date_input.date().toPyDate()
 			self.save_event_handler(
 				self.title_input.text(),
-				date,
+				self.date_input.date().toPyDate(),
 				self.time_input.time().toPyTime(),
-				self.description_input.toPlainText()
+				self.description_input.toPlainText(),
+				self.repeat_weekly_input.isChecked()
 			)
 			popup.info(self.parent, 'Save successfully!')
 			self.parent.close()

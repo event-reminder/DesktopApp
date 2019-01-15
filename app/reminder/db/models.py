@@ -9,6 +9,7 @@ class EventModel(peewee.Model):
 	time = peewee.TimeField(formats=['%H:%M'])
 	description = peewee.TextField()
 	is_past = peewee.BooleanField(default=False)
+	repeat_weekly = peewee.BooleanField(default=False)
 
 	def __str__(self):
 		return """Event Model:

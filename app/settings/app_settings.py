@@ -43,7 +43,7 @@ class AppSettings:
 	def pos(self):
 		return self.__settings.value('app/pos', QPoint(s.APP_POS_X, s.APP_POS_Y))
 
-	def icon(self, is_ico=False):
+	def icon(self, is_ico=False, q_icon=True):
 		icon = ''
 		if self.__is_dark_theme and is_ico:
 			icon = s.APP_ICON_DARK_ICO
@@ -53,7 +53,9 @@ class AppSettings:
 			icon = s.APP_ICON_LIGHT_ICO
 		if not self.__is_dark_theme and not is_ico:
 			icon = s.APP_ICON_LIGHT
-		return QIcon(icon)
+		if q_icon:
+			return QIcon(icon)
+		return icon
 
 	@property
 	def theme(self):
