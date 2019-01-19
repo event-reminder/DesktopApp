@@ -17,6 +17,7 @@ class CalendarWidget(QCalendarWidget):
 	def __init__(self, parent, width, height):
 		super().__init__()
 		self.parent = parent
+
 		self.setGeometry(0, 0, width, height)
 		self.setGridVisible(True)
 
@@ -25,21 +26,23 @@ class CalendarWidget(QCalendarWidget):
 		self.status_bar = None
 
 		app_settings = AppSettings()
+		user_settings = UserSettings()
 
-		self.event_retrieving_dialog = QDialog(flags=self.windowFlags())
+		self.event_retrieving_dialog = QDialog(flags=self.parent.windowFlags())
 		self.event_retrieving_dialog.setPalette(app_settings.theme)
 		self.event_retrieving_dialog.ui = EventsListForm(self.event_retrieving_dialog)
 
-		self.event_creation_dialog = QDialog(flags=self.windowFlags())
+		self.event_creation_dialog = QDialog(flags=self.parent.windowFlags())
 		self.event_creation_dialog.setPalette(app_settings.theme)
 		self.event_creation_dialog.ui = CreateEventForm(
 			self.event_creation_dialog, self.save_event_reminder_handler
 		)
 
-		self.settings_dialog = QDialog(flags=self.windowFlags())
+		self.settings_dialog = QDialog(flags=self.parent.windowFlags())
 		self.settings_dialog.setPalette(app_settings.theme)
-		self.settings_dialog.ui = SettingsForm(self.settings_dialog)
+		self.settings_dialog.ui = SettingsForm(self.settings_dialog, self)
 
+		self.setFont(QFont(str(user_settings.font)))
 		self.setPalette(app_settings.theme)
 
 		self.marked_dates = []

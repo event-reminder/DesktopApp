@@ -14,7 +14,7 @@ APP_POS_Y = 100
 APP_NAME = 'Event Reminder'
 APP_ORGANIZATION = 'YuriyLisovskiy'
 
-APP_IS_DARK_THEME = False
+APP_IS_DARK_THEME = 'false'
 
 APP_ICON_DARK = abs_path('app/resources/app-icon-dark.png')
 APP_ICON_LIGHT = abs_path('app/resources/app-icon-light.png')

@@ -33,11 +33,11 @@ class UserSettings:
 
 	@property
 	def is_always_on_top(self):
-		return self.__settings.value('user/always_on_top', u.ALWAYS_ON_TOP)
+		return self.__settings.value('user/is_always_on_top', u.ALWAYS_ON_TOP) == 'true'
 
 	@property
 	def font(self):
-		return QFont(self.__settings.value('user/font', u.FONT))
+		return self.__settings.value('user/font', u.FONT)
 
 	@property
 	def badge_color(self):
@@ -53,7 +53,7 @@ class UserSettings:
 
 	@property
 	def show_calendar_on_startup(self):
-		return self.__settings.value('user/show_calendar_on_startup', u.SHOW_CALENDAR_ON_STARTUP)
+		return self.__settings.value('user/show_calendar_on_startup', u.SHOW_CALENDAR_ON_STARTUP) == 'true'
 
 	@property
 	def notification_duration(self):
@@ -80,7 +80,7 @@ class UserSettings:
 		self.__settings.setValue('user/font', value)
 		self._commit()
 
-	def set_remove_event_after_time_up(self, value: bool):
+	def set_remove_event_after_time_up(self, value: bool):  # TODO: add to settings ui
 		self.__settings.setValue('user/remove_event_after_time_up', value)
 		self._commit()
 
@@ -88,10 +88,10 @@ class UserSettings:
 		self.__settings.setValue('user/show_calendar_on_startup', value)
 		self._commit()
 
-	def set_notification_duration(self, value: int):
+	def set_notification_duration(self, value: int):  # TODO: add to settings ui
 		self.__settings.setValue('user/notification_duration', value)
 		self._commit()
 
-	def set_remind_time_before_event(self, value: int):
+	def set_remind_time_before_event(self, value: int):  # TODO: add to settings ui
 		self.__settings.setValue('user/remind_time_before_event', value)
 		self._commit()

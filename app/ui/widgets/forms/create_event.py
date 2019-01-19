@@ -46,7 +46,7 @@ class CreateEventForm:
 		content.addWidget(self.date_input)
 		content.addWidget(QLabel('Time:'), alignment=Qt.AlignLeft)
 		content.addWidget(self.time_input)
-		self.repeat_weekly_input.toggle()
+		self.repeat_weekly_input.setChecked(False)
 		content.addWidget(self.repeat_weekly_input)
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)

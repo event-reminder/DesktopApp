@@ -1,6 +1,10 @@
 import time
-from datetime import datetime, date, timedelta
 import platform
+from datetime import (
+	date,
+	datetime,
+	timedelta
+)
 
 from PyQt5.QtCore import QThread
 
@@ -39,6 +43,7 @@ class ReminderService(QThread):
 
 	def process_events(self):
 		events = storage.get_events(date.today())
+		need_to_update = False
 		for event in events:
 			now = datetime.now()
 			if event.time <= now.time().strftime('%H:%M:00') and event.date <= now.date():
@@ -48,13 +53,14 @@ class ReminderService(QThread):
 						pk=event.id,
 						e_date=event.date + timedelta(days=7)
 					)
-					self.calendar.update()
+					need_to_update = True
 				else:
-					e = storage.update_event(pk=event.id, is_past=True)
-					print(e.is_past)
+					storage.update_event(pk=event.id, is_past=True)
 					if self.settings.user.remove_event_after_time_up:
 						storage.delete_event(event.id)
-						self.calendar.update()
+						need_to_update = True
+		if need_to_update:
+			self.calendar.update()
 
 	def __send_notification(self, event):
 		Notification(

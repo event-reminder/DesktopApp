@@ -9,7 +9,6 @@ class AppSettings:
 
 	def __init__(self, autocommit=True):
 		self.__settings = QSettings(s.APP_ORGANIZATION, s.APP_NAME)
-		self.__is_dark_theme = self.__settings.value('app/is_dark_theme', s.APP_IS_DARK_THEME)
 		self.__autocommit = autocommit
 
 	def autocommit(self, val: bool):
@@ -43,15 +42,15 @@ class AppSettings:
 	def pos(self):
 		return self.__settings.value('app/pos', QPoint(s.APP_POS_X, s.APP_POS_Y))
 
-	def icon(self, is_ico=False, q_icon=True):
+	def icon(self, is_ico=False, q_icon=True, is_dark=False):
 		icon = ''
-		if self.__is_dark_theme and is_ico:
+		if is_dark and is_ico:
 			icon = s.APP_ICON_DARK_ICO
-		if self.__is_dark_theme and not is_ico:
+		if is_dark and not is_ico:
 			icon = s.APP_ICON_DARK
-		if not self.__is_dark_theme and is_ico:
+		if not is_dark and is_ico:
 			icon = s.APP_ICON_LIGHT_ICO
-		if not self.__is_dark_theme and not is_ico:
+		if not is_dark and not is_ico:
 			icon = s.APP_ICON_LIGHT
 		if q_icon:
 			return QIcon(icon)
@@ -59,7 +58,11 @@ class AppSettings:
 
 	@property
 	def theme(self):
-		return dark_theme_palette() if self.__is_dark_theme else light_theme_palette()
+		return dark_theme_palette() if self.is_dark_theme else light_theme_palette()
+
+	@property
+	def is_dark_theme(self):
+		return self.__settings.value('app/is_dark_theme', s.APP_IS_DARK_THEME) == 'true'
 
 	@property
 	def db_path(self):
@@ -94,5 +97,5 @@ class AppSettings:
 		self._commit()
 
 	def set_theme(self, is_dark: bool):
-		self.__settings.setValue('app/is_dark_theme', is_dark)
+		self.__settings.setValue('app/is_dark_theme', 'true' if is_dark else 'false')
 		self._commit()

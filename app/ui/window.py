@@ -1,3 +1,4 @@
+from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
@@ -22,9 +23,12 @@ class Window(QMainWindow):
 		self.setCentralWidget(self.calendar)
 		self.setup_navigation_menu()
 		self.statusBar().showMessage('Status: Ok')
+		self.setFont(QFont(str(self.settings.user.font)))
 
 		self.open_action = QAction('Open {}'.format(self.settings.app.name), self)
 		self.hide_action = QAction('Minimize To Tray', self)
+		if not self.settings.user.show_calendar_on_startup:
+			self.hide_action.setEnabled(False)
 		self.close_action = QAction('Quit {}'.format(self.settings.app.name), self)
 
 		self.tray_icon = self.init_tray_icon()
@@ -61,7 +65,7 @@ class Window(QMainWindow):
 	def init_calendar(self):
 		calendar = CalendarWidget(self, self.width(), self.height())
 		calendar.setLocale(QLocale(QLocale.English))
-		calendar.setFont(self.settings.user.font)
+		calendar.setFont(QFont(str(self.settings.user.font)))
 		calendar.set_status_bar(self.statusBar())
 		return calendar
 
@@ -95,8 +99,8 @@ class Window(QMainWindow):
 
 	def enterEvent(self, event):
 		super().enterEvent(event)
-		self.setWindowOpacity(self.settings.user.mouse_enter_opacity)
+		self.setWindowOpacity(float(self.settings.user.mouse_enter_opacity))
 
 	def leaveEvent(self, event):
 		super().leaveEvent(event)
-		self.setWindowOpacity(self.settings.user.mouse_leave_opacity)
+		self.setWindowOpacity(float(self.settings.user.mouse_leave_opacity))

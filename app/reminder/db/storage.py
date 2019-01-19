@@ -1,5 +1,7 @@
-from app.reminder.db.models import EventModel
-from app.reminder.db.models import database_instance
+from app.reminder.db.models import (
+	EventModel,
+	database_instance
+)
 
 
 def create_if_not_exist():
