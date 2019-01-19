@@ -49,7 +49,7 @@ class UserSettings:
 
 	@property
 	def remove_event_after_time_up(self):
-		return self.__settings.value('user/remove_event_after_time_up', u.REMOVE_EVENT_AFTER_TIME_UP)
+		return self.__settings.value('user/remove_event_after_time_up', u.REMOVE_EVENT_AFTER_TIME_UP) == 'true'
 
 	@property
 	def show_calendar_on_startup(self):
@@ -80,15 +80,15 @@ class UserSettings:
 		self.__settings.setValue('user/font', value)
 		self._commit()
 
-	def set_remove_event_after_time_up(self, value: bool):  # TODO: add to settings ui
-		self.__settings.setValue('user/remove_event_after_time_up', value)
+	def set_remove_event_after_time_up(self, value: bool):
+		self.__settings.setValue('user/remove_event_after_time_up', 'true' if value else 'false')
 		self._commit()
 
 	def set_show_calendar_on_startup(self, value: bool):
 		self.__settings.setValue('user/show_calendar_on_startup', value)
 		self._commit()
 
-	def set_notification_duration(self, value: int):  # TODO: add to settings ui
+	def set_notification_duration(self, value: int):
 		self.__settings.setValue('user/notification_duration', value)
 		self._commit()
 
