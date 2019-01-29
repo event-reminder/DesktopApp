@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (
 )
 
 from app.ui.utils import create_button
-from app.ui.widgets.event_widget import EventWidget
+from app.ui.widgets import EventWidget
 
 
 class EventsListForm:

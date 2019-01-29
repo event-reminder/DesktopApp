@@ -1,3 +1,8 @@
+from datetime import (
+	datetime,
+	timedelta
+)
+
 from PyQt5.QtCore import (
 	Qt,
 	QDate,
@@ -13,8 +18,6 @@ from PyQt5.QtWidgets import (
 	QVBoxLayout,
 	QHBoxLayout
 )
-
-from datetime import datetime, timedelta
 
 from app.ui.utils import popup
 from app.ui.utils import create_button

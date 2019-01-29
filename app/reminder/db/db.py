@@ -1,7 +1,7 @@
 import os
 import peewee
 
-from app.settings.default.app import APP_DB_PATH, APP_DB_FILE
+from app.settings.default import APP_DB_PATH, APP_DB_FILE
 
 
 if not os.path.exists(APP_DB_PATH):

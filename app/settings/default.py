@@ -31,3 +31,23 @@ APP_LOG_FILE = '{}event_reminder_log.txt'.format(APP_PATH)
 
 APP_DB_PATH = APP_PATH
 APP_DB_FILE = '{}event_reminder.db'.format(APP_PATH)
+
+
+MOUSE_ENTER_OPACITY = 1
+MOUSE_LEAVE_OPACITY = 1
+
+ALWAYS_ON_TOP = False
+FONT = '16'
+
+BADGE_COLOR_LIGHT = '#ff0000'
+BADGE_COLOR_DARK = '#ff0000'
+
+BADGE_LETTER_COLOR = '#fff'
+
+REMOVE_EVENT_AFTER_TIME_UP = True
+
+SHOW_CALENDAR_ON_STARTUP = True
+
+NOTIFICATION_DURATION = 5   # in seconds
+
+REMIND_TIME = 1             # in minutes

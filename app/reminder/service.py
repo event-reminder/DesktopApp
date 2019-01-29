@@ -46,27 +46,24 @@ class ReminderService(QThread):
 		need_to_update = False
 		for event in events:
 			now = datetime.now()
-			if event.time <= now.time().strftime('%H:%M:00') and event.date <= now.date():
+			if event.is_past is not True and event.time <= now.time().strftime('%H:%M:00') and event.date <= now.date():
 				self.__send_notification(event)
 				if event.repeat_weekly is True:
-					storage.update_event(
-						pk=event.id,
-						e_date=event.date + timedelta(days=7)
-					)
-					need_to_update = True
+					storage.update_event(pk=event.id, e_date=event.date + timedelta(days=7))
 				else:
-					storage.update_event(pk=event.id, is_past=True)
-					if self.settings.user.remove_event_after_time_up:
+					if self.settings.remove_event_after_time_up is True:
 						storage.delete_event(event.id)
-						need_to_update = True
+					else:
+						storage.update_event(pk=event.id, is_past=True)
+				need_to_update = True
 		if need_to_update:
 			self.calendar.update()
 
 	def __send_notification(self, event):
 		Notification(
-			title=self.settings.app.name,
-			icon_path=self.settings.app.icon('Linux' not in platform.system(), q_icon=False),
+			title=self.settings.name,
+			icon_path=self.settings.icon('Linux' not in platform.system(), q_icon=False),
 			description='{}\n\n{}'.format(event.title, event.description),
-			duration=self.settings.user.notification_duration,
+			duration=self.settings.notification_duration,
 			urgency=Notification.URGENCY_CRITICAL
 		).send()
