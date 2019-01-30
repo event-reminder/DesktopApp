@@ -6,12 +6,12 @@ from PyQt5.QtWidgets import *
 
 from datetime import datetime
 
-from app.ui.utils.popup import (
+from app.utils import (
 	info,
 	error
 )
 from app.db import Storage
-from app.ui.dialogs import (
+from app.dialogs import (
 	SettingsDialog,
 	EventsListDialog,
 	CreateEventDialog

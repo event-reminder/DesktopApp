@@ -10,8 +10,8 @@ from PyQt5.QtWidgets import (
 )
 
 from app.db import Storage
-from app.ui.utils import popup
-from app.ui.utils.popup import error
+from app.utils import popup
+from app.utils import error
 
 
 class EventWidget(QWidget):

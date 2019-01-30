@@ -2,7 +2,7 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
-from app.ui import MainWindow
+from app import MainWindow
 from app.settings import Settings
 from app.service import ReminderService
 

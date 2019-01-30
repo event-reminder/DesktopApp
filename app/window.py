@@ -2,9 +2,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from app.ui import utils
+from app import utils
 from app.settings import Settings
-from app.ui.widgets.calendar_widget import CalendarWidget
+from app.widgets.calendar_widget import CalendarWidget
 
 
 class MainWindow(QMainWindow):

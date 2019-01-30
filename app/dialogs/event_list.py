@@ -8,8 +8,8 @@ from PyQt5.QtWidgets import (
 	QListWidgetItem
 )
 
-from app.ui.utils import create_button
-from app.ui.widgets import EventWidget
+from app.utils import create_button
+from app.widgets import EventWidget
 
 
 class EventsListDialog(QDialog):

@@ -22,8 +22,8 @@ from PyQt5.QtWidgets import (
 	QHBoxLayout
 )
 
-from app.ui.utils import popup
-from app.ui.utils import create_button
+from app.utils import popup
+from app.utils import create_button
 
 
 class CreateEventDialog(QDialog):
