@@ -6,13 +6,21 @@ from app.settings import Settings
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
-class SettingsForm:
+class SettingsDialog(QDialog):
 
-	def __init__(self, parent, calendar):
-		self.parent = parent
-		self.parent.setFixedSize(500, 400)
-		self.parent.setWindowTitle('Settings')
-		self.calendar = calendar
+	def __init__(self, flags, *args, **kwargs):
+		super().__init__(flags=flags, *args)
+
+		if 'palette' in kwargs:
+			self.setPalette(kwargs.get('palette'))
+		if 'font' in kwargs:
+			self.setFont(kwargs.get('font'))
+
+		self.calendar = kwargs['calendar']
+
+		self.setFixedSize(550, 400)
+		self.setWindowTitle('Settings')
+
 		self.settings = Settings()
 
 		self.opacity_enter_slider = QSlider(Qt.Horizontal)
@@ -38,12 +46,12 @@ class SettingsForm:
 
 	def setup_ui(self):
 		content = QVBoxLayout()
-		settings_general_tabs = QTabWidget(self.parent)
-		settings_general_tabs.setMinimumWidth(self.parent.width() - 22)
+		settings_general_tabs = QTabWidget(self)
+		settings_general_tabs.setMinimumWidth(self.width() - 22)
 		self.setup_app_settings(settings_general_tabs)
 		self.setup_events_settings(settings_general_tabs)
 		content.addWidget(settings_general_tabs, alignment=Qt.AlignLeft)
-		self.parent.setLayout(content)
+		self.setLayout(content)
 
 	def setup_app_settings(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
@@ -74,7 +82,7 @@ class SettingsForm:
 		self.show_calendar_on_startup_check_box.setChecked(self.settings.show_calendar_on_startup)
 		layout.addWidget(self.show_calendar_on_startup_check_box, 2, 1)
 
-		layout.addWidget(QLabel('Always on top (need to restart app)'), 3, 0)
+		layout.addWidget(QLabel('Always on top (need restart)'), 3, 0)
 		self.always_on_top_check_box.stateChanged.connect(self.always_on_top_changed)
 		self.always_on_top_check_box.setChecked(self.settings.is_always_on_top)
 		layout.addWidget(self.always_on_top_check_box, 3, 1)
@@ -150,12 +158,12 @@ class SettingsForm:
 
 	def font_changed(self, current):
 		if self.ui_is_loaded:
-			new_font = 8
+			new_font = 10
 			if current == 1:
-				new_font = 12
+				new_font = 11
 			elif current == 2:
-				new_font = 16
-			font = QFont(str(new_font))
+				new_font = 14
+			font = QFont('SansSerif', new_font)
 			self.calendar.setFont(font)
 			self.calendar.parent.setFont(font)
 			self.calendar.event_retrieving_dialog.setFont(font)
@@ -189,8 +197,5 @@ class SettingsForm:
 		if len(text) > 0:
 			self.settings.set_remind_time_before_event(int(text))
 
-	def set_calendar_widget(self, calendar):
-		self.calendar = calendar
-
 	def save_btn_click(self):
-		self.parent.close()
+		self.close()

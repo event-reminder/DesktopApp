@@ -1,3 +1,5 @@
+import peewee
+
 from datetime import (
 	datetime,
 	timedelta
@@ -10,6 +12,7 @@ from PyQt5.QtCore import (
 )
 from PyQt5.QtWidgets import (
 	QLabel,
+	QDialog,
 	QLineEdit,
 	QDateEdit,
 	QTimeEdit,
@@ -23,19 +26,26 @@ from app.ui.utils import popup
 from app.ui.utils import create_button
 
 
-class CreateEventForm:
+class CreateEventDialog(QDialog):
 
-	def __init__(self, parent, save_event_handler):
-		self.save_event_handler = save_event_handler
-		self.parent = parent
-		self.parent.setFixedSize(500, 400)
-		self.calendar = None
+	def __init__(self, flags, *args, **kwargs):
+		super().__init__(flags=flags, *args)
 
-		self.title_input = QLineEdit(self.parent)
-		self.description_input = QTextEdit(self.parent)
-		self.date_input = QDateEdit(self.parent)
-		self.time_input = QTimeEdit(self.parent)
-		self.repeat_weekly_input = QCheckBox('Repeat weekly', self.parent)
+		self.setFixedSize(500, 400)
+
+		if 'palette' in kwargs:
+			self.setPalette(kwargs.get('palette'))
+		if 'font' in kwargs:
+			self.setFont(kwargs.get('font'))
+
+		self.calendar = kwargs['calendar']
+		self.storage = kwargs['storage']
+
+		self.title_input = QLineEdit(self)
+		self.description_input = QTextEdit(self)
+		self.date_input = QDateEdit(self)
+		self.time_input = QTimeEdit(self)
+		self.repeat_weekly_input = QCheckBox('Repeat weekly', self)
 
 		self.setup_ui()
 
@@ -53,18 +63,15 @@ class CreateEventForm:
 		content.addWidget(self.repeat_weekly_input)
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
-		btn_close = create_button('Close', 100, 50, self.parent.close)
+		btn_close = create_button('Close', 100, 50, self.close)
 		buttons.addWidget(btn_close, 0, Qt.AlignRight)
 		btn_save = create_button('Save', 100, 50, self.save_btn_click)
 		buttons.addWidget(btn_save, 0, Qt.AlignRight)
 		content.addLayout(buttons)
-		self.parent.setLayout(content)
-
-	def set_calendar_widget(self, calendar):
-		self.calendar = calendar
+		self.setLayout(content)
 
 	def reset_inputs(self, date):
-		self.parent.setWindowTitle('New Event | {}'.format(date.strftime('%Y-%m-%d')))
+		self.setWindowTitle('New Event | {}'.format(date.strftime('%Y-%m-%d')))
 		self.date_input.setDate(QDate(date))
 		curr_time = (datetime.now() + timedelta(minutes=3)).time().replace(second=0, microsecond=0)
 		self.time_input.setTime(QTime(curr_time))
@@ -73,26 +80,36 @@ class CreateEventForm:
 
 	def validate_inputs(self):
 		if len(self.title_input.text()) < 1:
-			popup.warning(self.parent, 'Provide title for the event!')
+			popup.warning(self, 'Provide title for the event!')
 			return False
 		if self.date_input.date().toPyDate() < datetime.now().date():
-			popup.warning(self.parent, 'Can\'t set past event, check date input')
+			popup.warning(self, 'Can\'t set past event, check date input')
 			return False
 		if self.time_input.time().toPyTime() < datetime.now().time() and \
 			self.date_input.date().toPyDate() == datetime.now().date():
-			popup.warning(self.parent, 'Can\'t set past event, check time input')
+			popup.warning(self, 'Can\'t set past event, check time input')
 			return False
 		return True
 
 	def save_btn_click(self):
 		if self.validate_inputs():
-			self.save_event_handler(
-				self.title_input.text(),
-				self.date_input.date().toPyDate(),
-				self.time_input.time().toPyTime(),
-				self.description_input.toPlainText(),
-				self.repeat_weekly_input.isChecked()
-			)
-			popup.info(self.parent, 'Save successfully!')
-			self.parent.close()
-			self.calendar.update()
+			try:
+				self.calendar.status_bar.showMessage('Status: Saving...')
+				self.storage.connect()
+				self.storage.create_event(
+					self.title_input.text(),
+					self.date_input.date().toPyDate(),
+					self.time_input.time().toPyTime(),
+					self.description_input.toPlainText(),
+					self.repeat_weekly_input.isChecked()
+				)
+			except peewee.PeeweeException as exc:
+				popup.error(self, 'Database error: {}'.format(exc))
+			except Exception as exc:
+				popup.error(self, 'Error occurred: {}'.format(exc))
+			finally:
+				self.storage.disconnect()
+				self.calendar.reset_status()
+				popup.info(self, 'Save successfully!')
+				self.close()
+				self.calendar.update()

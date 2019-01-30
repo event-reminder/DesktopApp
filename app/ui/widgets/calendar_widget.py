@@ -10,22 +10,22 @@ from app.ui.utils.popup import (
 	info,
 	error
 )
-from app.settings import Settings
-from app.ui.widgets.forms import (
-	SettingsForm,
-	EventsListForm,
-	CreateEventForm
-)
 from app.db import Storage
+from app.ui.dialogs import (
+	SettingsDialog,
+	EventsListDialog,
+	CreateEventDialog
+)
+from app.settings import Settings
 
 
 class CalendarWidget(QCalendarWidget):
 
-	def __init__(self, parent, width, height):
-		super().__init__()
+	def __init__(self, parent, **kwargs):
+		super().__init__(parent=parent)
 		self.parent = parent
 
-		self.setGeometry(0, 0, width, height)
+		self.setGeometry(0, 0, kwargs['width'], kwargs['height'])
 		self.setGridVisible(True)
 
 		# noinspection PyUnresolvedReferences
@@ -36,21 +36,30 @@ class CalendarWidget(QCalendarWidget):
 
 		self.storage = Storage(connect=False)
 
-		self.event_retrieving_dialog = QDialog(flags=self.parent.windowFlags())
-		self.event_retrieving_dialog.setPalette(settings.theme)
-		self.event_retrieving_dialog.ui = EventsListForm(self.event_retrieving_dialog)
+		font = QFont('SansSerif', settings.font)
 
-		self.event_creation_dialog = QDialog(flags=self.parent.windowFlags())
-		self.event_creation_dialog.setPalette(settings.theme)
-		self.event_creation_dialog.ui = CreateEventForm(
-			self.event_creation_dialog, self.save_event_reminder_handler
+		self.event_retrieving_dialog = EventsListDialog(
+			flags=self.parent.windowFlags(),
+			calendar=self,
+			palette=settings.theme,
+			font=font
 		)
 
-		self.settings_dialog = QDialog(flags=self.parent.windowFlags())
-		self.settings_dialog.setPalette(settings.theme)
-		self.settings_dialog.ui = SettingsForm(self.settings_dialog, self)
+		self.event_creation_dialog = CreateEventDialog(
+			flags=self.parent.windowFlags(),
+			calendar=self,
+			storage=self.storage,
+			palette=settings.theme,
+			font=font
+		)
 
-		self.setFont(QFont(str(settings.font)))
+		self.settings_dialog = SettingsDialog(
+			flags=self.parent.windowFlags(),
+			calendar=self,
+			palette=settings.theme,
+			font=font
+		)
+		self.setFont(font)
 		self.setPalette(settings.theme)
 
 		self.marked_dates = []
@@ -124,18 +133,6 @@ class CalendarWidget(QCalendarWidget):
 	def set_status(self, msg):
 		self.status_bar.showMessage('Status: {}'.format(msg))
 
-	def save_event_reminder_handler(self, title, date, time, description, repeat_weekly):
-		try:
-			self.status_bar.showMessage('Status: Saving...')
-			self.storage.connect()
-			self.storage.create_event(title, date, time, description, repeat_weekly)
-			self.storage.disconnect()
-		except peewee.PeeweeException as exc:
-			error(self, 'Database error: {}'.format(exc))
-		except Exception as exc:
-			error(self, 'Error occurred: {}'.format(exc))
-		self.reset_status()
-
 	def show_events(self, date):
 		py_date = date.toPyDate()
 		if datetime.now().date() <= py_date:
@@ -143,8 +140,7 @@ class CalendarWidget(QCalendarWidget):
 				events = self.storage.get_events(py_date)
 				if len(events) > 0:
 					self.reset_status()
-					self.event_retrieving_dialog.ui.set_data(events, py_date)
-					self.event_retrieving_dialog.ui.set_calendar_widget(self)
+					self.event_retrieving_dialog.set_data(events, py_date)
 					self.event_retrieving_dialog.exec_()
 					return True
 			except peewee.PeeweeException as exc:
@@ -155,12 +151,13 @@ class CalendarWidget(QCalendarWidget):
 		date = self.selectedDate().toPyDate()
 		if datetime.now().date() <= date:
 			self.reset_status()
-			self.event_creation_dialog.ui.reset_inputs(date)
-			self.event_creation_dialog.ui.set_calendar_widget(self)
+			self.event_creation_dialog.reset_inputs(date)
 			self.event_creation_dialog.exec_()
 		else:
 			self.set_status('can\'t set reminder to the past')
 
 	def open_settings(self):
-		self.settings_dialog.ui.set_calendar_widget(self)
 		self.settings_dialog.exec_()
+
+	def open_backup_and_restore(self):
+		print('backup and restore')

@@ -83,11 +83,11 @@ class Settings:
 
 	@property
 	def mouse_enter_opacity(self):
-		return self.__settings.value('user/mouse_enter_opacity', MOUSE_ENTER_OPACITY)
+		return float(self.__settings.value('user/mouse_enter_opacity', MOUSE_ENTER_OPACITY))
 
 	@property
 	def mouse_leave_opacity(self):
-		return self.__settings.value('user/mouse_leave_opacity', MOUSE_LEAVE_OPACITY)
+		return float(self.__settings.value('user/mouse_leave_opacity', MOUSE_LEAVE_OPACITY))
 
 	@property
 	def is_always_on_top(self):
@@ -95,7 +95,7 @@ class Settings:
 
 	@property
 	def font(self):
-		return self.__settings.value('user/font', FONT)
+		return int(self.__settings.value('user/font', FONT))
 
 	@property
 	def badge_color(self):
@@ -117,11 +117,11 @@ class Settings:
 
 	@property
 	def notification_duration(self):
-		return self.__settings.value('user/notification_duration', NOTIFICATION_DURATION)
+		return int(self.__settings.value('user/notification_duration', NOTIFICATION_DURATION))
 
 	@property
 	def remind_time_before_event(self):
-		return self.__settings.value('user/remind_time_before_event', REMIND_TIME)
+		return int(self.__settings.value('user/remind_time_before_event', REMIND_TIME))
 
 	def set_first_launch(self):
 		self.__settings.setValue('app/first_launch', False)

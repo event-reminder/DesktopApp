@@ -1,5 +1,6 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
+	QDialog,
 	QListWidget,
 	QVBoxLayout,
 	QScrollArea,
@@ -11,13 +12,20 @@ from app.ui.utils import create_button
 from app.ui.widgets import EventWidget
 
 
-class EventsListForm:
+class EventsListDialog(QDialog):
 
-	def __init__(self, parent):
-		self.parent = parent
-		self.parent.setFixedSize(500, 400)
+	def __init__(self, flags, *args, **kwargs):
+		super().__init__(flags=flags, *args)
+
+		if 'palette' in kwargs:
+			self.setPalette(kwargs.get('palette'))
+		if 'font' in kwargs:
+			self.setFont(kwargs.get('font'))
+		self.setFixedSize(500, 400)
+
+		self.calendar = kwargs['calendar']
 		self.list_view = QListWidget()
-		self.calendar = None
+
 		self.setup_ui()
 
 	def setup_ui(self):
@@ -34,24 +42,21 @@ class EventsListForm:
 		btn_close = create_button('Close', 100, 50, self.close_btn_click)
 		buttons.addWidget(btn_close, 0, Qt.AlignRight)
 		content.addLayout(buttons)
-		self.parent.setLayout(content)
-
-	def set_calendar_widget(self, calendar):
-		self.calendar = calendar
+		self.setLayout(content)
 
 	def handle_create_event(self):
 		self.list_view.clear()
-		self.parent.close()
+		self.close()
 		self.calendar.create_event()
 
 	def update_day(self, clear_list=False):
 		self.calendar.update()
 		if clear_list:
 			self.list_view.clear()
-			self.parent.close()
+			self.close()
 
 	def append_event_item(self, data_item):
-		item = EventWidget(self.list_view, self.update_day)
+		item = EventWidget(self.list_view, update_day=self.update_day)
 		item.set_data(data_item.id, data_item.title, data_item.time, data_item.date)
 		if len(data_item.description) > 0:
 			item.setToolTip(self.get_tool_tip(data_item.description))
@@ -62,7 +67,7 @@ class EventsListForm:
 
 	def set_data(self, data, date):
 		self.list_view.clear()
-		self.parent.setWindowTitle('Events for {}'.format(date))
+		self.setWindowTitle('Events for {}'.format(date))
 		if data is not None:
 			for data_item in data:
 				self.append_event_item(data_item)
@@ -79,4 +84,4 @@ class EventsListForm:
 
 	def close_btn_click(self):
 		self.list_view.clear()
-		self.parent.close()
+		self.close()

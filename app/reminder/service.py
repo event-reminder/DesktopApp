@@ -52,7 +52,7 @@ class ReminderService(QThread):
 				if event.repeat_weekly is True:
 					self.__storage.update_event(pk=event.id, e_date=event.date + timedelta(days=7))
 				else:
-					if self.__.remove_event_after_time_up is True:
+					if self.__settings.remove_event_after_time_up is True:
 						self.__storage.delete_event(event.id)
 					else:
 						self.__storage.update_event(pk=event.id, is_past=True)

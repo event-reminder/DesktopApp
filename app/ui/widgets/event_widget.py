@@ -16,7 +16,7 @@ from app.ui.utils.popup import error
 
 class EventWidget(QWidget):
 
-	def __init__(self, parent: QListWidget, update_calendar_handler):
+	def __init__(self, parent: QListWidget, **kwargs):
 		super(EventWidget, self).__init__(parent)
 		self.titleLabel = QLabel()
 		self.timeLabel = QLabel()
@@ -25,7 +25,7 @@ class EventWidget(QWidget):
 		self.menu, self.menu_actions = self.setup_menu()
 		self.id = -1
 		self.date = None
-		self.update_calendar_handler = update_calendar_handler
+		self.update_day = kwargs['update_day']
 		self.storage = Storage(connect=False)
 
 	def setup_content(self):
@@ -63,7 +63,7 @@ class EventWidget(QWidget):
 				except Exception as exc:
 					error(self, 'Error occurred: {}'.format(exc))
 				self.parent.takeItem(self.parent.currentRow())
-				self.update_calendar_handler(self.parent.count() < 1)
+				self.update_day(self.parent.count() < 1)
 		else:
 			popup.info(self.parent, 'Event is already removed!')
 

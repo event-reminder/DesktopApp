@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
 		self.setCentralWidget(self.calendar)
 		self.setup_navigation_menu()
 		self.statusBar().showMessage('Status: Ok')
-		self.setFont(QFont(str(self.settings.font)))
+		self.setFont(QFont('SansSerif', self.settings.font))
 
 		self.open_action = QAction('Open {}'.format(self.settings.name), self)
 		self.hide_action = QAction('Minimize To Tray', self)
@@ -63,7 +63,7 @@ class MainWindow(QMainWindow):
 		return tray_icon
 
 	def init_calendar(self):
-		calendar = CalendarWidget(self, self.width(), self.height())
+		calendar = CalendarWidget(self, width=self.width(), height=self.height())
 		calendar.setLocale(QLocale(QLocale.English))
 		calendar.setFont(QFont(str(self.settings.font)))
 		calendar.set_status_bar(self.statusBar())
@@ -95,6 +95,9 @@ class MainWindow(QMainWindow):
 		)
 		file_menu.addAction(
 			utils.create_action(self, 'Settings...', 'Ctrl+Alt+S', 'Settings', self.calendar.open_settings)
+		)
+		file_menu.addAction(
+			utils.create_action(self, 'Backup...', 'Ctrl+Alt+B', 'Backup and restore', self.calendar.open_backup_and_restore)
 		)
 
 	def enterEvent(self, event):
