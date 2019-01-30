@@ -9,8 +9,8 @@ from PyQt5.QtWidgets import (
 	QMessageBox
 )
 
+from app.db import Storage
 from app.ui.utils import popup
-from app.reminder.db import storage
 from app.ui.utils.popup import error
 
 
@@ -26,6 +26,7 @@ class EventWidget(QWidget):
 		self.id = -1
 		self.date = None
 		self.update_calendar_handler = update_calendar_handler
+		self.storage = Storage(connect=False)
 
 	def setup_content(self):
 		layout = QVBoxLayout()
@@ -50,12 +51,13 @@ class EventWidget(QWidget):
 		self.process_menu_events(self.menu.exec_(self.mapToGlobal(event.pos())))
 
 	def remove_event(self):
-		if storage.exists(self.id):
+		self.storage.connect()
+		if self.storage.event_exists(self.id):
 			ret_action = popup.question(self.parent, 'Deleting an event', 'Do you really want to delete the event?')
 			if ret_action == QMessageBox.Yes:
 				try:
-					if storage.exists(self.id):
-						storage.delete_event(self.id)
+					if self.storage.event_exists(self.id):
+						self.storage.delete_event(self.id)
 				except peewee.PeeweeException as exc:
 					error(self, 'Database error: {}'.format(exc))
 				except Exception as exc:

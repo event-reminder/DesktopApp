@@ -145,8 +145,7 @@ class Settings:
 
 	def set_mouse_enter_opacity(self, value: float):
 		self.__settings.setValue('user/mouse_enter_opacity', value)
-		if self.__autocommit:
-			self.__settings.sync()
+		self._commit()
 
 	def set_mouse_leave_opacity(self, value: float):
 		self.__settings.setValue('user/mouse_leave_opacity', value)
@@ -175,3 +174,36 @@ class Settings:
 	def set_remind_time_before_event(self, value: int):
 		self.__settings.setValue('user/remind_time_before_event', value)
 		self._commit()
+
+	def to_dict(self):
+		return {
+			'is_dark_theme': self.is_dark_theme,
+			'mouse_enter_opacity': self.mouse_enter_opacity,
+			'mouse_leave_opacity': self.mouse_leave_opacity,
+			'is_always_on_top': self.is_always_on_top,
+			'font': self.font,
+			'remove_event_after_time_up': self.remove_event_after_time_up,
+			'show_calendar_on_startup': self.show_calendar_on_startup,
+			'notification_duration': self.notification_duration,
+			'remind_time_before_event': self.remind_time_before_event
+		}
+
+	def from_dict(self, data):
+		keys = [
+			'is_dark_theme', 'mouse_enter_opacity', 'mouse_leave_opacity', 'is_always_on_top',
+			'font', 'remove_event_after_time_up', 'show_calendar_on_startup',
+			'notification_duration', 'remind_time_before_event'
+		]
+		for key in keys:
+			if key not in data:
+				raise KeyError('settings backup is invalid')
+		self.set_theme(data['is_dark_theme'])
+		self.set_mouse_enter_opacity(data['mouse_enter_opacity'])
+		self.set_mouse_leave_opacity(data['mouse_leave_opacity'])
+		self.set_is_always_on_top(data['is_always_on_top'])
+		self.set_font(data['font'])
+		self.set_remove_event_after_time_up(data['remove_event_after_time_up'])
+		self.set_show_calendar_on_startup(data['show_calendar_on_startup'])
+		self.set_notification_duration(data['notification_duration'])
+		self.set_remind_time_before_event(data['remind_time_before_event'])
+		self.commit()

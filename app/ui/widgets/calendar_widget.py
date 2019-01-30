@@ -16,7 +16,7 @@ from app.ui.widgets.forms import (
 	EventsListForm,
 	CreateEventForm
 )
-from app.reminder.db import storage
+from app.db import Storage
 
 
 class CalendarWidget(QCalendarWidget):
@@ -33,6 +33,8 @@ class CalendarWidget(QCalendarWidget):
 		self.status_bar = None
 
 		settings = Settings()
+
+		self.storage = Storage(connect=False)
 
 		self.event_retrieving_dialog = QDialog(flags=self.parent.windowFlags())
 		self.event_retrieving_dialog.setPalette(settings.theme)
@@ -61,8 +63,8 @@ class CalendarWidget(QCalendarWidget):
 	def update(self, *__args):
 		super().update()
 		try:
-			storage.connect()
-			self.marked_dates = self.events_to_dates(storage.get_events())
+			self.storage.connect()
+			self.marked_dates = self.events_to_dates(self.storage.get_events())
 		except peewee.PeeweeException:
 			info(self, 'Can\'t find related database, it will be created automatically')
 		except Exception as exc:
@@ -70,7 +72,7 @@ class CalendarWidget(QCalendarWidget):
 
 	def closeEvent(self, event):
 		super(CalendarWidget, self).closeEvent(event)
-		storage.disconnect()
+		self.storage.disconnect()
 
 	def contextMenuEvent(self, event):
 		date = self.selectedDate().toPyDate()
@@ -125,9 +127,9 @@ class CalendarWidget(QCalendarWidget):
 	def save_event_reminder_handler(self, title, date, time, description, repeat_weekly):
 		try:
 			self.status_bar.showMessage('Status: Saving...')
-			storage.connect()
-			storage.create_event(title, date, time, description, repeat_weekly)
-			storage.disconnect()
+			self.storage.connect()
+			self.storage.create_event(title, date, time, description, repeat_weekly)
+			self.storage.disconnect()
 		except peewee.PeeweeException as exc:
 			error(self, 'Database error: {}'.format(exc))
 		except Exception as exc:
@@ -138,7 +140,7 @@ class CalendarWidget(QCalendarWidget):
 		py_date = date.toPyDate()
 		if datetime.now().date() <= py_date:
 			try:
-				events = storage.get_events(py_date)
+				events = self.storage.get_events(py_date)
 				if len(events) > 0:
 					self.reset_status()
 					self.event_retrieving_dialog.ui.set_data(events, py_date)
