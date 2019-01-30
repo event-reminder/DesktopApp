@@ -12,6 +12,7 @@ from app.utils import (
 )
 from app.db import Storage
 from app.dialogs import (
+	BackupDialog,
 	SettingsDialog,
 	EventsListDialog,
 	CreateEventDialog
@@ -59,6 +60,15 @@ class CalendarWidget(QCalendarWidget):
 			palette=settings.theme,
 			font=font
 		)
+
+		self.backup_dialog = BackupDialog(
+			flags=self.parent.windowFlags(),
+			calendar=self,
+			storage=self.storage,
+			palette=settings.theme,
+			font=font
+		)
+
 		self.setFont(font)
 		self.setPalette(settings.theme)
 
@@ -160,4 +170,4 @@ class CalendarWidget(QCalendarWidget):
 		self.settings_dialog.exec_()
 
 	def open_backup_and_restore(self):
-		print('backup and restore')
+		self.backup_dialog.exec_()

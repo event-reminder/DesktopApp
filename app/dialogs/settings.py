@@ -169,6 +169,7 @@ class SettingsDialog(QDialog):
 			self.calendar.event_retrieving_dialog.setFont(font)
 			self.calendar.event_creation_dialog.setFont(font)
 			self.calendar.settings_dialog.setFont(font)
+			self.calendar.backup_dialog.setFont(font)
 			self.settings.set_font(new_font)
 
 	def show_calendar_on_startup_changed(self):
@@ -182,6 +183,7 @@ class SettingsDialog(QDialog):
 			self.calendar.parent.setPalette(self.settings.theme)
 			self.calendar.event_retrieving_dialog.setPalette(self.settings.theme)
 			self.calendar.event_creation_dialog.setPalette(self.settings.theme)
+			self.calendar.backup_dialog.setPalette(self.settings.theme)
 			self.calendar.settings_dialog.setPalette(self.settings.theme)
 
 	def remove_after_time_up_changed(self):
