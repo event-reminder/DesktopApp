@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QApplication
 
 from app.ui import MainWindow
 from app.settings import Settings
-from app.reminder.service import ReminderService
+from app.service import ReminderService
 
 
 if __name__ == '__main__':
