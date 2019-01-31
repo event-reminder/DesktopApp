@@ -64,20 +64,19 @@ class Storage:
 			raise RuntimeError('updating error: connect to the database first')
 		event = self.get_event_by_id(pk)
 		if event:
-			data = {}
 			if title:
-				data['title'] = title
+				event.title = title
 			if e_time:
-				data['time'] = e_time
+				event.time = e_time
 			if e_date:
-				data['date'] = e_date
+				event.date = e_date
 			if description:
-				data['description'] = description
+				event.description = description
 			if is_past:
-				data['is_past'] = is_past
+				event.is_past = is_past
 			if repeat_weekly:
-				data['repeat_weekly'] = repeat_weekly
-			event.update(**data).execute()
+				event.repeat_weekly = repeat_weekly
+			event.save()
 		return event
 
 	def delete_event(self, pk):

@@ -47,7 +47,7 @@ class ReminderService(QThread):
 		need_to_update = False
 		for event in events:
 			now = datetime.now()
-			if event.is_past is not True and event.time <= now.time().strftime('%H:%M:00') and event.date <= now.date():
+			if event.is_past is False and event.time <= now.time().strftime('%H:%M:00') and event.date <= now.date():
 				self.__send_notification(event)
 				if event.repeat_weekly is True:
 					self.__storage.update_event(pk=event.id, e_date=event.date + timedelta(days=7))
