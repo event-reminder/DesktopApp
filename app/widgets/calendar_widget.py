@@ -19,7 +19,7 @@ from app.dialogs import (
 )
 from app.settings import Settings
 from app.utils import logger, log_msg
-from app.settings.default import FONT_NORMAL
+from app.settings.default import FONT_NORMAL, FONT_SMALL, FONT_LARGE
 
 
 class CalendarWidget(QCalendarWidget):
@@ -113,15 +113,22 @@ class CalendarWidget(QCalendarWidget):
 
 	@staticmethod
 	def get_badge_width(num, font_size=FONT_NORMAL):
-		minimum = 20
+		minimum = 10
+		if font_size == FONT_NORMAL:
+			minimum = 20
+		elif font_size == FONT_LARGE:
+			minimum = 35
 		if num > 9:
-			minimum += 9
+			minimum += (9 if font_size != FONT_LARGE else 15)
 		return minimum + (55 if num > 1 else 50)
 
 	def paint_date(self, date, painter, rect, num):
 		settings = Settings()
-		ellipse_rect = QRect(rect.x() + 3, rect.y() + 3, self.get_badge_width(num), 20)
-		text_rect = QRect(ellipse_rect.x() - 3.1, ellipse_rect.y() + 7, 20, 20)
+		font_not_large = settings.font != FONT_LARGE
+		ellipse_rect = QRect(
+			rect.x() + 3, rect.y() + 3, self.get_badge_width(num, settings.font), 20 if font_not_large else 25
+		)
+		text_rect = QRect(ellipse_rect.x() - 3.1, ellipse_rect.y() + (7 if font_not_large else 10), 20, 20)
 		if self.monthShown() == date.month():
 			painter.setBrush(QColor(settings.badge_color))
 		else:
