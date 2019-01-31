@@ -86,7 +86,8 @@ class MainWindow(QMainWindow):
 	def setup_navigation_menu(self):
 		self.statusBar()
 		main_menu = self.menuBar()
-		self.setup_file_menu(main_menu=main_menu)
+		self.setup_file_menu(main_menu)
+		self.setup_help_menu(main_menu)
 
 	def setup_file_menu(self, main_menu):
 		file_menu = main_menu.addMenu('&File')
@@ -104,6 +105,7 @@ class MainWindow(QMainWindow):
 			)
 		)
 
+	def setup_help_menu(self, main_menu):
 		help_menu = main_menu.addMenu('&Help')
 		help_menu.addAction(
 			utils.create_action(self, '&Account...', self.calendar.open_account_info)
