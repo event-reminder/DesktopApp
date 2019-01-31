@@ -46,6 +46,7 @@ class MainWindow(QMainWindow):
 		self.settings.commit()
 		qApp.quit()
 
+	# noinspection PyUnresolvedReferences
 	def init_tray_icon(self):
 		tray_icon = QSystemTrayIcon(self)
 		tray_icon.setIcon(self.settings.icon())
@@ -65,19 +66,18 @@ class MainWindow(QMainWindow):
 	def init_calendar(self):
 		calendar = CalendarWidget(self, width=self.width(), height=self.height())
 		calendar.setLocale(QLocale(QLocale.English))
-		calendar.setFont(QFont(str(self.settings.font)))
 		calendar.set_status_bar(self.statusBar())
 		return calendar
 
 	def hide(self):
-		super().hide()
 		self.hide_action.setEnabled(False)
 		self.open_action.setEnabled(True)
+		super().hide()
 
 	def show(self):
-		super().show()
 		self.hide_action.setEnabled(True)
 		self.open_action.setEnabled(False)
+		super().show()
 
 	def resizeEvent(self, event):
 		self.calendar.resize_handler()
@@ -101,9 +101,9 @@ class MainWindow(QMainWindow):
 		)
 
 	def enterEvent(self, event):
-		super().enterEvent(event)
 		self.setWindowOpacity(float(self.settings.mouse_enter_opacity))
+		super().enterEvent(event)
 
 	def leaveEvent(self, event):
-		super().leaveEvent(event)
 		self.setWindowOpacity(float(self.settings.mouse_leave_opacity))
+		super().leaveEvent(event)

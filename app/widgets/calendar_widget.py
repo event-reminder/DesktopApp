@@ -18,6 +18,8 @@ from app.dialogs import (
 	CreateEventDialog
 )
 from app.settings import Settings
+from app.utils import logger, log_msg
+from app.settings.default import FONT_NORMAL
 
 
 class CalendarWidget(QCalendarWidget):
@@ -80,18 +82,19 @@ class CalendarWidget(QCalendarWidget):
 		return [event.date for event in events]
 
 	def update(self, *__args):
-		super().update()
 		try:
 			self.storage.connect()
 			self.marked_dates = self.events_to_dates(self.storage.get_events())
 		except peewee.PeeweeException:
 			info(self, 'Can\'t find related database, it will be created automatically')
 		except Exception as exc:
+			logger.error(log_msg('unknown error: {}'.format(exc)))
 			error(self, 'Error occurred: {}'.format(exc))
+		super().update()
 
 	def closeEvent(self, event):
-		super(CalendarWidget, self).closeEvent(event)
 		self.storage.disconnect()
+		super(CalendarWidget, self).closeEvent(event)
 
 	def contextMenuEvent(self, event):
 		date = self.selectedDate().toPyDate()
@@ -101,6 +104,7 @@ class CalendarWidget(QCalendarWidget):
 			action = menu.exec_(self.mapToGlobal(event.pos()))
 			if action == create_action:
 				self.create_event()
+		super().contextMenuEvent(event)
 
 	def paintCell(self, painter, rect, date, **kwargs):
 		QCalendarWidget.paintCell(self, painter, rect, date)
@@ -108,7 +112,7 @@ class CalendarWidget(QCalendarWidget):
 			self.paint_date(date, painter, rect, self.marked_dates.count(date.toPyDate()))
 
 	@staticmethod
-	def get_badge_width(num):
+	def get_badge_width(num, font_size=FONT_NORMAL):
 		minimum = 20
 		if num > 9:
 			minimum += 9
@@ -154,6 +158,7 @@ class CalendarWidget(QCalendarWidget):
 					self.event_retrieving_dialog.exec_()
 					return True
 			except peewee.PeeweeException as exc:
+				logger.error(log_msg('database error: {}'.format(exc), 7))
 				error(self, 'Database error: {}'.format(exc))
 		self.set_status('there is not any events for {}'.format(py_date))
 

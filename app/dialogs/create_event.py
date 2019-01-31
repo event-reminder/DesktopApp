@@ -22,10 +22,15 @@ from PyQt5.QtWidgets import (
 	QHBoxLayout
 )
 
-from app.utils import popup
-from app.utils import create_button
+from app.utils import (
+	popup,
+	logger,
+	log_msg,
+	create_button
+)
 
 
+# noinspection PyArgumentList
 class CreateEventDialog(QDialog):
 
 	def __init__(self, flags, *args, **kwargs):
@@ -104,8 +109,10 @@ class CreateEventDialog(QDialog):
 					self.repeat_weekly_input.isChecked()
 				)
 			except peewee.PeeweeException as exc:
+				logger.error(log_msg('database error: {}'.format(exc)))
 				popup.error(self, 'Database error: {}'.format(exc))
 			except Exception as exc:
+				logger.error(log_msg('unknown error: {}'.format(exc)))
 				popup.error(self, 'Error occurred: {}'.format(exc))
 			finally:
 				self.storage.disconnect()

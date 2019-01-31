@@ -1,8 +1,15 @@
+import getpass
+
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
+from app.utils import (
+	logger,
+	log_msg,
+	create_button
+)
+from app.utils import popup
 from app.settings import Settings
-from app.utils import create_button
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
@@ -19,8 +26,10 @@ class BackupDialog(QDialog):
 		self.calendar = kwargs['calendar']
 		self.storage = kwargs['storage']
 
-		self.setFixedSize(450, 270)
+		self.setFixedSize(600, 400)
 		self.setWindowTitle('Backup and Restore')
+
+		self.search_dir = '/home/{}'.format(getpass.getuser())
 
 		self.settings = Settings()
 
@@ -42,13 +51,13 @@ class BackupDialog(QDialog):
 		content = QVBoxLayout()
 		tabs_widget = QTabWidget(self)
 		tabs_widget.setMinimumWidth(self.width() - 22)
-		self.setup_local_backup(tabs_widget)
-		self.setup_local_restore(tabs_widget)
-		self.setup_cloud(tabs_widget)
+		self.setup_local_backup_ui(tabs_widget)
+		self.setup_local_restore_ui(tabs_widget)
+		self.setup_cloud_ui(tabs_widget)
 		content.addWidget(tabs_widget, alignment=Qt.AlignLeft)
 		self.setLayout(content)
 
-	def setup_local_backup(self, tabs):
+	def setup_local_backup_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 
 		h1_layout = QHBoxLayout()
@@ -62,6 +71,7 @@ class BackupDialog(QDialog):
 		h2_layout = QHBoxLayout()
 		h2_layout.addWidget(QLabel('Location:'))
 		h2_layout.setContentsMargins(10, 0, 10, 20)
+		self.backup_file_input.setText(self.search_dir)
 		h2_layout.addWidget(self.backup_file_input)
 		h2_layout.addWidget(self.backup_file_button)
 
@@ -77,7 +87,7 @@ class BackupDialog(QDialog):
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'Backup')
 
-	def setup_local_restore(self, tabs):
+	def setup_local_restore_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 
 		h1_layout = QHBoxLayout()
@@ -106,7 +116,7 @@ class BackupDialog(QDialog):
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'Restore')
 
-	def setup_cloud(self, tabs):
+	def setup_cloud_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 
 		layout = QVBoxLayout()
@@ -118,19 +128,26 @@ class BackupDialog(QDialog):
 		tabs.addTab(tab, 'Cloud')
 
 	def get_folder_path(self):
-		dialog = QFileDialog()
-		file_name = dialog.getExistingDirectory(caption='Select Directory')
-		self.backup_file_input.setText(str(file_name))
+		file_name = QFileDialog().getExistingDirectory(caption='Select Directory', directory=self.search_dir)
+		if len(file_name) > 0:
+			self.backup_file_input.setText(str(file_name))
 
 	def get_file_path(self):
-		dialog = QFileDialog()
-		file_name = dialog.getOpenFileName(caption='Open file', directory='/home', filter='(*.bak)')
+		file_name = QFileDialog().getOpenFileName(caption='Open file', directory=self.search_dir, filter='(*.bak)')
 		if len(file_name) > 0:
 			self.restore_file_input.setText(file_name[0])
 
 	def launch_restore(self):
-		self.storage.restore(self.restore_file_input.text(), self.include_settings_restore.isChecked())
-		self.calendar.update()
+		try:
+			self.storage.restore(self.restore_file_input.text(), self.include_settings_restore.isChecked())
+			self.calendar.update()
+		except Exception as exc:
+			logger.error(log_msg(exc))
+			popup.error(self, 'Can\'t restore backup: {}'.format(exc))
 
 	def launch_backup(self):
-		self.storage.backup(self.backup_file_input.text(), self.include_settings_backup.isChecked())
+		try:
+			self.storage.backup(self.backup_file_input.text(), self.include_settings_backup.isChecked())
+		except Exception as exc:
+			logger.error(log_msg(exc))
+			popup.error(self, 'Can\'t backup calendar data: {}'.format(exc))

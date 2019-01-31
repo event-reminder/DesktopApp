@@ -2,7 +2,12 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from app.settings import Settings
+from app.settings import (
+	Settings,
+	FONT_LARGE,
+	FONT_SMALL,
+	FONT_NORMAL
+)
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
@@ -48,12 +53,12 @@ class SettingsDialog(QDialog):
 		content = QVBoxLayout()
 		settings_general_tabs = QTabWidget(self)
 		settings_general_tabs.setMinimumWidth(self.width() - 22)
-		self.setup_app_settings(settings_general_tabs)
-		self.setup_events_settings(settings_general_tabs)
+		self.setup_app_settings_ui(settings_general_tabs)
+		self.setup_events_settings_ui(settings_general_tabs)
 		content.addWidget(settings_general_tabs, alignment=Qt.AlignLeft)
 		self.setLayout(content)
 
-	def setup_app_settings(self, tabs):
+	def setup_app_settings_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 		layout = QGridLayout()
 		layout.setAlignment(Qt.AlignTop)
@@ -70,9 +75,9 @@ class SettingsDialog(QDialog):
 		self.font_combo_box.currentIndexChanged.connect(self.font_changed)
 		self.font_combo_box.addItems(['Small', 'Normal', 'Large'])
 		curr_idx = 0
-		if self.settings.font == 16:
+		if self.settings.font == FONT_NORMAL:
 			curr_idx = 1
-		elif self.settings.font == 18:
+		elif self.settings.font == FONT_LARGE:
 			curr_idx = 2
 		self.font_combo_box.setCurrentIndex(curr_idx)
 		layout.addWidget(self.font_combo_box, 1, 1)
@@ -110,7 +115,7 @@ class SettingsDialog(QDialog):
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'App')
 
-	def setup_events_settings(self, tabs):
+	def setup_events_settings_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 
 		layout = QGridLayout()
@@ -158,11 +163,11 @@ class SettingsDialog(QDialog):
 
 	def font_changed(self, current):
 		if self.ui_is_loaded:
-			new_font = 10
+			new_font = FONT_SMALL
 			if current == 1:
-				new_font = 11
+				new_font = FONT_NORMAL
 			elif current == 2:
-				new_font = 14
+				new_font = FONT_LARGE
 			font = QFont('SansSerif', new_font)
 			self.calendar.setFont(font)
 			self.calendar.parent.setFont(font)

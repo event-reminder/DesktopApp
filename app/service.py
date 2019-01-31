@@ -12,6 +12,7 @@ from pynotifier import Notification
 
 from app.db import Storage
 from app.settings import Settings
+from app.utils import logger, log_msg
 
 
 class ReminderService(QThread):
@@ -33,14 +34,11 @@ class ReminderService(QThread):
 					time.sleep(1)
 					self.__process_events()
 				except Exception as exc:
-					with open('./errors_file.txt', 'a') as the_file:
-						the_file.write('Service error: {}\n'.format(exc))
-					print('Service error: {}\n'.format(exc))
+					logger.error(log_msg('Processing event error: {}'.format(exc)))
 		except Exception as exc:
-			with open('./fatal_errors_file.txt', 'a') as the_file:
-				the_file.write('Fatal error: {}\n'.format(exc))
-			print('Service error: {}\n'.format(exc))
-		self.storage.disconnect()
+			logger.error(log_msg('Service error: {}'.format(exc), 8))
+		finally:
+			self.storage.disconnect()
 
 	def __process_events(self):
 		events = self.__storage.get_events(date.today())

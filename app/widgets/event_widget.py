@@ -9,11 +9,16 @@ from PyQt5.QtWidgets import (
 	QMessageBox
 )
 
+from app.utils import (
+	popup,
+	error,
+	logger,
+	log_msg
+)
 from app.db import Storage
-from app.utils import popup
-from app.utils import error
 
 
+# noinspection PyArgumentList
 class EventWidget(QWidget):
 
 	def __init__(self, parent: QListWidget, **kwargs):
@@ -59,8 +64,10 @@ class EventWidget(QWidget):
 					if self.storage.event_exists(self.id):
 						self.storage.delete_event(self.id)
 				except peewee.PeeweeException as exc:
+					logger.error(log_msg('database error: {}'.format(exc)))
 					error(self, 'Database error: {}'.format(exc))
 				except Exception as exc:
+					logger.error(log_msg('unknown error: {}'.format(exc), 0))
 					error(self, 'Error occurred: {}'.format(exc))
 				self.parent.takeItem(self.parent.currentRow())
 				self.update_day(self.parent.count() < 1)

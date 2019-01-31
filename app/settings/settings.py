@@ -1,8 +1,15 @@
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from PyQt5.QtCore import (
+	QSize,
+	QPoint,
+	QSettings
+)
+from PyQt5.QtGui import QIcon
 
 from app.settings import *
-from app.settings.theme import dark_theme_palette, light_theme_palette
+from app.settings.theme import (
+	dark_theme_palette,
+	light_theme_palette
+)
 
 
 class Settings:
@@ -28,8 +35,8 @@ class Settings:
 		return APP_NAME
 
 	@property
-	def first_launch(self):
-		return self.__settings.value('app/first_launch', True)
+	def is_first_launch(self):
+		return self.__settings.value('app/first_launch', 'true') == 'true'
 
 	@property
 	def root(self):
@@ -123,8 +130,8 @@ class Settings:
 	def remind_time_before_event(self):
 		return int(self.__settings.value('user/remind_time_before_event', REMIND_TIME))
 
-	def set_first_launch(self):
-		self.__settings.setValue('app/first_launch', False)
+	def set_first_launch(self, value: bool):
+		self.__settings.setValue('app/first_launch', 'true' if value else 'false')
 		self._commit()
 
 	def set_root(self, root: str):
