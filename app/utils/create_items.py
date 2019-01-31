@@ -1,10 +1,15 @@
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QAction, QPushButton
 
 
-def create_action(target, title, shortcut, tip, fn):
+def create_action(target, title, fn, shortcut=None, tip=None, icon=None):
 	action = QAction(title, target)
-	action.setShortcut(shortcut)
-	action.setStatusTip(tip)
+	if shortcut:
+		action.setShortcut(shortcut)
+	if tip:
+		action.setStatusTip(tip)
+	if icon:
+		action.setIcon(QIcon().fromTheme(icon))
 	action.triggered.connect(fn)
 	return action
 

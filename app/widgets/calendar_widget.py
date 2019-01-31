@@ -18,8 +18,11 @@ from app.dialogs import (
 	CreateEventDialog
 )
 from app.settings import Settings
+from app.settings.default import (
+	FONT_LARGE,
+	FONT_NORMAL
+)
 from app.utils import logger, log_msg
-from app.settings.default import FONT_NORMAL, FONT_SMALL, FONT_LARGE
 
 
 class CalendarWidget(QCalendarWidget):
@@ -169,7 +172,7 @@ class CalendarWidget(QCalendarWidget):
 				error(self, 'Database error: {}'.format(exc))
 		self.set_status('there is not any events for {}'.format(py_date))
 
-	def create_event(self):
+	def open_create_event(self):
 		date = self.selectedDate().toPyDate()
 		if datetime.now().date() <= date:
 			self.reset_status()
@@ -183,3 +186,12 @@ class CalendarWidget(QCalendarWidget):
 
 	def open_backup_and_restore(self):
 		self.backup_dialog.exec_()
+
+	def open_account_info(self):
+		info(self, 'Coming soon...')
+
+	def open_check_for_updates(self):
+		info(self, 'Coming soon...')
+
+	def open_about(self):
+		info(self, 'Coming soon...')

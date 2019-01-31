@@ -91,13 +91,30 @@ class MainWindow(QMainWindow):
 	def setup_file_menu(self, main_menu):
 		file_menu = main_menu.addMenu('&File')
 		file_menu.addAction(
-			utils.create_action(self, 'New Event', 'Ctrl+N', 'Create event', self.calendar.create_event)
+			utils.create_action(self, 'New Event...', self.calendar.open_create_event, 'Ctrl+N', 'Create event')
 		)
 		file_menu.addAction(
-			utils.create_action(self, 'Settings...', 'Ctrl+Alt+S', 'Settings', self.calendar.open_settings)
+			utils.create_action(
+				self, 'Se&ttings...', self.calendar.open_settings, 'Ctrl+Alt+S', 'Settings', 'emblem-system'
+			)
 		)
 		file_menu.addAction(
-			utils.create_action(self, 'Backup...', 'Ctrl+Alt+B', 'Backup and restore', self.calendar.open_backup_and_restore)
+			utils.create_action(
+				self, 'Backup...', self.calendar.open_backup_and_restore, 'Ctrl+Alt+B', 'Backup and restore'
+			)
+		)
+
+		help_menu = main_menu.addMenu('&Help')
+		help_menu.addAction(
+			utils.create_action(self, '&Account...', self.calendar.open_account_info)
+		)
+		help_menu.addAction(
+			utils.create_action(
+				self, '&Check for updates...', self.calendar.open_check_for_updates, icon='system-software-update'
+			)
+		)
+		help_menu.addAction(
+			utils.create_action(self, '&About', self.calendar.open_about, icon='dialog-information')
 		)
 
 	def enterEvent(self, event):

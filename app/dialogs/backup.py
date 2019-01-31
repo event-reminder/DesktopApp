@@ -1,5 +1,6 @@
 import getpass
 
+from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
@@ -73,6 +74,7 @@ class BackupDialog(QDialog):
 		h2_layout.setContentsMargins(10, 0, 10, 20)
 		self.backup_file_input.setText(self.search_dir)
 		h2_layout.addWidget(self.backup_file_input)
+		self.backup_file_button.setIcon(QIcon().fromTheme('folder'))
 		h2_layout.addWidget(self.backup_file_button)
 
 		layout = QVBoxLayout()
@@ -102,6 +104,7 @@ class BackupDialog(QDialog):
 		h2_layout.addWidget(QLabel('Location:'))
 		h2_layout.setContentsMargins(10, 0, 10, 20)
 		h2_layout.addWidget(self.restore_file_input)
+		self.restore_file_button.setIcon(QIcon().fromTheme('document-open'))
 		h2_layout.addWidget(self.restore_file_button)
 
 		layout = QVBoxLayout()
