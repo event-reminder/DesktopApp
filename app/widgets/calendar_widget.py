@@ -39,16 +39,16 @@ class CalendarWidget(QCalendarWidget):
 		self.clicked[QDate].connect(self.show_events)
 		self.status_bar = None
 
-		settings = Settings()
+		self.settings = Settings()
 
 		self.storage = Storage(connect=False)
 
-		font = QFont('SansSerif', settings.app_font)
+		font = QFont('SansSerif', self.settings.app_font)
 
 		self.event_retrieving_dialog = EventsListDialog(
 			flags=self.parent.windowFlags(),
 			calendar=self,
-			palette=settings.app_theme,
+			palette=self.settings.app_theme,
 			font=font
 		)
 
@@ -56,14 +56,14 @@ class CalendarWidget(QCalendarWidget):
 			flags=self.parent.windowFlags(),
 			calendar=self,
 			storage=self.storage,
-			palette=settings.app_theme,
+			palette=self.settings.app_theme,
 			font=font
 		)
 
 		self.settings_dialog = SettingsDialog(
 			flags=self.parent.windowFlags(),
 			calendar=self,
-			palette=settings.app_theme,
+			palette=self.settings.app_theme,
 			font=font
 		)
 
@@ -71,20 +71,19 @@ class CalendarWidget(QCalendarWidget):
 			flags=self.parent.windowFlags(),
 			calendar=self,
 			storage=self.storage,
-			palette=settings.app_theme,
+			palette=self.settings.app_theme,
 			font=font
 		)
 
-		self.about_dialog = AboutDialog(
-			flags=self.parent.windowFlags(),
-			calendar=self,
-			storage=self.storage,
-			palette=settings.app_theme,
-			font=font
-		)
+		self.dialogs = [
+			self.event_retrieving_dialog,
+			self.event_creation_dialog,
+			self.settings_dialog,
+			self.backup_dialog
+		]
 
 		self.setFont(font)
-		self.setPalette(settings.app_theme)
+		self.setPalette(self.settings.app_theme)
 
 		self.marked_dates = []
 		self.update()
@@ -115,7 +114,7 @@ class CalendarWidget(QCalendarWidget):
 			create_action = menu.addAction('Create new event')
 			action = menu.exec_(self.mapToGlobal(event.pos()))
 			if action == create_action:
-				self.create_event()
+				self.open_create_event()
 		super().contextMenuEvent(event)
 
 	def paintCell(self, painter, rect, date, **kwargs):
@@ -135,20 +134,19 @@ class CalendarWidget(QCalendarWidget):
 		return minimum + (55 if num > 1 else 50)
 
 	def paint_date(self, date, painter, rect, num):
-		settings = Settings()
-		font_not_large = settings.app_font != FONT_LARGE
+		font_not_large = self.settings.app_font != FONT_LARGE
 		ellipse_rect = QRect(
-			rect.x() + 3, rect.y() + 3, self.get_badge_width(num, settings.app_font), 20 if font_not_large else 25
+			rect.x() + 3, rect.y() + 3, self.get_badge_width(num, self.settings.app_font), 20 if font_not_large else 25
 		)
 		text_rect = QRect(ellipse_rect.x() - 3.1, ellipse_rect.y() + (7 if font_not_large else 10), 20, 20)
 		if self.monthShown() == date.month():
-			painter.setBrush(QColor(settings.badge_color))
+			painter.setBrush(QColor(self.settings.badge_color))
 		else:
 			painter.setBrush(QColor(196, 196, 196))
 		painter.setPen(Qt.NoPen)
 		painter.drawRect(ellipse_rect)
 		if self.monthShown() == date.month():
-			painter.setBrush(QColor(settings.badge_letter_color))
+			painter.setBrush(QColor(self.settings.badge_letter_color))
 		else:
 			painter.setBrush(QColor(255, 255, 255))
 		painter.setPen(QPen(QColor(255, 255, 255)))
@@ -203,4 +201,7 @@ class CalendarWidget(QCalendarWidget):
 		info(self, 'Coming soon...')
 
 	def open_about(self):
-		self.about_dialog.exec_()
+		AboutDialog(
+			flags=self.parent.windowFlags(),
+			palette=self.settings.app_theme
+		).exec_()

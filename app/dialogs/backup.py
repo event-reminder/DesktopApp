@@ -23,11 +23,12 @@ class BackupDialog(QDialog):
 			self.setPalette(kwargs.get('palette'))
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
+		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
 
 		self.calendar = kwargs['calendar']
 		self.storage = kwargs['storage']
 
-		self.setFixedSize(600, 400)
+		self.setFixedSize(500, 300)
 		self.setWindowTitle('Backup and Restore')
 
 		self.search_dir = '/home/{}'.format(getpass.getuser())

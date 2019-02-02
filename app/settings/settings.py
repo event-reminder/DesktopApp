@@ -5,11 +5,11 @@ from PyQt5.QtCore import (
 )
 from PyQt5.QtGui import QIcon
 
-from app.settings import *
 from app.settings.theme import (
 	dark_theme_palette,
 	light_theme_palette
 )
+from app.settings.default import *
 
 
 class Settings:
@@ -35,12 +35,12 @@ class Settings:
 		return APP_NAME
 
 	@property
-	def app_version(self):
-		return APP_VERSION
+	def app_organization(self):
+		return APP_ORGANIZATION
 
 	@property
-	def app_build_number(self):
-		return APP_BUILD_NUMBER
+	def app_version(self):
+		return APP_VERSION
 
 	@property
 	def app_build_date(self):
@@ -62,16 +62,16 @@ class Settings:
 	def app_pos(self):
 		return self.__settings.value('app/pos', QPoint(APP_POS_X, APP_POS_Y))
 
-	def app_icon(self, is_ico=False, q_icon=True, is_dark=False):
+	def app_icon(self, is_ico=False, q_icon=True, is_dark=False, icon_size='default'):
 		icon = ''
 		if is_dark and is_ico:
 			icon = APP_ICON_DARK_ICO
 		if is_dark and not is_ico:
-			icon = APP_ICON_DARK
+			icon = APP_ICON_DARK_MEDIUM if icon_size == 'medium' else APP_ICON_DARK
 		if not is_dark and is_ico:
 			icon = APP_ICON_LIGHT_ICO
 		if not is_dark and not is_ico:
-			icon = APP_ICON_LIGHT
+			icon = APP_ICON_LIGHT_MEDIUM if icon_size == 'medium' else APP_ICON_LIGHT
 		if q_icon:
 			return QIcon(icon)
 		return icon
@@ -118,9 +118,7 @@ class Settings:
 
 	@property
 	def badge_color(self):
-		return self.__settings.value(
-			'app/badge_color', BADGE_COLOR_DARK if self.__is_dark_theme else BADGE_COLOR_LIGHT
-		)
+		return self.__settings.value('app/badge_color', BADGE_COLOR)
 
 	@property
 	def badge_letter_color(self):
@@ -194,19 +192,13 @@ class Settings:
 		self.__settings.setValue('event_user/remind_time_before_event', value)
 		self._commit()
 
-	def set_email(self, value: str):
-		pass
-
-	def set_password_hash(self, value: str):
-		pass
-
 	def to_dict(self):
 		return {
 			'is_dark_theme': self.is_dark_theme,
 			'mouse_enter_opacity': self.mouse_enter_opacity,
 			'mouse_leave_opacity': self.mouse_leave_opacity,
 			'is_always_on_top': self.is_always_on_top,
-			'font': self.font,
+			'font': self.app_font,
 			'remove_event_after_time_up': self.remove_event_after_time_up,
 			'show_calendar_on_startup': self.show_calendar_on_startup,
 			'notification_duration': self.notification_duration,

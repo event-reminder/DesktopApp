@@ -9,7 +9,7 @@ from app.service import ReminderService
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
-	window = MainWindow()
+	window = MainWindow(app=app)
 	ReminderService(window, window.calendar).start()
 	if Settings().show_calendar_on_startup:
 		window.show()

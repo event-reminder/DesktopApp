@@ -9,7 +9,7 @@ from app.widgets.calendar_widget import CalendarWidget
 
 class MainWindow(QMainWindow):
 
-	def __init__(self):
+	def __init__(self, **kwargs):
 		self.settings = Settings()
 		if self.settings.is_always_on_top:
 			super().__init__(None, Qt.WindowStaysOnTopHint)
@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
 		self.window().setWindowTitle(self.settings.app_name)
 		self.resize(self.settings.app_size)
 		self.move(self.settings.app_pos)
-		self.setWindowIcon(self.settings.app_icon())
+		self.setWindowIcon(self.settings.app_icon(icon_size='medium'))
 		self.calendar = self.init_calendar()
 		self.setCentralWidget(self.calendar)
 		self.setup_navigation_menu()
@@ -31,7 +31,8 @@ class MainWindow(QMainWindow):
 			self.hide_action.setEnabled(False)
 		self.close_action = QAction('Quit {}'.format(self.settings.app_name), self)
 
-		self.tray_icon = self.init_tray_icon()
+		self.tray_icon = self.init_tray(kwargs.get('app'))
+		self.tray_icon.show()
 
 		self.setPalette(self.settings.app_theme)
 
@@ -47,9 +48,7 @@ class MainWindow(QMainWindow):
 		qApp.quit()
 
 	# noinspection PyUnresolvedReferences
-	def init_tray_icon(self):
-		tray_icon = QSystemTrayIcon(self)
-		tray_icon.setIcon(self.settings.app_icon())
+	def init_tray(self, app):
 		actions = {
 			self.open_action: self.show,
 			self.hide_action: self.hide,
@@ -59,8 +58,8 @@ class MainWindow(QMainWindow):
 		for key, value in actions.items():
 			key.triggered.connect(value)
 			tray_menu.addAction(key)
+		tray_icon = QSystemTrayIcon(self.settings.app_icon(), app)
 		tray_icon.setContextMenu(tray_menu)
-		tray_icon.show()
 		return tray_icon
 
 	def init_calendar(self):
