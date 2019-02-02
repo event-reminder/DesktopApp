@@ -16,7 +16,7 @@ class Settings:
 
 	def __init__(self, autocommit=True):
 		self.__settings = QSettings(APP_ORGANIZATION, APP_NAME)
-		self.__is_dark_theme = self.__settings.value('app/is_dark_theme', APP_IS_DARK_THEME)
+		self.__is_dark_theme = self.__settings.value('app_user/is_dark_theme', APP_IS_DARK_THEME)
 		self.__autocommit = autocommit
 
 	def autocommit(self, val: bool):
@@ -31,26 +31,38 @@ class Settings:
 			self.__settings.sync()
 
 	@property
-	def name(self):
+	def app_name(self):
 		return APP_NAME
+
+	@property
+	def app_version(self):
+		return APP_VERSION
+
+	@property
+	def app_build_number(self):
+		return APP_BUILD_NUMBER
+
+	@property
+	def app_build_date(self):
+		return APP_BUILD_DATE
 
 	@property
 	def is_first_launch(self):
 		return self.__settings.value('app/first_launch', 'true') == 'true'
 
 	@property
-	def root(self):
+	def app_root(self):
 		return self.__settings.value('app/root', APP_ROOT)
 
 	@property
-	def size(self):
+	def app_size(self):
 		return self.__settings.value('app/size', QSize(APP_WIDTH, APP_HEIGHT))
 
 	@property
-	def pos(self):
+	def app_pos(self):
 		return self.__settings.value('app/pos', QPoint(APP_POS_X, APP_POS_Y))
 
-	def icon(self, is_ico=False, q_icon=True, is_dark=False):
+	def app_icon(self, is_ico=False, q_icon=True, is_dark=False):
 		icon = ''
 		if is_dark and is_ico:
 			icon = APP_ICON_DARK_ICO
@@ -65,12 +77,12 @@ class Settings:
 		return icon
 
 	@property
-	def theme(self):
+	def app_theme(self):
 		return dark_theme_palette() if self.is_dark_theme else light_theme_palette()
 
 	@property
 	def is_dark_theme(self):
-		return self.__settings.value('app/is_dark_theme', APP_IS_DARK_THEME) == 'true'
+		return self.__settings.value('app_user/is_dark_theme', APP_IS_DARK_THEME) == 'true'
 
 	@property
 	def db_path(self):
@@ -90,45 +102,45 @@ class Settings:
 
 	@property
 	def mouse_enter_opacity(self):
-		return float(self.__settings.value('user/mouse_enter_opacity', MOUSE_ENTER_OPACITY))
+		return float(self.__settings.value('app_user/mouse_enter_opacity', MOUSE_ENTER_OPACITY))
 
 	@property
 	def mouse_leave_opacity(self):
-		return float(self.__settings.value('user/mouse_leave_opacity', MOUSE_LEAVE_OPACITY))
+		return float(self.__settings.value('app_user/mouse_leave_opacity', MOUSE_LEAVE_OPACITY))
 
 	@property
 	def is_always_on_top(self):
-		return self.__settings.value('user/is_always_on_top', ALWAYS_ON_TOP) == 'true'
+		return self.__settings.value('app_user/is_always_on_top', ALWAYS_ON_TOP) == 'true'
 
 	@property
-	def font(self):
-		return int(self.__settings.value('user/font', FONT))
+	def app_font(self):
+		return int(self.__settings.value('app_user/font', FONT))
 
 	@property
 	def badge_color(self):
 		return self.__settings.value(
-			'user/badge_color', BADGE_COLOR_DARK if self.__is_dark_theme else BADGE_COLOR_LIGHT
+			'app/badge_color', BADGE_COLOR_DARK if self.__is_dark_theme else BADGE_COLOR_LIGHT
 		)
 
 	@property
 	def badge_letter_color(self):
-		return self.__settings.value('user/badge_letter_color', BADGE_LETTER_COLOR)
+		return self.__settings.value('app/badge_letter_color', BADGE_LETTER_COLOR)
 
 	@property
 	def remove_event_after_time_up(self):
-		return self.__settings.value('user/remove_event_after_time_up', REMOVE_EVENT_AFTER_TIME_UP) == 'true'
+		return self.__settings.value('event_user/remove_event_after_time_up', REMOVE_EVENT_AFTER_TIME_UP) == 'true'
 
 	@property
 	def show_calendar_on_startup(self):
-		return self.__settings.value('user/show_calendar_on_startup', SHOW_CALENDAR_ON_STARTUP) == 'true'
+		return self.__settings.value('app_user/show_calendar_on_startup', SHOW_CALENDAR_ON_STARTUP) == 'true'
 
 	@property
 	def notification_duration(self):
-		return int(self.__settings.value('user/notification_duration', NOTIFICATION_DURATION))
+		return int(self.__settings.value('event_user/notification_duration', NOTIFICATION_DURATION))
 
 	@property
 	def remind_time_before_event(self):
-		return int(self.__settings.value('user/remind_time_before_event', REMIND_TIME))
+		return int(self.__settings.value('event_user/remind_time_before_event', REMIND_TIME))
 
 	def set_first_launch(self, value: bool):
 		self.__settings.setValue('app/first_launch', 'true' if value else 'false')
@@ -147,40 +159,46 @@ class Settings:
 		self._commit()
 
 	def set_theme(self, is_dark: bool):
-		self.__settings.setValue('app/is_dark_theme', 'true' if is_dark else 'false')
+		self.__settings.setValue('app_user/is_dark_theme', 'true' if is_dark else 'false')
 		self._commit()
 
 	def set_mouse_enter_opacity(self, value: float):
-		self.__settings.setValue('user/mouse_enter_opacity', value)
+		self.__settings.setValue('app_user/mouse_enter_opacity', value)
 		self._commit()
 
 	def set_mouse_leave_opacity(self, value: float):
-		self.__settings.setValue('user/mouse_leave_opacity', value)
+		self.__settings.setValue('app_user/mouse_leave_opacity', value)
 		self._commit()
 
 	def set_is_always_on_top(self, value: bool):
-		self.__settings.setValue('user/is_always_on_top', 'true' if value else 'false')
+		self.__settings.setValue('app_user/is_always_on_top', 'true' if value else 'false')
 		self._commit()
 
 	def set_font(self, value: int):
-		self.__settings.setValue('user/font', value)
+		self.__settings.setValue('app_user/font', value)
 		self._commit()
 
 	def set_remove_event_after_time_up(self, value: bool):
-		self.__settings.setValue('user/remove_event_after_time_up', 'true' if value else 'false')
+		self.__settings.setValue('app_user/remove_event_after_time_up', 'true' if value else 'false')
 		self._commit()
 
 	def set_show_calendar_on_startup(self, value: bool):
-		self.__settings.setValue('user/show_calendar_on_startup', 'true' if value else 'false')
+		self.__settings.setValue('app_user/show_calendar_on_startup', 'true' if value else 'false')
 		self._commit()
 
 	def set_notification_duration(self, value: int):
-		self.__settings.setValue('user/notification_duration', value)
+		self.__settings.setValue('event_user/notification_duration', value)
 		self._commit()
 
 	def set_remind_time_before_event(self, value: int):
-		self.__settings.setValue('user/remind_time_before_event', value)
+		self.__settings.setValue('event_user/remind_time_before_event', value)
 		self._commit()
+
+	def set_email(self, value: str):
+		pass
+
+	def set_password_hash(self, value: str):
+		pass
 
 	def to_dict(self):
 		return {

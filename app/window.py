@@ -15,25 +15,25 @@ class MainWindow(QMainWindow):
 			super().__init__(None, Qt.WindowStaysOnTopHint)
 		else:
 			super().__init__()
-		self.window().setWindowTitle(self.settings.name)
-		self.resize(self.settings.size)
-		self.move(self.settings.pos)
-		self.setWindowIcon(self.settings.icon())
+		self.window().setWindowTitle(self.settings.app_name)
+		self.resize(self.settings.app_size)
+		self.move(self.settings.app_pos)
+		self.setWindowIcon(self.settings.app_icon())
 		self.calendar = self.init_calendar()
 		self.setCentralWidget(self.calendar)
 		self.setup_navigation_menu()
 		self.statusBar().showMessage('Status: Ok')
-		self.setFont(QFont('SansSerif', self.settings.font))
+		self.setFont(QFont('SansSerif', self.settings.app_font))
 
-		self.open_action = QAction('Open {}'.format(self.settings.name), self)
+		self.open_action = QAction('Open {}'.format(self.settings.app_name), self)
 		self.hide_action = QAction('Minimize To Tray', self)
 		if not self.settings.show_calendar_on_startup:
 			self.hide_action.setEnabled(False)
-		self.close_action = QAction('Quit {}'.format(self.settings.name), self)
+		self.close_action = QAction('Quit {}'.format(self.settings.app_name), self)
 
 		self.tray_icon = self.init_tray_icon()
 
-		self.setPalette(self.settings.theme)
+		self.setPalette(self.settings.app_theme)
 
 	def closeEvent(self, event):
 		event.ignore()
@@ -49,7 +49,7 @@ class MainWindow(QMainWindow):
 	# noinspection PyUnresolvedReferences
 	def init_tray_icon(self):
 		tray_icon = QSystemTrayIcon(self)
-		tray_icon.setIcon(self.settings.icon())
+		tray_icon.setIcon(self.settings.app_icon())
 		actions = {
 			self.open_action: self.show,
 			self.hide_action: self.hide,

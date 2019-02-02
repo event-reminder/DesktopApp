@@ -12,6 +12,7 @@ from app.utils import (
 )
 from app.db import Storage
 from app.dialogs import (
+	AboutDialog,
 	BackupDialog,
 	SettingsDialog,
 	EventsListDialog,
@@ -42,12 +43,12 @@ class CalendarWidget(QCalendarWidget):
 
 		self.storage = Storage(connect=False)
 
-		font = QFont('SansSerif', settings.font)
+		font = QFont('SansSerif', settings.app_font)
 
 		self.event_retrieving_dialog = EventsListDialog(
 			flags=self.parent.windowFlags(),
 			calendar=self,
-			palette=settings.theme,
+			palette=settings.app_theme,
 			font=font
 		)
 
@@ -55,14 +56,14 @@ class CalendarWidget(QCalendarWidget):
 			flags=self.parent.windowFlags(),
 			calendar=self,
 			storage=self.storage,
-			palette=settings.theme,
+			palette=settings.app_theme,
 			font=font
 		)
 
 		self.settings_dialog = SettingsDialog(
 			flags=self.parent.windowFlags(),
 			calendar=self,
-			palette=settings.theme,
+			palette=settings.app_theme,
 			font=font
 		)
 
@@ -70,12 +71,20 @@ class CalendarWidget(QCalendarWidget):
 			flags=self.parent.windowFlags(),
 			calendar=self,
 			storage=self.storage,
-			palette=settings.theme,
+			palette=settings.app_theme,
+			font=font
+		)
+
+		self.about_dialog = AboutDialog(
+			flags=self.parent.windowFlags(),
+			calendar=self,
+			storage=self.storage,
+			palette=settings.app_theme,
 			font=font
 		)
 
 		self.setFont(font)
-		self.setPalette(settings.theme)
+		self.setPalette(settings.app_theme)
 
 		self.marked_dates = []
 		self.update()
@@ -127,9 +136,9 @@ class CalendarWidget(QCalendarWidget):
 
 	def paint_date(self, date, painter, rect, num):
 		settings = Settings()
-		font_not_large = settings.font != FONT_LARGE
+		font_not_large = settings.app_font != FONT_LARGE
 		ellipse_rect = QRect(
-			rect.x() + 3, rect.y() + 3, self.get_badge_width(num, settings.font), 20 if font_not_large else 25
+			rect.x() + 3, rect.y() + 3, self.get_badge_width(num, settings.app_font), 20 if font_not_large else 25
 		)
 		text_rect = QRect(ellipse_rect.x() - 3.1, ellipse_rect.y() + (7 if font_not_large else 10), 20, 20)
 		if self.monthShown() == date.month():
@@ -194,4 +203,4 @@ class CalendarWidget(QCalendarWidget):
 		info(self, 'Coming soon...')
 
 	def open_about(self):
-		info(self, 'Coming soon...')
+		self.about_dialog.exec_()

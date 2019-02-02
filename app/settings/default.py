@@ -13,6 +13,9 @@ APP_POS_Y = 100
 
 APP_NAME = 'Event Reminder'
 APP_ORGANIZATION = 'YuriyLisovskiy'
+APP_VERSION = '2019.0.1'
+APP_BUILD_NUMBER = '1465429'
+APP_BUILD_DATE = 'February 2, 2019'
 
 APP_IS_DARK_THEME = 'false'
 

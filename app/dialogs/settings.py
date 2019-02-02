@@ -75,9 +75,9 @@ class SettingsDialog(QDialog):
 		self.font_combo_box.currentIndexChanged.connect(self.font_changed)
 		self.font_combo_box.addItems(['Small', 'Normal', 'Large'])
 		curr_idx = 0
-		if self.settings.font == FONT_NORMAL:
+		if self.settings.app_font == FONT_NORMAL:
 			curr_idx = 1
-		elif self.settings.font == FONT_LARGE:
+		elif self.settings.app_font == FONT_LARGE:
 			curr_idx = 2
 		self.font_combo_box.setCurrentIndex(curr_idx)
 		layout.addWidget(self.font_combo_box, 1, 1)
