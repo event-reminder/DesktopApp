@@ -32,11 +32,24 @@ class AboutDialog(QDialog):
 		name_label = QLabel(self.settings.app_name)
 		name_label.setFont(QFont('SansSerif', 18))
 
-		content.addWidget(name_label)
+		content.addWidget(name_label, alignment=Qt.AlignTop)
 
-		content.addWidget(QLabel('{} {}'.format(self.settings.app_name, self.settings.app_version)))
-		content.addWidget(QLabel('Build #{}, built on {}'.format(
-			self.settings.app_build_number, self.settings.app_build_date))
+		content.addWidget(
+			QLabel('{} {}'.format(self.settings.app_name, self.settings.app_version)),
+			alignment=Qt.AlignTop
+		)
+		content.addWidget(
+			QLabel('Build #{}, built on {}'.format(self.settings.app_build_number, self.settings.app_build_date)),
+			alignment=Qt.AlignTop
+		)
+
+		content.addWidget(
+			QLabel('Copy of this software is distributed to {}.'.format(getpass.getuser())),
+			alignment=Qt.AlignTop
+		)
+		content.addWidget(
+			QLabel('For non-commercial use only'),
+			alignment=Qt.AlignTop
 		)
 
 		self.setLayout(content)
