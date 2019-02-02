@@ -37,6 +37,7 @@ class CreateEventDialog(QDialog):
 		super().__init__(flags=flags, *args)
 
 		self.setFixedSize(500, 400)
+		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
 
 		if 'palette' in kwargs:
 			self.setPalette(kwargs.get('palette'))
@@ -68,10 +69,10 @@ class CreateEventDialog(QDialog):
 		content.addWidget(self.repeat_weekly_input)
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
-		btn_close = create_button('Close', 100, 50, self.close)
-		buttons.addWidget(btn_close, 0, Qt.AlignRight)
 		btn_save = create_button('Save', 100, 50, self.save_btn_click)
 		buttons.addWidget(btn_save, 0, Qt.AlignRight)
+		btn_close = create_button('Cancel', 100, 50, self.close)
+		buttons.addWidget(btn_close, 0, Qt.AlignRight)
 		content.addLayout(buttons)
 		self.setLayout(content)
 

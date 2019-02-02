@@ -22,6 +22,7 @@ class EventsListDialog(QDialog):
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
 		self.setFixedSize(500, 400)
+		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
 
 		self.calendar = kwargs['calendar']
 		self.list_view = QListWidget()
@@ -47,7 +48,7 @@ class EventsListDialog(QDialog):
 	def handle_create_event(self):
 		self.list_view.clear()
 		self.close()
-		self.calendar.create_event()
+		self.calendar.open_create_event()
 
 	def update_day(self, clear_list=False):
 		self.calendar.update()

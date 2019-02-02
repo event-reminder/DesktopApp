@@ -25,6 +25,7 @@ class SettingsDialog(QDialog):
 
 		self.setFixedSize(550, 400)
 		self.setWindowTitle('Settings')
+		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
 
 		self.settings = Settings()
 
@@ -75,9 +76,9 @@ class SettingsDialog(QDialog):
 		self.font_combo_box.currentIndexChanged.connect(self.font_changed)
 		self.font_combo_box.addItems(['Small', 'Normal', 'Large'])
 		curr_idx = 0
-		if self.settings.font == FONT_NORMAL:
+		if self.settings.app_font == FONT_NORMAL:
 			curr_idx = 1
-		elif self.settings.font == FONT_LARGE:
+		elif self.settings.app_font == FONT_LARGE:
 			curr_idx = 2
 		self.font_combo_box.setCurrentIndex(curr_idx)
 		layout.addWidget(self.font_combo_box, 1, 1)
@@ -169,12 +170,11 @@ class SettingsDialog(QDialog):
 			elif current == 2:
 				new_font = FONT_LARGE
 			font = QFont('SansSerif', new_font)
+
 			self.calendar.setFont(font)
 			self.calendar.parent.setFont(font)
-			self.calendar.event_retrieving_dialog.setFont(font)
-			self.calendar.event_creation_dialog.setFont(font)
-			self.calendar.settings_dialog.setFont(font)
-			self.calendar.backup_dialog.setFont(font)
+			for dialog in self.calendar.dialogs:
+				dialog.setFont(font)
 			self.settings.set_font(new_font)
 
 	def show_calendar_on_startup_changed(self):
@@ -184,12 +184,10 @@ class SettingsDialog(QDialog):
 	def theme_changed(self, current):
 		if self.ui_is_loaded:
 			self.settings.set_theme(current == 1)
-			self.calendar.setPalette(self.settings.theme)
-			self.calendar.parent.setPalette(self.settings.theme)
-			self.calendar.event_retrieving_dialog.setPalette(self.settings.theme)
-			self.calendar.event_creation_dialog.setPalette(self.settings.theme)
-			self.calendar.backup_dialog.setPalette(self.settings.theme)
-			self.calendar.settings_dialog.setPalette(self.settings.theme)
+			self.calendar.setPalette(self.settings.app_theme)
+			self.calendar.parent.setPalette(self.settings.app_theme)
+			for dialog in self.calendar.dialogs:
+				dialog.setPalette(self.settings.app_theme)
 
 	def remove_after_time_up_changed(self):
 		self.settings.set_remove_event_after_time_up(self.remove_after_time_up_check_box.isChecked())
