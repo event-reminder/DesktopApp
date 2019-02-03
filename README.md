@@ -10,7 +10,7 @@ $ source venv/bin/activate
 
 # Install requirements and run the server
 $ pip install -r requirements.txt
-$ python manage.py runserver
+$ make run
 ```
 
 #### Author:
