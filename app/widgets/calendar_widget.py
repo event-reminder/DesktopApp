@@ -10,14 +10,15 @@ from app.utils import (
 	info,
 	error
 )
-from app.db import Storage
 from app.dialogs import (
 	AboutDialog,
 	BackupDialog,
+	AccountDialog,
 	SettingsDialog,
 	EventsListDialog,
 	CreateEventDialog
 )
+from app.storage import Storage
 from app.settings import Settings
 from app.settings.default import (
 	FONT_LARGE,
@@ -71,6 +72,12 @@ class CalendarWidget(QCalendarWidget):
 			flags=self.parent.windowFlags(),
 			calendar=self,
 			storage=self.storage,
+			palette=self.settings.app_theme,
+			font=font
+		)
+
+		self.account_dialog = AccountDialog(
+			flags=self.parent.windowFlags(),
 			palette=self.settings.app_theme,
 			font=font
 		)
@@ -195,7 +202,7 @@ class CalendarWidget(QCalendarWidget):
 		self.backup_dialog.exec_()
 
 	def open_account_info(self):
-		info(self, 'Coming soon...')
+		self.account_dialog.exec_()
 
 	def open_check_for_updates(self):
 		info(self, 'Coming soon...')

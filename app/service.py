@@ -10,7 +10,7 @@ from PyQt5.QtCore import QThread
 
 from pynotifier import Notification
 
-from app.db import Storage
+from app.storage import Storage
 from app.settings import Settings
 from app.utils import logger, log_msg
 

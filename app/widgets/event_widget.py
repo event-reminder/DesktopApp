@@ -15,7 +15,7 @@ from app.utils import (
 	logger,
 	log_msg
 )
-from app.db import Storage
+from app.storage import Storage
 
 
 # noinspection PyArgumentList
