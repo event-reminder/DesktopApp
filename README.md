@@ -4,6 +4,11 @@
 
 To start with this project (development only), run the following:
 ```bash
+# create a virtual environment if required
+$ virtualenv -p python3 venv
+$ source venv/bin/activate
+
+# Install requirements and run the server
 $ pip install -r requirements.txt
 $ make run
 ```
