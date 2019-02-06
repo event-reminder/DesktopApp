@@ -25,7 +25,7 @@ class SettingsDialog(QDialog):
 
 		self.setFixedSize(550, 400)
 		self.setWindowTitle('Settings')
-		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
+		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
 
 		self.settings = Settings()
 

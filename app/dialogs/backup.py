@@ -23,7 +23,7 @@ class BackupDialog(QDialog):
 			self.setPalette(kwargs.get('palette'))
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
-		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
+		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
 
 		self.calendar = kwargs['calendar']
 		self.storage = kwargs['storage']

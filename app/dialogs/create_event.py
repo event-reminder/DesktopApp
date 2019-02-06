@@ -37,7 +37,7 @@ class CreateEventDialog(QDialog):
 		super().__init__(flags=flags, *args)
 
 		self.setFixedSize(500, 400)
-		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
+		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
 
 		if 'palette' in kwargs:
 			self.setPalette(kwargs.get('palette'))

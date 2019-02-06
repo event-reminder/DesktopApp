@@ -31,7 +31,7 @@ class AccountDialog(QDialog):
 
 		self.setFixedSize(550, 300)
 		self.setWindowTitle('Account')
-		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
+		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
 
 		self.settings = Settings()
 		self.cloud = kwargs.get('cloud_storage', CloudStorage())
