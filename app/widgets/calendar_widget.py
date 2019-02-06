@@ -20,6 +20,7 @@ from app.dialogs import (
 )
 from app.storage import Storage
 from app.settings import Settings
+from app.cloud import CloudStorage
 from app.settings.default import (
 	FONT_LARGE,
 	FONT_NORMAL
@@ -43,6 +44,7 @@ class CalendarWidget(QCalendarWidget):
 		self.settings = Settings()
 
 		self.storage = Storage(connect=False)
+		self.cloud_storage = CloudStorage()
 
 		font = QFont('SansSerif', self.settings.app_font)
 
@@ -76,18 +78,11 @@ class CalendarWidget(QCalendarWidget):
 			font=font
 		)
 
-		self.account_dialog = AccountDialog(
-			flags=self.parent.windowFlags(),
-			palette=self.settings.app_theme,
-			font=font
-		)
-
 		self.dialogs = [
 			self.event_retrieving_dialog,
 			self.event_creation_dialog,
 			self.settings_dialog,
-			self.backup_dialog,
-			self.account_dialog
+			self.backup_dialog
 		]
 
 		self.setFont(font)
@@ -203,7 +198,12 @@ class CalendarWidget(QCalendarWidget):
 		self.backup_dialog.exec_()
 
 	def open_account_info(self):
-		self.account_dialog.exec_()
+		AccountDialog(
+			flags=self.parent.windowFlags(),
+			palette=self.settings.app_theme,
+			cloud_storage=self.cloud_storage,
+			font=QFont('SansSerif', self.settings.app_font)
+		).exec_()
 
 	def open_check_for_updates(self):
 		info(self, 'Coming soon...')

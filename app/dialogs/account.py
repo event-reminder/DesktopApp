@@ -1,9 +1,17 @@
 import re
 import requests
 
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import (
+	QLabel,
+	QWidget,
+	QDialog,
+	QLineEdit,
+	QCheckBox,
+	QTabWidget,
+	QVBoxLayout
+)
 
 from app.settings import Settings
 from app.cloud import CloudStorage
@@ -26,7 +34,7 @@ class AccountDialog(QDialog):
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
 
 		self.settings = Settings()
-		self.cloud = CloudStorage()
+		self.cloud = kwargs.get('cloud_storage', CloudStorage())
 
 		self.first_name_signup_input = QLineEdit()
 		self.last_name_signup_input = QLineEdit()
@@ -215,12 +223,8 @@ class AccountDialog(QDialog):
 					self.password_login_input.text(),
 					self.remember_login_check_box.isChecked()
 				)
-
-				# self.layout.removeItem(self.login_menu)
-				# self.layout.addLayout(self.build_login_menu())
-
-				# TODO: Swap tab layouts
-
+				info(self, 'Logged in as {}'.format(self.username_login_input.text()))
+				self.close()
 			except requests.exceptions.ConnectionError:
 				error(
 					self,
@@ -234,9 +238,8 @@ class AccountDialog(QDialog):
 	def logout_click(self):
 		try:
 			self.cloud.logout()
-
-			# TODO: Swap tab layouts
-
+			info(self, 'Successfully logged out.')
+			self.close()
 		except requests.exceptions.ConnectionError:
 			error(
 				self,
