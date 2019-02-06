@@ -1,7 +1,7 @@
 import peewee
 from datetime import datetime
 
-from app.db.instance import DATABASE_INSTANCE
+from app.storage.instance import DATABASE_INSTANCE
 
 
 class EventModel(peewee.Model):

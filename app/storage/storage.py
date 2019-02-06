@@ -1,14 +1,13 @@
 import os
 
-from app.db.models import EventModel
-from app.db.instance import DATABASE_INSTANCE
-from app.settings.default import APP_DB_PATH
-
 import pickle
 from hashlib import sha512
 from datetime import datetime
 
 from app.settings import Settings
+from app.storage.models import EventModel
+from app.settings.default import APP_DB_PATH
+from app.storage.instance import DATABASE_INSTANCE
 
 
 class Storage:
