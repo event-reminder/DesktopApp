@@ -1,4 +1,5 @@
 import re
+import requests
 
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -21,7 +22,7 @@ class AccountDialog(QDialog):
 			self.setFont(kwargs.get('font'))
 
 		self.setFixedSize(550, 300)
-		self.setWindowTitle('Event Reminder Account')
+		self.setWindowTitle('Account')
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
 
 		self.settings = Settings()
@@ -31,23 +32,97 @@ class AccountDialog(QDialog):
 		self.last_name_signup_input = QLineEdit()
 		self.email_signup_input = QLineEdit()
 
+		self.username_login_input = QLineEdit()
+		self.password_login_input = QLineEdit()
+		self.remember_login_check_box = QCheckBox('Remember me')
+
+		self.login_menu = None
+		self.account_info_menu = None
+
+		self.layout = QVBoxLayout()
+		self.tabs = QTabWidget(self)
+
 		self.setup_ui()
 
 	def setup_ui(self):
 		content = QVBoxLayout()
-		tabs = QTabWidget(self)
-		tabs.setMinimumWidth(self.width() - 22)
-		self.setup_login_ui(tabs)
-		self.setup_signup_ui(tabs)
-		content.addWidget(tabs, alignment=Qt.AlignLeft)
+		self.tabs.setMinimumWidth(self.width() - 22)
+		self.setup_login_ui(self.tabs)
+		self.setup_signup_ui(self.tabs)
+		content.addWidget(self.tabs, alignment=Qt.AlignLeft)
 		self.setLayout(content)
+
+	def build_login_menu(self):
+		layout = QVBoxLayout()
+
+		un_layout = QVBoxLayout()
+		un_layout.setContentsMargins(50, 0, 50, 10)
+		un_layout.addWidget(QLabel('Username:'))
+		un_layout.addWidget(self.username_login_input)
+		layout.addLayout(un_layout)
+
+		pwd_layout = QVBoxLayout()
+		pwd_layout.setContentsMargins(50, 0, 50, 10)
+		pwd_layout.addWidget(QLabel('Password:'))
+		self.password_login_input.setEchoMode(QLineEdit.Password)
+		pwd_layout.addWidget(self.password_login_input)
+		layout.addLayout(pwd_layout)
+
+		rl_layout = QVBoxLayout()
+		rl_layout.setContentsMargins(50, 0, 50, 10)
+		self.remember_login_check_box.setChecked(False)
+		rl_layout.addWidget(self.remember_login_check_box)
+		layout.addLayout(rl_layout)
+
+		btn = create_button('Login', 70, 30, self.login_click)
+		btn.setFixedWidth(100)
+		layout.addWidget(btn, alignment=Qt.AlignCenter)
+
+		return layout, 'Login'
+
+	def build_account_info_menu(self):
+		user_data = self.cloud.user()
+		layout = QVBoxLayout()
+
+		header_layout = QVBoxLayout()
+		header_layout.setContentsMargins(0, 0, 0, 10)
+		header_layout.addWidget(
+			QLabel('{}'.format(user_data['email'])),
+			alignment=Qt.AlignCenter
+		)
+		username_lbl = QLabel('{}'.format(user_data['username']))
+		username_lbl.setFont(QFont('SansSerif', 9))
+		header_layout.addWidget(username_lbl, alignment=Qt.AlignCenter)
+		layout.addLayout(header_layout)
+
+		email_lbl = QLabel('{} {}'.format(user_data['first_name'], user_data['last_name']))
+		email_lbl.setFont(QFont('SansSerif', 16))
+		email_lbl.setContentsMargins(0, 0, 0, 10)
+		layout.addWidget(email_lbl, alignment=Qt.AlignCenter)
+
+		btn = create_button('Logout', 70, 30, self.logout_click)
+		btn.setFixedWidth(100)
+		layout.addWidget(btn, alignment=Qt.AlignCenter)
+
+		return layout, '{} {}'.format(user_data['first_name'], user_data['last_name'])
 
 	def setup_login_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
-		layout = QVBoxLayout()
-
-		tab.setLayout(layout)
-		tabs.addTab(tab, 'Login')
+		tab_name = 'Login'
+		try:
+			if self.cloud.token_id_valid():
+				self.account_info_menu, tab_name = self.build_account_info_menu()
+				self.layout.addLayout(self.account_info_menu)
+			else:
+				self.login_menu, tab_name = self.build_login_menu()
+				self.layout.addLayout(self.login_menu)
+		except requests.exceptions.ConnectionError:
+			self.layout.setContentsMargins(0, 90, 0, 90)
+			self.layout.addWidget(QLabel('Connection error'), alignment=Qt.AlignCenter)
+			self.layout.addWidget(QLabel('Server is not working or your internet connection is failed'), alignment=Qt.AlignCenter)
+			self.layout.addWidget(QLabel('Check your connection and restart app'), alignment=Qt.AlignCenter)
+		tab.setLayout(self.layout)
+		tabs.addTab(tab, tab_name)
 
 	def setup_signup_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
@@ -71,12 +146,12 @@ class AccountDialog(QDialog):
 		e_layout.addWidget(self.email_signup_input)
 		layout.addLayout(e_layout)
 
-		btn = create_button('Sign Up', 70, 30, self.signup_click)
+		btn = create_button('Register', 70, 30, self.signup_click)
 		btn.setFixedWidth(100)
 		layout.addWidget(btn, alignment=Qt.AlignCenter)
 
 		tab.setLayout(layout)
-		tabs.addTab(tab, 'Create Account')
+		tabs.addTab(tab, 'New account')
 
 	def validate_signup_fields(self):
 		errors = ''
@@ -95,16 +170,77 @@ class AccountDialog(QDialog):
 	def signup_click(self):
 		try:
 			self.validate_signup_fields()
-			self.cloud.register_account(
-				self.first_name_signup_input.text(),
-				self.last_name_signup_input.text(),
-				self.email_signup_input.text()
-			)
-			info(self, 'Thank you for registration.\nCheck out {} for credentials information.'.format(
-				self.email_signup_input.text()
-			))
-			self.first_name_signup_input.clear()
-			self.last_name_signup_input.clear()
-			self.email_signup_input.clear()
+			try:
+				self.cloud.register_account(
+					self.first_name_signup_input.text(),
+					self.last_name_signup_input.text(),
+					self.email_signup_input.text()
+				)
+				info(
+					self,
+					'Thank you for registration.'
+					'Check out {} for credentials information.'
+					.format(
+						self.email_signup_input.text()
+					)
+				)
+				self.first_name_signup_input.clear()
+				self.last_name_signup_input.clear()
+				self.email_signup_input.clear()
+			except requests.exceptions.ConnectionError:
+				error(
+					self,
+					'Connection error'
+					'Server is not working or your internet connection is failed.'
+					'Check your connection and restart app.'
+				)
 		except Exception as exc:
 			error(self, str(exc))
+
+	def validate_login_fields(self):
+		errors = ''
+		if len(self.username_login_input.text()) < 1:
+			errors += '* username field can not be empty\n'
+		if len(self.password_login_input.text()) < 1:
+			errors += '* password field can not be empty\n'
+		if errors != '':
+			raise RuntimeError(errors)
+
+	def login_click(self):
+		try:
+			self.validate_login_fields()
+			try:
+				self.cloud.login(
+					self.username_login_input.text(),
+					self.password_login_input.text(),
+					self.remember_login_check_box.isChecked()
+				)
+
+				# self.layout.removeItem(self.login_menu)
+				# self.layout.addLayout(self.build_login_menu())
+
+				# TODO: Swap tab layouts
+
+			except requests.exceptions.ConnectionError:
+				error(
+					self,
+					'Connection error'
+					'Server is not working or your internet connection is failed.'
+					'Check your connection and restart app.'
+				)
+		except Exception as exc:
+			error(self, str(exc))
+
+	def logout_click(self):
+		try:
+			self.cloud.logout()
+
+			# TODO: Swap tab layouts
+
+		except requests.exceptions.ConnectionError:
+			error(
+				self,
+				'Connection error'
+				'Server is not working or your internet connection is failed.'
+				'Check your connection and restart app.'
+			)

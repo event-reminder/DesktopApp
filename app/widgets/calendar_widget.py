@@ -86,7 +86,8 @@ class CalendarWidget(QCalendarWidget):
 			self.event_retrieving_dialog,
 			self.event_creation_dialog,
 			self.settings_dialog,
-			self.backup_dialog
+			self.backup_dialog,
+			self.account_dialog
 		]
 
 		self.setFont(font)
