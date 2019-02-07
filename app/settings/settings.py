@@ -1,15 +1,8 @@
-from PyQt5.QtCore import (
-	QSize,
-	QPoint,
-	QSettings
-)
 from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QSize, QPoint, QSettings
 
-from app.settings.theme import (
-	dark_theme_palette,
-	light_theme_palette
-)
 from app.settings.default import *
+from app.settings.theme import dark_theme_palette, light_theme_palette
 
 
 class Settings:

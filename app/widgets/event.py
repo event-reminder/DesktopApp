@@ -1,21 +1,9 @@
 import peewee
 
-from PyQt5.QtWidgets import (
-	QMenu,
-	QLabel,
-	QWidget,
-	QListWidget,
-	QVBoxLayout,
-	QMessageBox
-)
-
-from app.utils import (
-	popup,
-	error,
-	logger,
-	log_msg
-)
 from app.storage import Storage
+from app.utils import popup, error, logger, log_msg
+
+from PyQt5.QtWidgets import QMenu, QLabel, QWidget, QListWidget, QVBoxLayout, QMessageBox
 
 
 # noinspection PyArgumentList

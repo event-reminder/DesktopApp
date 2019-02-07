@@ -2,9 +2,8 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
-from app import MainWindow
 from app.settings import Settings
-from app.service import ReminderService
+from app import MainWindow, ReminderService
 
 
 if __name__ == '__main__':

@@ -2,12 +2,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from app.settings import (
-	Settings,
-	FONT_LARGE,
-	FONT_SMALL,
-	FONT_NORMAL
-)
+from app.settings import Settings, FONT_LARGE, FONT_SMALL, FONT_NORMAL
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences

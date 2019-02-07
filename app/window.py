@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import *
 
 from app import utils
 from app.settings import Settings
-from app.widgets.calendar_widget import CalendarWidget
+from app.widgets import CalendarWidget
 
 
 class MainWindow(QMainWindow):

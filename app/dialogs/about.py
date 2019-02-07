@@ -1,21 +1,10 @@
 import platform
 
-from PyQt5.QtGui import (
-	QFont,
-	QPixmap
-)
-from PyQt5.QtCore import (
-	Qt,
-	QSize
-)
-from PyQt5.QtWidgets import (
-	QLabel,
-	QDialog,
-	QVBoxLayout,
-	QHBoxLayout
-)
-
 from app.settings import Settings
+
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QFont, QPixmap
+from PyQt5.QtWidgets import QLabel, QDialog, QVBoxLayout, QHBoxLayout
 
 
 class AboutDialog(QDialog):

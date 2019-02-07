@@ -4,13 +4,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from app.utils import (
-	logger,
-	log_msg,
-	create_button
-)
 from app.utils import popup
 from app.settings import Settings
+from app.utils import logger, log_msg, create_button
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences

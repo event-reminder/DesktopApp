@@ -2,7 +2,7 @@ import os
 import pickle
 import requests
 
-from app.cloud import urls
+from app.cloud import routes
 from app.settings import APP_PATH
 
 
@@ -36,7 +36,7 @@ class CloudStorage:
 			self.session.headers.pop('Authorization')
 
 	def login(self, username, password, remember=False):
-		response = self.session.post(urls.LOGIN, json={
+		response = self.session.post(routes.LOGIN, json={
 			'username': username,
 			'password': password
 		})
@@ -52,13 +52,13 @@ class CloudStorage:
 		return token
 
 	def logout(self):
-		response = self.session.post(urls.LOGOUT)
+		response = self.session.post(routes.LOGOUT)
 		if response.status_code != 200:
 			raise Exception('logout failed, response status code: {}'.format(response.status_code))
 		self.__remove_token()
 
 	def register_account(self, first_name, last_name, email):
-		response = self.session.post(urls.REGISTER, json={
+		response = self.session.post(routes.REGISTER, json={
 			'first_name': first_name,
 			'last_name': last_name,
 			'username': '{}{}'.format(first_name, last_name),
@@ -79,13 +79,13 @@ class CloudStorage:
 			raise Exception('registration failed:\n{}'.format(err_msg))
 
 	def token_id_valid(self):
-		result = 'Authorization' in self.session.headers and self.session.get(urls.USER).status_code == 200
+		result = 'Authorization' in self.session.headers and self.session.get(routes.USER).status_code == 200
 		if result is False:
 			self.__remove_token()
 		return result
 
 	def user(self):
-		response = self.session.get(urls.USER)
+		response = self.session.get(routes.USER)
 		if response.status_code != 200:
 			raise Exception('retrieving user data failed, response status code: {}'.format(response.json()))
 		return response.json()

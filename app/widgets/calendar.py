@@ -6,26 +6,12 @@ from PyQt5.QtWidgets import *
 
 from datetime import datetime
 
-from app.utils import (
-	info,
-	error
-)
-from app.dialogs import (
-	AboutDialog,
-	BackupDialog,
-	AccountDialog,
-	SettingsDialog,
-	EventsListDialog,
-	CreateEventDialog
-)
 from app.storage import Storage
 from app.settings import Settings
 from app.cloud import CloudStorage
-from app.settings.default import (
-	FONT_LARGE,
-	FONT_NORMAL
-)
-from app.utils import logger, log_msg
+from app.utils import logger, log_msg, info, error
+from app.settings.default import FONT_LARGE, FONT_NORMAL
+from app.dialogs import AboutDialog, BackupDialog, AccountDialog, SettingsDialog, EventsListDialog, CreateEventDialog
 
 
 class CalendarWidget(QCalendarWidget):

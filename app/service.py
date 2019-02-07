@@ -1,14 +1,11 @@
 import time
 import platform
-from datetime import (
-	date,
-	datetime,
-	timedelta
-)
 
 from PyQt5.QtCore import QThread
 
 from pynotifier import Notification
+
+from datetime import date, datetime, timedelta
 
 from app.storage import Storage
 from app.settings import Settings

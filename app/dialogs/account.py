@@ -3,15 +3,7 @@ import requests
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import (
-	QLabel,
-	QWidget,
-	QDialog,
-	QLineEdit,
-	QCheckBox,
-	QTabWidget,
-	QVBoxLayout
-)
+from PyQt5.QtWidgets import QLabel, QWidget, QDialog, QLineEdit, QCheckBox, QTabWidget, QVBoxLayout
 
 from app.settings import Settings
 from app.cloud import CloudStorage
@@ -32,6 +24,8 @@ class AccountDialog(QDialog):
 		self.setFixedSize(550, 300)
 		self.setWindowTitle('Account')
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
+
+
 
 		self.settings = Settings()
 		self.cloud = kwargs.get('cloud_storage', CloudStorage())

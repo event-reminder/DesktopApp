@@ -1,33 +1,11 @@
 import peewee
 
-from datetime import (
-	datetime,
-	timedelta
-)
+from datetime import datetime, timedelta
 
-from PyQt5.QtCore import (
-	Qt,
-	QDate,
-	QTime
-)
-from PyQt5.QtWidgets import (
-	QLabel,
-	QDialog,
-	QLineEdit,
-	QDateEdit,
-	QTimeEdit,
-	QTextEdit,
-	QCheckBox,
-	QVBoxLayout,
-	QHBoxLayout
-)
+from app.utils import popup, logger, log_msg, create_button
 
-from app.utils import (
-	popup,
-	logger,
-	log_msg,
-	create_button
-)
+from PyQt5.QtCore import Qt, QDate, QTime
+from PyQt5.QtWidgets import QLabel, QDialog, QLineEdit, QDateEdit, QTimeEdit, QTextEdit, QCheckBox, QVBoxLayout, QHBoxLayout
 
 
 # noinspection PyArgumentList
