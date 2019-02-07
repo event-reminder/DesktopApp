@@ -2,7 +2,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from app import utils
 from app.settings import Settings
 from app.widgets import CalendarWidget
 
@@ -88,18 +87,30 @@ class MainWindow(QMainWindow):
 		self.setup_file_menu(main_menu)
 		self.setup_help_menu(main_menu)
 
+	@staticmethod
+	def new_action(target, title, fn, shortcut=None, tip=None, icon=None):
+		action = QAction(title, target)
+		if shortcut:
+			action.setShortcut(shortcut)
+		if tip:
+			action.setStatusTip(tip)
+		if icon:
+			action.setIcon(QIcon().fromTheme(icon))
+		action.triggered.connect(fn)
+		return action
+
 	def setup_file_menu(self, main_menu):
 		file_menu = main_menu.addMenu('&File')
 		file_menu.addAction(
-			utils.create_action(self, 'New Event...', self.calendar.open_create_event, 'Ctrl+N', 'Create event')
+			self.new_action(self, 'New Event...', self.calendar.open_create_event, 'Ctrl+N', 'Create event')
 		)
 		file_menu.addAction(
-			utils.create_action(
+			self.new_action(
 				self, 'Se&ttings...', self.calendar.open_settings, 'Ctrl+Alt+S', 'Settings', 'emblem-system'
 			)
 		)
 		file_menu.addAction(
-			utils.create_action(
+			self.new_action(
 				self, 'Backup...', self.calendar.open_backup_and_restore, 'Ctrl+Alt+B', 'Backup and restore'
 			)
 		)
@@ -107,15 +118,15 @@ class MainWindow(QMainWindow):
 	def setup_help_menu(self, main_menu):
 		help_menu = main_menu.addMenu('&Help')
 		help_menu.addAction(
-			utils.create_action(self, '&Account...', self.calendar.open_account_info)
+			self.new_action(self, '&Account...', self.calendar.open_account_info)
 		)
 		help_menu.addAction(
-			utils.create_action(
+			self.new_action(
 				self, '&Check for updates...', self.calendar.open_check_for_updates, icon='system-software-update'
 			)
 		)
 		help_menu.addAction(
-			utils.create_action(self, '&About', self.calendar.open_about, icon='dialog-information')
+			self.new_action(self, '&About', self.calendar.open_about, icon='dialog-information')
 		)
 
 	def enterEvent(self, event):

@@ -2,7 +2,7 @@ import peewee
 
 from datetime import datetime, timedelta
 
-from app.utils import popup, logger, log_msg, create_button
+from app.utils import popup, logger, log_msg, button
 
 from PyQt5.QtCore import Qt, QDate, QTime
 from PyQt5.QtWidgets import QLabel, QDialog, QLineEdit, QDateEdit, QTimeEdit, QTextEdit, QCheckBox, QVBoxLayout, QHBoxLayout
@@ -47,9 +47,9 @@ class CreateEventDialog(QDialog):
 		content.addWidget(self.repeat_weekly_input)
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
-		btn_save = create_button('Save', 100, 50, self.save_btn_click)
+		btn_save = button('Save', 100, 50, self.save_btn_click)
 		buttons.addWidget(btn_save, 0, Qt.AlignRight)
-		btn_close = create_button('Cancel', 100, 50, self.close)
+		btn_close = button('Cancel', 100, 50, self.close)
 		buttons.addWidget(btn_close, 0, Qt.AlignRight)
 		content.addLayout(buttons)
 		self.setLayout(content)

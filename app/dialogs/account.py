@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QLabel, QWidget, QDialog, QLineEdit, QCheckBox, QTab
 
 from app.settings import Settings
 from app.cloud import CloudStorage
-from app.utils import create_button, info, error
+from app.utils import button, info, error
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
@@ -24,8 +24,6 @@ class AccountDialog(QDialog):
 		self.setFixedSize(550, 300)
 		self.setWindowTitle('Account')
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
-
-
 
 		self.settings = Settings()
 		self.cloud = kwargs.get('cloud_storage', CloudStorage())
@@ -72,11 +70,11 @@ class AccountDialog(QDialog):
 
 		rl_layout = QVBoxLayout()
 		rl_layout.setContentsMargins(50, 0, 50, 10)
-		self.remember_login_check_box.setChecked(False)
+		self.remember_login_check_box.setChecked(True)
 		rl_layout.addWidget(self.remember_login_check_box)
 		layout.addLayout(rl_layout)
 
-		btn = create_button('Login', 70, 30, self.login_click)
+		btn = button('Login', 70, 30, self.login_click)
 		btn.setFixedWidth(100)
 		layout.addWidget(btn, alignment=Qt.AlignCenter)
 
@@ -102,7 +100,7 @@ class AccountDialog(QDialog):
 		email_lbl.setContentsMargins(0, 0, 0, 10)
 		layout.addWidget(email_lbl, alignment=Qt.AlignCenter)
 
-		btn = create_button('Logout', 70, 30, self.logout_click)
+		btn = button('Logout', 70, 30, self.logout_click)
 		btn.setFixedWidth(100)
 		layout.addWidget(btn, alignment=Qt.AlignCenter)
 
@@ -121,7 +119,9 @@ class AccountDialog(QDialog):
 		except requests.exceptions.ConnectionError:
 			self.layout.setContentsMargins(0, 90, 0, 90)
 			self.layout.addWidget(QLabel('Connection error'), alignment=Qt.AlignCenter)
-			self.layout.addWidget(QLabel('Server is not working or your internet connection is failed'), alignment=Qt.AlignCenter)
+			self.layout.addWidget(
+				QLabel('Server is not working or your internet connection is failed'), alignment=Qt.AlignCenter
+			)
 			self.layout.addWidget(QLabel('Check your connection and restart app'), alignment=Qt.AlignCenter)
 		tab.setLayout(self.layout)
 		tabs.addTab(tab, tab_name)
@@ -148,7 +148,7 @@ class AccountDialog(QDialog):
 		e_layout.addWidget(self.email_signup_input)
 		layout.addLayout(e_layout)
 
-		btn = create_button('Register', 70, 30, self.signup_click)
+		btn = button('Register', 70, 30, self.signup_click)
 		btn.setFixedWidth(100)
 		layout.addWidget(btn, alignment=Qt.AlignCenter)
 

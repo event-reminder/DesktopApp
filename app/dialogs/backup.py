@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import *
 
 from app.utils import popup
 from app.settings import Settings
-from app.utils import logger, log_msg, create_button
+from app.utils import logger, log_msg, button
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
@@ -37,11 +37,11 @@ class BackupDialog(QDialog):
 		self.backup_file_input = QLineEdit()
 		self.restore_file_input = QLineEdit()
 
-		self.backup_file_button = create_button('+', 30, 30, self.get_folder_path)
-		self.restore_file_button = create_button('+', 30, 30, self.get_file_path)
+		self.backup_file_button = button('+', 30, 30, self.get_folder_path)
+		self.restore_file_button = button('+', 30, 30, self.get_file_path)
 
-		self.launch_restore_button = create_button('Launch', 70, 30, self.launch_restore)
-		self.launch_backup_button = create_button('Launch', 70, 30, self.launch_backup)
+		self.launch_restore_button = button('Launch', 70, 30, self.launch_restore)
+		self.launch_backup_button = button('Launch', 70, 30, self.launch_backup)
 
 		self.setup_ui()
 
