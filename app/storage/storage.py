@@ -122,7 +122,7 @@ class Storage:
 			'backup': base64.b64encode(data)
 		}
 
-	def restore_from_dict(self, data, include_settings):
+	def restore_from_dict(self, data):
 		for key in ['digest', 'timestamp', 'backup']:
 			if key not in data:
 				raise KeyError('invalid backup file')
@@ -136,16 +136,14 @@ class Storage:
 			raise KeyError('invalid backup data')
 		EventModel.delete().execute()
 		self.from_array(backup['db'])
-		if include_settings:
-			if 'settings' not in backup:
-				raise KeyError('can\'t restore settings')
+		if 'settings' in backup:
 			Settings().from_dict(backup['settings'])
 
-	def backup(self, path: str, include_settings=True):
+	def backup(self, path: str, include_settings):
 		timestamp = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
 		with open('{}/Event Reminder Backup {}.bak'.format(path.rstrip('/'), timestamp), 'wb') as file:
 			file.write(pickle.dumps(self.prepare_backup_data(self.to_array(), timestamp, include_settings)))
 
-	def restore(self, file_path: str, include_settings=True):
+	def restore(self, file_path: str):
 		with open(file_path, 'rb') as file:
-			self.restore_from_dict(pickle.loads(file.read()), include_settings)
+			self.restore_from_dict(pickle.loads(file.read()))

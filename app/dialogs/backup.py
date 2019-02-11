@@ -36,9 +36,6 @@ class BackupDialog(QDialog):
 
 		self.settings = Settings()
 
-		self.include_settings_backup = QCheckBox()
-		self.include_settings_restore = QCheckBox()
-
 		self.backup_file_input = QLineEdit()
 		self.restore_file_input = QLineEdit()
 
@@ -74,14 +71,6 @@ class BackupDialog(QDialog):
 	def setup_local_backup_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 
-		h1_layout = QHBoxLayout()
-		h1_layout.setContentsMargins(10, 10, 10, 20)
-		h1_layout.setAlignment(Qt.AlignCenter)
-		h1_layout.setSpacing(20)
-		h1_layout.addWidget(QLabel('Include settings'))
-		self.include_settings_backup.setChecked(True)
-		h1_layout.addWidget(self.include_settings_backup)
-
 		h2_layout = QHBoxLayout()
 		h2_layout.addWidget(QLabel('Location:'))
 		h2_layout.setContentsMargins(10, 0, 10, 20)
@@ -95,7 +84,6 @@ class BackupDialog(QDialog):
 		label = QLabel('Create full backup of your calendar notes')
 		label.setContentsMargins(0, 10, 0, 30)
 		layout.addWidget(label, alignment=Qt.AlignCenter)
-		layout.addLayout(h1_layout)
 		layout.addLayout(h2_layout)
 		layout.addWidget(self.launch_backup_button, alignment=Qt.AlignCenter)
 
@@ -104,14 +92,6 @@ class BackupDialog(QDialog):
 
 	def setup_local_restore_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
-
-		h1_layout = QHBoxLayout()
-		h1_layout.setContentsMargins(10, 10, 10, 20)
-		h1_layout.setAlignment(Qt.AlignCenter)
-		h1_layout.setSpacing(20)
-		h1_layout.addWidget(QLabel('Include settings'))
-		self.include_settings_restore.setChecked(True)
-		h1_layout.addWidget(self.include_settings_restore)
 
 		h2_layout = QHBoxLayout()
 		h2_layout.addWidget(QLabel('Location:'))
@@ -125,7 +105,6 @@ class BackupDialog(QDialog):
 		label = QLabel('Restore all your calendar notes with backup file')
 		label.setContentsMargins(0, 10, 0, 30)
 		layout.addWidget(label, alignment=Qt.AlignCenter)
-		layout.addLayout(h1_layout)
 		layout.addLayout(h2_layout)
 		layout.addWidget(self.launch_restore_button, alignment=Qt.AlignCenter)
 
@@ -144,7 +123,7 @@ class BackupDialog(QDialog):
 
 	def launch_restore_local(self):
 		try:
-			self.storage.restore(self.restore_file_input.text(), self.include_settings_restore.isChecked())
+			self.storage.restore(self.restore_file_input.text())
 			self.calendar.update()
 		except Exception as exc:
 			logger.error(log_msg(exc))
@@ -152,7 +131,7 @@ class BackupDialog(QDialog):
 
 	def launch_backup_local(self):
 		try:
-			self.storage.backup(self.backup_file_input.text(), self.include_settings_backup.isChecked())
+			self.storage.backup(self.backup_file_input.text(), self.settings.include_settings_backup)
 		except Exception as exc:
 			logger.error(log_msg(exc))
 			popup.error(self, 'Can\'t backup calendar data: {}'.format(exc))
@@ -225,7 +204,9 @@ class BackupDialog(QDialog):
 
 	def upload_backup_cloud(self):
 		timestamp = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
-		backup_data = self.storage.prepare_backup_data(self.storage.to_array(), timestamp, True)
+		backup_data = self.storage.prepare_backup_data(
+			self.storage.to_array(), timestamp, self.settings.include_settings_backup
+		)
 		try:
 			self.cloud.upload_backup(backup_data)
 			self.refresh_backups_cloud()
@@ -242,7 +223,11 @@ class BackupDialog(QDialog):
 		current = self.get_current_selected()
 		if current is not None:
 			try:
-				self.storage.restore_from_dict(self.cloud.download_backup(current.hash_sum), True)
+				self.storage.restore_from_dict(
+					self.cloud.download_backup(current.hash_sum)
+				)
+				self.calendar.reset_palette(self.settings.app_theme)
+				self.calendar.reset_font(QFont('SansSerif', self.settings.app_font))
 				self.calendar.update()
 				popup.info(self, 'Backup \'{}\' was successfully downloaded.'.format(current.title))
 			except requests.exceptions.ConnectionError:

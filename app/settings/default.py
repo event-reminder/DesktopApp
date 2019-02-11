@@ -60,3 +60,5 @@ SHOW_CALENDAR_ON_STARTUP = 'true'
 NOTIFICATION_DURATION = 5   # in seconds
 
 REMIND_TIME = 1             # in minutes
+
+INCLUDE_SETTINGS_BACKUP = 'true'

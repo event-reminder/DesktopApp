@@ -112,6 +112,18 @@ class CalendarWidget(QCalendarWidget):
 		if date.toPyDate() in self.marked_dates:
 			self.paint_date(date, painter, rect, self.marked_dates.count(date.toPyDate()))
 
+	def reset_font(self, font):
+		self.setFont(font)
+		self.parent.setFont(font)
+		for dialog in self.dialogs:
+			dialog.setFont(font)
+
+	def reset_palette(self, palette):
+		self.setPalette(palette)
+		self.parent.setPalette(palette)
+		for dialog in self.dialogs:
+			dialog.setPalette(palette)
+
 	@staticmethod
 	def get_badge_width(num, font_size=FONT_NORMAL):
 		minimum = 10

@@ -133,6 +133,10 @@ class Settings:
 	def remind_time_before_event(self):
 		return int(self.__settings.value('event_user/remind_time_before_event', REMIND_TIME))
 
+	@property
+	def include_settings_backup(self):
+		return self.__settings.value('app_user/include_settings_backup', INCLUDE_SETTINGS_BACKUP) == 'true'
+
 	def set_first_launch(self, value: bool):
 		self.__settings.setValue('app/first_launch', 'true' if value else 'false')
 		self._commit()
@@ -183,6 +187,10 @@ class Settings:
 
 	def set_remind_time_before_event(self, value: int):
 		self.__settings.setValue('event_user/remind_time_before_event', value)
+		self._commit()
+
+	def set_include_settings_backup(self, value: bool):
+		self.__settings.setValue('app_user/include_settings_backup', 'true' if value else 'false')
 		self._commit()
 
 	def to_dict(self):

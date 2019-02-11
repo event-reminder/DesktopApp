@@ -41,6 +41,8 @@ class SettingsDialog(QDialog):
 		self.notification_duration_input = QLineEdit()
 		self.remind_time_before_event_input = QLineEdit()
 
+		self.include_settings_backup_check_box = QCheckBox()
+
 		self.ui_is_loaded = False
 		self.setup_ui()
 		self.ui_is_loaded = True
@@ -108,6 +110,11 @@ class SettingsDialog(QDialog):
 		self.opacity_leave_slider.setValue(float(self.settings.mouse_leave_opacity) * 10)
 		layout.addWidget(self.opacity_leave_slider, 5, 1)
 
+		layout.addWidget(QLabel('Include settings while backup'), 6, 0)
+		self.include_settings_backup_check_box.stateChanged.connect(self.include_settings_backup_changed)
+		self.include_settings_backup_check_box.setChecked(self.settings.include_settings_backup)
+		layout.addWidget(self.include_settings_backup_check_box, 6, 1)
+
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'App')
 
@@ -165,12 +172,8 @@ class SettingsDialog(QDialog):
 			elif current == 2:
 				new_font = FONT_LARGE
 			font = QFont('SansSerif', new_font)
-
-			self.calendar.setFont(font)
-			self.calendar.parent.setFont(font)
-			for dialog in self.calendar.dialogs:
-				dialog.setFont(font)
 			self.settings.set_font(new_font)
+			self.calendar.reset_font(font)
 
 	def show_calendar_on_startup_changed(self):
 		if self.ui_is_loaded:
@@ -179,10 +182,7 @@ class SettingsDialog(QDialog):
 	def theme_changed(self, current):
 		if self.ui_is_loaded:
 			self.settings.set_theme(current == 1)
-			self.calendar.setPalette(self.settings.app_theme)
-			self.calendar.parent.setPalette(self.settings.app_theme)
-			for dialog in self.calendar.dialogs:
-				dialog.setPalette(self.settings.app_theme)
+			self.calendar.reset_palette(self.settings.app_theme)
 
 	def remove_after_time_up_changed(self):
 		self.settings.set_remove_event_after_time_up(self.remove_after_time_up_check_box.isChecked())
@@ -196,6 +196,10 @@ class SettingsDialog(QDialog):
 		text = self.remind_time_before_event_input.text()
 		if len(text) > 0:
 			self.settings.set_remind_time_before_event(int(text))
+
+	def include_settings_backup_changed(self):
+		if self.ui_is_loaded:
+			self.settings.set_include_settings_backup(self.include_settings_backup_check_box.isChecked())
 
 	def save_btn_click(self):
 		self.close()

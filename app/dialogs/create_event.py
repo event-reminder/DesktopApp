@@ -47,15 +47,15 @@ class CreateEventDialog(QDialog):
 		content.addWidget(self.repeat_weekly_input)
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
-		btn_save = button('Save', 70, 30, self.save_btn_click)
+		btn_save = button('Save', 90, 30, self.save_btn_click)
 		buttons.addWidget(btn_save, 0, Qt.AlignRight)
-		btn_close = button('Cancel', 70, 30, self.close)
+		btn_close = button('Cancel', 90, 30, self.close)
 		buttons.addWidget(btn_close, 0, Qt.AlignRight)
 		content.addLayout(buttons)
 		self.setLayout(content)
 
 	def reset_inputs(self, date):
-		self.setWindowTitle('New Event | {}'.format(date.strftime('%Y-%m-%d')))
+		self.setWindowTitle('New Event')
 		self.date_input.setDate(QDate(date))
 		curr_time = (datetime.now() + timedelta(minutes=3)).time().replace(second=0, microsecond=0)
 		self.time_input.setTime(QTime(curr_time))
