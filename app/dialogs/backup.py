@@ -42,11 +42,11 @@ class BackupDialog(QDialog):
 		self.backup_file_input = QLineEdit()
 		self.restore_file_input = QLineEdit()
 
-		self.backup_file_button = button('+', 30, 30, self.get_folder_path)
-		self.restore_file_button = button('+', 30, 30, self.get_file_path)
+		self.backup_file_button = button('+', 40, 30, self.get_folder_path)
+		self.restore_file_button = button('+', 40, 30, self.get_file_path)
 
-		self.launch_restore_button = button('Launch', 70, 30, self.launch_restore_local)
-		self.launch_backup_button = button('Launch', 70, 30, self.launch_backup_local)
+		self.launch_restore_button = button('Start', 100, 35, self.launch_restore_local)
+		self.launch_backup_button = button('Start', 100, 35, self.launch_backup_local)
 
 		self.backups_cloud_list_widget = QListWidget()
 
@@ -97,7 +97,7 @@ class BackupDialog(QDialog):
 		layout.addWidget(label, alignment=Qt.AlignCenter)
 		layout.addLayout(h1_layout)
 		layout.addLayout(h2_layout)
-		layout.addWidget(self.launch_backup_button)
+		layout.addWidget(self.launch_backup_button, alignment=Qt.AlignCenter)
 
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'Backup')
@@ -127,7 +127,7 @@ class BackupDialog(QDialog):
 		layout.addWidget(label, alignment=Qt.AlignCenter)
 		layout.addLayout(h1_layout)
 		layout.addLayout(h2_layout)
-		layout.addWidget(self.launch_restore_button)
+		layout.addWidget(self.launch_restore_button, alignment=Qt.AlignCenter)
 
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'Restore')
@@ -164,14 +164,19 @@ class BackupDialog(QDialog):
 		layout.setAlignment(Qt.AlignBottom)
 
 		buttons_layout = QHBoxLayout()
-		buttons_layout.setAlignment(Qt.AlignRight)
-		self.upload_backup_button.setToolTip('Download')
-		buttons_layout.addWidget(self.upload_backup_button, alignment=Qt.AlignCenter)
-		self.download_backup_button.setToolTip('Upload')
-		buttons_layout.addWidget(self.download_backup_button, alignment=Qt.AlignCenter)
+
+		center_buttons_layout = QHBoxLayout()
+		center_buttons_layout.setAlignment(Qt.AlignLeft)
+		self.upload_backup_button.setToolTip('Upload')
+		center_buttons_layout.addWidget(self.upload_backup_button, alignment=Qt.AlignCenter)
+		self.download_backup_button.setToolTip('Download')
+		self.download_backup_button.setEnabled(False)
+		center_buttons_layout.addWidget(self.download_backup_button, alignment=Qt.AlignCenter)
+		buttons_layout.addLayout(center_buttons_layout)
+
 		self.delete_backup_button.setEnabled(False)
 		self.delete_backup_button.setToolTip('Delete')
-		buttons_layout.addWidget(self.delete_backup_button, alignment=Qt.AlignCenter)
+		buttons_layout.addWidget(self.delete_backup_button, alignment=Qt.AlignRight)
 
 		layout.addLayout(buttons_layout)
 
