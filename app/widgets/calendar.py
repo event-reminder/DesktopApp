@@ -61,7 +61,8 @@ class CalendarWidget(QCalendarWidget):
 			calendar=self,
 			storage=self.storage,
 			palette=self.settings.app_theme,
-			font=font
+			font=font,
+			cloud_storage=self.cloud_storage
 		)
 
 		self.dialogs = [

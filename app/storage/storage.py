@@ -1,6 +1,7 @@
 import os
-
+import json
 import pickle
+import base64
 from hashlib import sha512
 from datetime import datetime
 
@@ -107,36 +108,44 @@ class Storage:
 		for item in arr:
 			EventModel.from_dict(item)
 
-	def backup(self, path: str, include_settings=True):
+	@staticmethod
+	def prepare_backup_data(db, timestamp, include_settings):
 		data = {
-			'db': self.to_array()
+			'db': db
 		}
 		if include_settings:
 			data['settings'] = Settings().to_dict()
-		timestamp = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
-		backup_data = pickle.dumps({
-			'digest': sha512(pickle.dumps(data)).hexdigest(),
+		data = pickle.dumps(json.dumps(data).encode('utf-8'))
+		return {
+			'digest': sha512(data).hexdigest(),
 			'timestamp': timestamp,
-			'backup': data
-		})
+			'backup': base64.b64encode(data)
+		}
+
+	def restore_from_dict(self, data, include_settings):
+		for key in ['digest', 'timestamp', 'backup']:
+			if key not in data:
+				raise KeyError('invalid backup file')
+		if datetime.now() < datetime.strptime(data['timestamp'], '%Y-%m-%d %H:%M:%S'):
+			raise AssertionError('incorrect timestamp')
+		backup_decoded = base64.b64decode(data['backup'])
+		if sha512(backup_decoded).hexdigest() != data['digest']:
+			raise AssertionError('backup is broken')
+		backup = json.loads(pickle.loads(backup_decoded))
+		if 'db' not in backup:
+			raise KeyError('invalid backup data')
+		EventModel.delete().execute()
+		self.from_array(backup['db'])
+		if include_settings:
+			if 'settings' not in backup:
+				raise KeyError('can\'t restore settings')
+			Settings().from_dict(backup['settings'])
+
+	def backup(self, path: str, include_settings=True):
+		timestamp = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
 		with open('{}/Event Reminder Backup {}.bak'.format(path.rstrip('/'), timestamp), 'wb') as file:
-			file.write(backup_data)
+			file.write(pickle.dumps(self.prepare_backup_data(self.to_array(), timestamp, include_settings)))
 
 	def restore(self, file_path: str, include_settings=True):
 		with open(file_path, 'rb') as file:
-			data = pickle.loads(file.read())
-			for key in ['digest', 'timestamp', 'backup']:
-				if key not in data:
-					raise KeyError('invalid backup file')
-			if datetime.now() < datetime.strptime(data['timestamp'], '%Y-%m-%d %H:%M:%S'):
-				raise AssertionError('incorrect timestamp')
-			if sha512(pickle.dumps(data['backup'])).hexdigest() != data['digest']:
-				raise AssertionError('backup is broken')
-			if 'db' not in data['backup']:
-				raise KeyError('invalid backup data')
-			EventModel.delete().execute()
-			self.from_array(data['backup']['db'])
-			if include_settings:
-				if 'settings' not in data['backup']:
-					raise KeyError('can\'t restore settings')
-				Settings().from_dict(data['backup']['settings'])
+			self.restore_from_dict(pickle.loads(file.read()), include_settings)

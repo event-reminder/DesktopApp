@@ -21,7 +21,7 @@ class AccountDialog(QDialog):
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
 
-		self.setFixedSize(550, 300)
+		self.setFixedSize(550, 400)
 		self.setWindowTitle('Account')
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
 
@@ -30,6 +30,7 @@ class AccountDialog(QDialog):
 
 		self.first_name_signup_input = QLineEdit()
 		self.last_name_signup_input = QLineEdit()
+		self.username_signup_input = QLineEdit()
 		self.email_signup_input = QLineEdit()
 
 		self.username_login_input = QLineEdit()
@@ -110,7 +111,7 @@ class AccountDialog(QDialog):
 		tab = QWidget(flags=tabs.windowFlags())
 		tab_name = 'Login'
 		try:
-			if self.cloud.token_id_valid():
+			if self.cloud.token_is_valid():
 				self.account_info_menu, tab_name = self.build_account_info_menu()
 				self.layout.addLayout(self.account_info_menu)
 			else:
@@ -141,6 +142,12 @@ class AccountDialog(QDialog):
 		ln_layout.addWidget(QLabel('Last name:'))
 		ln_layout.addWidget(self.last_name_signup_input)
 		layout.addLayout(ln_layout)
+
+		un_layout = QVBoxLayout()
+		un_layout.setContentsMargins(50, 0, 50, 10)
+		un_layout.addWidget(QLabel('Username (optional):'))
+		un_layout.addWidget(self.username_signup_input)
+		layout.addLayout(un_layout)
 
 		e_layout = QVBoxLayout()
 		e_layout.setContentsMargins(50, 0, 50, 10)
@@ -176,12 +183,14 @@ class AccountDialog(QDialog):
 				self.cloud.register_account(
 					self.first_name_signup_input.text(),
 					self.last_name_signup_input.text(),
+					self.username_signup_input.text(),
 					self.email_signup_input.text()
 				)
 				info(
 					self,
 					'Thank you for registration.'
 					'Check out {} for credentials information.'
+					'To activate, simply login to Your account, otherwise it will be deleted in 24 hours after registration.'
 					.format(
 						self.email_signup_input.text()
 					)

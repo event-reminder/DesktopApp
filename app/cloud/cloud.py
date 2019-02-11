@@ -57,11 +57,11 @@ class CloudStorage:
 			raise Exception('logout failed, response status code: {}'.format(response.status_code))
 		self.__remove_token()
 
-	def register_account(self, first_name, last_name, email):
+	def register_account(self, first_name, last_name, username, email):
 		response = self.session.post(routes.REGISTER, json={
 			'first_name': first_name,
 			'last_name': last_name,
-			'username': '{}{}'.format(first_name, last_name),
+			'username': '{}{}'.format(first_name, last_name) if (username == '' or username is None) else username,
 			'email': email
 		})
 		if response.status_code != 201:
@@ -78,7 +78,7 @@ class CloudStorage:
 			print(json_response)
 			raise Exception('registration failed:\n{}'.format(err_msg))
 
-	def token_id_valid(self):
+	def token_is_valid(self):
 		result = 'Authorization' in self.session.headers and self.session.get(routes.USER).status_code == 200
 		if result is False:
 			self.__remove_token()
@@ -90,8 +90,27 @@ class CloudStorage:
 			raise Exception('retrieving user data failed, response status code: {}'.format(response.json()))
 		return response.json()
 
-	def upload_backup(self, backup):
-		pass
+	def backups(self):
+		response = self.session.get(routes.BACKUPS)
+		if response.status_code != 200:
+			raise Exception('retrieving backups failed, response status code: {}'.format(response.status_code))
+		return response.json()
 
-	def download_backup(self, backup_id):
-		pass
+	def upload_backup(self, backup):
+		response = self.session.post(routes.BACKUPS_CREATE, data=backup)
+		code = response.status_code
+		if code != 201:
+			if code == 400:
+				raise Exception('Upload was rejected: this backup already exists.')
+			raise Exception('uploading failed, response status code: {}'.format(response.status_code))
+
+	def download_backup(self, backup_hash):
+		response = self.session.get('{}{}'.format(routes.BACKUP_DETAILS, backup_hash))
+		if response.status_code != 200:
+			raise Exception('downloading failed, response status code: {}'.format(response.status_code))
+		return response.json()
+
+	def delete_backup(self, backup_hash):
+		response = self.session.post('{}{}'.format(routes.BACKUP_DETAILS, backup_hash))
+		if response.status_code != 201:
+			raise Exception('deleting failed, response status code: {}'.format(response.status_code))

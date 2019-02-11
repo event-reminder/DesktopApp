@@ -1,4 +1,6 @@
 import getpass
+import requests
+from datetime import datetime
 
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -7,6 +9,8 @@ from PyQt5.QtWidgets import *
 from app.utils import popup
 from app.settings import Settings
 from app.utils import logger, log_msg, button
+from app.widgets.backup_widget import BackupWidget
+from app.cloud import CloudStorage
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
@@ -19,12 +23,13 @@ class BackupDialog(QDialog):
 			self.setPalette(kwargs.get('palette'))
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
-		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
+		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
 
 		self.calendar = kwargs['calendar']
 		self.storage = kwargs['storage']
+		self.cloud = kwargs.get('cloud_storage', CloudStorage())
 
-		self.setFixedSize(500, 300)
+		self.setFixedSize(500, 320)
 		self.setWindowTitle('Backup and Restore')
 
 		self.search_dir = '/home/{}'.format(getpass.getuser())
@@ -40,14 +45,25 @@ class BackupDialog(QDialog):
 		self.backup_file_button = button('+', 30, 30, self.get_folder_path)
 		self.restore_file_button = button('+', 30, 30, self.get_file_path)
 
-		self.launch_restore_button = button('Launch', 70, 30, self.launch_restore)
-		self.launch_backup_button = button('Launch', 70, 30, self.launch_backup)
+		self.launch_restore_button = button('Launch', 70, 30, self.launch_restore_local)
+		self.launch_backup_button = button('Launch', 70, 30, self.launch_backup_local)
+
+		self.backups_cloud_list_widget = QListWidget()
+
+		self.upload_backup_button = button('Upload', 80, 35, self.upload_backup_cloud)
+		self.download_backup_button = button('Download', 110, 35, self.download_backup_cloud)
+		self.delete_backup_button = button('Delete', 80, 35, self.delete_backup_cloud)
 
 		self.setup_ui()
 
+	def showEvent(self, event):
+		self.refresh_backups_cloud()
+		super().showEvent(event)
+
 	def setup_ui(self):
-		content = QVBoxLayout()
 		tabs_widget = QTabWidget(self)
+		content = QVBoxLayout()
+
 		tabs_widget.setMinimumWidth(self.width() - 22)
 		self.setup_local_backup_ui(tabs_widget)
 		self.setup_local_restore_ui(tabs_widget)
@@ -116,17 +132,6 @@ class BackupDialog(QDialog):
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'Restore')
 
-	def setup_cloud_ui(self, tabs):
-		tab = QWidget(flags=tabs.windowFlags())
-
-		layout = QVBoxLayout()
-		layout.setAlignment(Qt.AlignCenter)
-
-		layout.addWidget(QLabel('Coming soon...'))
-
-		tab.setLayout(layout)
-		tabs.addTab(tab, 'Cloud')
-
 	def get_folder_path(self):
 		file_name = QFileDialog().getExistingDirectory(caption='Select Directory', directory=self.search_dir)
 		if len(file_name) > 0:
@@ -137,7 +142,7 @@ class BackupDialog(QDialog):
 		if len(file_name) > 0:
 			self.restore_file_input.setText(file_name[0])
 
-	def launch_restore(self):
+	def launch_restore_local(self):
 		try:
 			self.storage.restore(self.restore_file_input.text(), self.include_settings_restore.isChecked())
 			self.calendar.update()
@@ -145,9 +150,121 @@ class BackupDialog(QDialog):
 			logger.error(log_msg(exc))
 			popup.error(self, 'Can\'t restore backup: {}'.format(exc))
 
-	def launch_backup(self):
+	def launch_backup_local(self):
 		try:
 			self.storage.backup(self.backup_file_input.text(), self.include_settings_backup.isChecked())
 		except Exception as exc:
 			logger.error(log_msg(exc))
 			popup.error(self, 'Can\'t backup calendar data: {}'.format(exc))
+
+	def setup_cloud_ui(self, tabs):
+		tab = QWidget(flags=tabs.windowFlags())
+
+		layout = QVBoxLayout()
+		layout.setAlignment(Qt.AlignBottom)
+
+		buttons_layout = QHBoxLayout()
+		buttons_layout.setAlignment(Qt.AlignRight)
+		self.upload_backup_button.setToolTip('Download')
+		buttons_layout.addWidget(self.upload_backup_button, alignment=Qt.AlignCenter)
+		self.download_backup_button.setToolTip('Upload')
+		buttons_layout.addWidget(self.download_backup_button, alignment=Qt.AlignCenter)
+		self.delete_backup_button.setEnabled(False)
+		self.delete_backup_button.setToolTip('Delete')
+		buttons_layout.addWidget(self.delete_backup_button, alignment=Qt.AlignCenter)
+
+		layout.addLayout(buttons_layout)
+
+		scroll_view = QScrollArea()
+		self.backups_cloud_list_widget.itemSelectionChanged.connect(self.selection_changed)
+		scroll_view.setWidget(self.backups_cloud_list_widget)
+		scroll_view.setWidgetResizable(True)
+		scroll_view.setFixedHeight(200)
+		scroll_view.setFixedWidth(455)
+		layout.addWidget(scroll_view, alignment=Qt.AlignLeft)
+
+		tab.setLayout(layout)
+		tabs.addTab(tab, 'Cloud')
+
+	def selection_changed(self):
+		if self.backups_cloud_list_widget.currentItem() is not None:
+			self.delete_backup_button.setEnabled(True)
+			self.download_backup_button.setEnabled(True)
+		else:
+			self.delete_backup_button.setEnabled(False)
+			self.download_backup_button.setEnabled(False)
+
+	def refresh_backups_cloud(self):
+		self.backups_cloud_list_widget.clear()
+		try:
+			if self.cloud.token_is_valid():
+				backups = self.cloud.backups()
+				for backup in backups:
+					self.add_backup_widget(backup)
+		except requests.exceptions.ConnectionError as exc:
+			popup.error(self, str(exc))
+
+	def add_backup_widget(self, backup_data):
+		backup_widget = BackupWidget(
+			flags=self.backups_cloud_list_widget.windowFlags(),
+			parent=self.backups_cloud_list_widget,
+			palette=self.palette(),
+			font=self.font(),
+			hash_sum=backup_data['digest'],
+			title=backup_data['timestamp']
+		)
+		list_widget_item = QListWidgetItem(self.backups_cloud_list_widget)
+		list_widget_item.setSizeHint(backup_widget.sizeHint())
+		self.backups_cloud_list_widget.addItem(list_widget_item)
+		self.backups_cloud_list_widget.setItemWidget(list_widget_item, backup_widget)
+
+	def upload_backup_cloud(self):
+		timestamp = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
+		backup_data = self.storage.prepare_backup_data(self.storage.to_array(), timestamp, True)
+		try:
+			self.cloud.upload_backup(backup_data)
+			self.refresh_backups_cloud()
+			popup.info(self, 'Backup \'{}\' was successfully uploaded to the cloud.'.format(backup_data['timestamp']))
+		except requests.exceptions.ConnectionError:
+			popup.error(self, 'Connection error...')
+
+			# TODO: add logging
+
+		except Exception as exc:
+			popup.error(self, str(exc))
+
+	def download_backup_cloud(self):
+		current = self.get_current_selected()
+		if current is not None:
+			try:
+				self.storage.restore_from_dict(self.cloud.download_backup(current.hash_sum), True)
+				self.calendar.update()
+				popup.info(self, 'Backup \'{}\' was successfully downloaded.'.format(current.title))
+			except requests.exceptions.ConnectionError:
+				popup.error(self, 'Connection error...')
+
+			# TODO: add logging
+
+			except Exception as exc:
+				popup.error(self, str(exc))
+
+	def delete_backup_cloud(self):
+		current = self.get_current_selected()
+		if current is not None:
+			try:
+				self.cloud.delete_backup(current.hash_sum)
+				self.refresh_backups_cloud()
+				popup.info(self, 'Backup \'{}\' was deleted successfully.'.format(current.title))
+			except requests.exceptions.ConnectionError:
+				popup.error(self, 'Connection error...')
+
+			# TODO: add logging
+
+			except Exception as exc:
+				popup.error(self, str(exc))
+
+	def get_current_selected(self):
+		current = self.backups_cloud_list_widget.currentItem()
+		if current is not None:
+			return self.backups_cloud_list_widget.itemWidget(current)
+		return None

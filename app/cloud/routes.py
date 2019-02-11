@@ -5,12 +5,15 @@ _BASE = 'http://{}:{}'.format(_HOST, _PORT)
 
 _API = '{}/api/v1'.format(_BASE)
 
-REGISTER = '{}/accounts'.format(_API)
+REGISTER = '{}/accounts/'.format(_API)
 ACCOUNTS_EDIT = '{}/edit'.format(REGISTER)
 
-LOGIN = '{}/auth/login/'.format(_API)
-LOGOUT = '{}/auth/logout/'.format(_API)
-USER = '{}/auth/user/'.format(_API)
+_AUTH = '{}/auth/'.format(_API)
 
-BACKUPS = '{}/backups'.format(_API)
-BACKUPS_GET = '{}/get'.format(BACKUPS)
+LOGIN = '{}login/'.format(_AUTH)
+LOGOUT = '{}logout/'.format(_AUTH)
+USER = '{}user/'.format(_AUTH)
+
+BACKUPS = '{}/backups/'.format(_API)
+BACKUPS_CREATE = '{}create'.format(BACKUPS)
+BACKUP_DETAILS = '{}details/'.format(BACKUPS)
