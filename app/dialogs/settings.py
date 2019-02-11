@@ -43,9 +43,28 @@ class SettingsDialog(QDialog):
 
 		self.include_settings_backup_check_box = QCheckBox()
 
+		self.refresh_settings_values()
+
 		self.ui_is_loaded = False
 		self.setup_ui()
 		self.ui_is_loaded = True
+
+	def refresh_settings_values(self):
+		self.theme_combo_box.setCurrentIndex(1 if self.settings.is_dark_theme else 0)
+		curr_idx = 0
+		if self.settings.app_font == FONT_NORMAL:
+			curr_idx = 1
+		elif self.settings.app_font == FONT_LARGE:
+			curr_idx = 2
+		self.font_combo_box.setCurrentIndex(curr_idx)
+		self.show_calendar_on_startup_check_box.setChecked(self.settings.show_calendar_on_startup)
+		self.always_on_top_check_box.setChecked(self.settings.is_always_on_top)
+		self.opacity_enter_slider.setValue(float(self.settings.mouse_enter_opacity) * 10)
+		self.opacity_leave_slider.setValue(float(self.settings.mouse_leave_opacity) * 10)
+		self.include_settings_backup_check_box.setChecked(self.settings.include_settings_backup)
+		self.remove_after_time_up_check_box.setChecked(self.settings.remove_event_after_time_up)
+		self.notification_duration_input.setText(str(self.settings.notification_duration))
+		self.remind_time_before_event_input.setText(str(self.settings.remind_time_before_event))
 
 	def setup_ui(self):
 		content = QVBoxLayout()
@@ -66,28 +85,19 @@ class SettingsDialog(QDialog):
 		layout.addWidget(QLabel('Theme'), 0, 0)
 		self.theme_combo_box.currentIndexChanged.connect(self.theme_changed)
 		self.theme_combo_box.addItems(['Light', 'Dark'])
-		self.theme_combo_box.setCurrentIndex(1 if self.settings.is_dark_theme else 0)
 		layout.addWidget(self.theme_combo_box, 0, 1)
 
 		layout.addWidget(QLabel('Font'), 1, 0)
 		self.font_combo_box.currentIndexChanged.connect(self.font_changed)
 		self.font_combo_box.addItems(['Small', 'Normal', 'Large'])
-		curr_idx = 0
-		if self.settings.app_font == FONT_NORMAL:
-			curr_idx = 1
-		elif self.settings.app_font == FONT_LARGE:
-			curr_idx = 2
-		self.font_combo_box.setCurrentIndex(curr_idx)
 		layout.addWidget(self.font_combo_box, 1, 1)
 
 		layout.addWidget(QLabel('Show calendar on startup'), 2, 0)
 		self.show_calendar_on_startup_check_box.stateChanged.connect(self.show_calendar_on_startup_changed)
-		self.show_calendar_on_startup_check_box.setChecked(self.settings.show_calendar_on_startup)
 		layout.addWidget(self.show_calendar_on_startup_check_box, 2, 1)
 
 		layout.addWidget(QLabel('Always on top (need restart)'), 3, 0)
 		self.always_on_top_check_box.stateChanged.connect(self.always_on_top_changed)
-		self.always_on_top_check_box.setChecked(self.settings.is_always_on_top)
 		layout.addWidget(self.always_on_top_check_box, 3, 1)
 
 		layout.addWidget(self.opacity_enter_label, 4, 0)
@@ -97,7 +107,6 @@ class SettingsDialog(QDialog):
 		self.opacity_enter_slider.setMaximum(10)
 		self.opacity_enter_slider.setSingleStep(1)
 		self.opacity_enter_slider.valueChanged.connect(self.opacity_enter_changed)
-		self.opacity_enter_slider.setValue(float(self.settings.mouse_enter_opacity) * 10)
 		layout.addWidget(self.opacity_enter_slider, 4, 1)
 
 		layout.addWidget(self.opacity_leave_label, 5, 0)
@@ -107,12 +116,10 @@ class SettingsDialog(QDialog):
 		self.opacity_leave_slider.setMaximum(10)
 		self.opacity_leave_slider.setSingleStep(1)
 		self.opacity_leave_slider.valueChanged.connect(self.opacity_leave_changed)
-		self.opacity_leave_slider.setValue(float(self.settings.mouse_leave_opacity) * 10)
 		layout.addWidget(self.opacity_leave_slider, 5, 1)
 
 		layout.addWidget(QLabel('Include settings while backup'), 6, 0)
 		self.include_settings_backup_check_box.stateChanged.connect(self.include_settings_backup_changed)
-		self.include_settings_backup_check_box.setChecked(self.settings.include_settings_backup)
 		layout.addWidget(self.include_settings_backup_check_box, 6, 1)
 
 		tab.setLayout(layout)
@@ -128,18 +135,15 @@ class SettingsDialog(QDialog):
 
 		layout.addWidget(QLabel('Remove event after time is up'), 0,  0)
 		self.remove_after_time_up_check_box.stateChanged.connect(self.remove_after_time_up_changed)
-		self.remove_after_time_up_check_box.setChecked(self.settings.remove_event_after_time_up)
 		layout.addWidget(self.remove_after_time_up_check_box, 0, 1)
 
 		layout.addWidget(QLabel('Notification duration (sec)'), 1, 0)
 		self.notification_duration_input.setValidator(QIntValidator())
-		self.notification_duration_input.setText(str(self.settings.notification_duration))
 		self.notification_duration_input.textChanged.connect(self.notification_duration_changed)
 		layout.addWidget(self.notification_duration_input, 1, 1)
 
 		layout.addWidget(QLabel('Notify before event (min)'), 2, 0)
 		self.remind_time_before_event_input.setValidator(QIntValidator())
-		self.remind_time_before_event_input.setText(str(self.settings.remind_time_before_event))
 		self.remind_time_before_event_input.textChanged.connect(self.remind_time_before_event_changed)
 		layout.addWidget(self.remind_time_before_event_input, 2, 1)
 

@@ -125,6 +125,7 @@ class BackupDialog(QDialog):
 		try:
 			self.storage.restore(self.restore_file_input.text())
 			self.calendar.update()
+			self.calendar.settings_dialog.refresh_settings_values()
 		except Exception as exc:
 			logger.error(log_msg(exc))
 			popup.error(self, 'Can\'t restore backup: {}'.format(exc))
@@ -229,6 +230,7 @@ class BackupDialog(QDialog):
 				self.calendar.reset_palette(self.settings.app_theme)
 				self.calendar.reset_font(QFont('SansSerif', self.settings.app_font))
 				self.calendar.update()
+				self.calendar.settings_dialog.refresh_settings_values()
 				popup.info(self, 'Backup \'{}\' was successfully downloaded.'.format(current.title))
 			except requests.exceptions.ConnectionError:
 				popup.error(self, 'Connection error...')
