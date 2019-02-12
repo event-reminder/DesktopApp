@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QRunnable, QThreadPool
 
 
-class ProcessRunnable(QRunnable):
+class BackgroundProcess(QRunnable):
     def __init__(self, target, args):
         QRunnable.__init__(self)
         self.target = target
