@@ -78,8 +78,6 @@ class CreateEventDialog(QDialog):
 	def save_btn_click(self):
 		if self.validate_inputs():
 			try:
-				self.calendar.status_bar.showMessage('Status: Saving...')
-				self.storage.connect()
 				self.storage.create_event(
 					self.title_input.text(),
 					self.date_input.date().toPyDate(),
@@ -94,8 +92,6 @@ class CreateEventDialog(QDialog):
 				logger.error(log_msg('unknown error: {}'.format(exc)))
 				popup.error(self, 'Error occurred: {}'.format(exc))
 			finally:
-				self.storage.disconnect()
-				self.calendar.reset_status()
 				popup.info(self, 'Save successfully!')
 				self.close()
 				self.calendar.update()

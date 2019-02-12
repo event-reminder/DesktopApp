@@ -1,15 +1,15 @@
-from PyQt5.QtCore import QRunnable, QThreadPool
+from PyQt5.QtCore import QRunnable, QMetaObject, Qt, Q_ARG
 
 
 class BackgroundProcess(QRunnable):
-    def __init__(self, target, args):
-        QRunnable.__init__(self)
-        self.target = target
-        self.args = args
+	def __init__(self, cls, target, args=None):
+		QRunnable.__init__(self)
+		if args is None:
+			args = []
+		self.target = target
+		self.cls = cls
+		self.args = args
 
-    def run(self):
-        self.target(*self.args)
-
-    def start(self):
-        QThreadPool.globalInstance().start(self)
-        # QThreadPool().globalInstance().start(self)
+	def run(self):
+		args = [Q_ARG(type(arg), arg) for arg in self.args]
+		QMetaObject.invokeMethod(self.cls, self.target.__name__, Qt.QueuedConnection, *args)

@@ -7,9 +7,11 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from app.settings import Settings
-from app.util import popup, logger, log_msg, button
-from app.widgets.backup_widget import BackupWidget
 from app.cloud import CloudStorage
+from app.util.process import BackgroundProcess
+from app.widgets.backup_widget import BackupWidget
+from app.util import popup, logger, log_msg, button
+from app.widgets.waiting_spinner import QtWaitingSpinner
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
@@ -23,6 +25,8 @@ class BackupDialog(QDialog):
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
+
+		self.spinner = QtWaitingSpinner()
 
 		self.calendar = kwargs['calendar']
 		self.storage = kwargs['storage']
@@ -51,6 +55,8 @@ class BackupDialog(QDialog):
 		self.delete_backup_button = button('Delete', 80, 35, self.delete_backup_cloud)
 
 		self.setup_ui()
+
+		self.layout().addWidget(self.spinner)
 
 	def showEvent(self, event):
 		self.refresh_backups_cloud()
@@ -220,25 +226,34 @@ class BackupDialog(QDialog):
 		except Exception as exc:
 			popup.error(self, str(exc))
 
+	@pyqtSlot(QWidget)
+	def run_download_backup_cloud(self, current):
+		try:
+			self.storage.restore_from_dict(
+				self.cloud.download_backup(current.hash_sum)
+			)
+			self.calendar.reset_palette(self.settings.app_theme)
+			self.calendar.reset_font(QFont('SansSerif', self.settings.app_font))
+			self.calendar.update()
+			self.calendar.settings_dialog.refresh_settings_values()
+			popup.info(self, 'Backup \'{}\' was successfully downloaded.'.format(current.title))
+		except requests.exceptions.ConnectionError:
+			popup.error(self, 'Connection error...')
+
+		# TODO: add logging
+
+		except Exception as exc:
+			popup.error(self, str(exc))
+		finally:
+			self.spinner.stop()
+
 	def download_backup_cloud(self):
 		current = self.get_current_selected()
 		if current is not None:
-			try:
-				self.storage.restore_from_dict(
-					self.cloud.download_backup(current.hash_sum)
-				)
-				self.calendar.reset_palette(self.settings.app_theme)
-				self.calendar.reset_font(QFont('SansSerif', self.settings.app_font))
-				self.calendar.update()
-				self.calendar.settings_dialog.refresh_settings_values()
-				popup.info(self, 'Backup \'{}\' was successfully downloaded.'.format(current.title))
-			except requests.exceptions.ConnectionError:
-				popup.error(self, 'Connection error...')
-
-			# TODO: add logging
-
-			except Exception as exc:
-				popup.error(self, str(exc))
+			self.spinner.start()
+			QThreadPool.globalInstance().start(
+				BackgroundProcess(self, self.run_download_backup_cloud, [current])
+			)
 
 	def delete_backup_cloud(self):
 		current = self.get_current_selected()
