@@ -38,9 +38,6 @@ APP_DB_PATH = APP_PATH
 APP_DB_FILE = '{}event_reminder.db'.format(APP_PATH)
 
 
-MOUSE_ENTER_OPACITY = 1
-MOUSE_LEAVE_OPACITY = 1
-
 ALWAYS_ON_TOP = 'false'
 
 FONT_SMALL = 10

@@ -2,20 +2,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 
-def _theme_palette(
-		window,
-		window_text,
-		base,
-		alternate_base,
-		tool_tip_base,
-		tool_tip_text,
-		text,
-		button,
-		button_text,
-		bright_text,
-		link,
-		highlight,
-		highlighted_text):
+def _theme_palette(window, window_text, base, alternate_base, tool_tip_base,
+				   tool_tip_text, text, button, button_text, bright_text, link,
+				   highlight, highlighted_text):
 	palette = QPalette()
 	palette.setColor(QPalette.Window, window)
 	palette.setColor(QPalette.WindowText, window_text)

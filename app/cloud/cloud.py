@@ -57,11 +57,9 @@ class CloudStorage:
 			raise Exception('logout failed, response status code: {}'.format(response.status_code))
 		self.__remove_token()
 
-	def register_account(self, first_name, last_name, username, email):
+	def register_account(self, username, email):
 		response = self.session.post(routes.REGISTER, json={
-			'first_name': first_name,
-			'last_name': last_name,
-			'username': '{}{}'.format(first_name, last_name) if (username == '' or username is None) else username,
+			'username': username,
 			'email': email
 		})
 		if response.status_code != 201:

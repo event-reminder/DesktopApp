@@ -18,21 +18,13 @@ class SettingsDialog(QDialog):
 
 		self.calendar = kwargs['calendar']
 
-		self.setFixedSize(550, 400)
+		self.setFixedSize(550, 280)
 		self.setWindowTitle('Settings')
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
 
 		self.settings = Settings()
 
-		self.opacity_enter_slider = QSlider(Qt.Horizontal)
-		self.opacity_leave_slider = QSlider(Qt.Horizontal)
 		self.always_on_top_check_box = QCheckBox()
-		self.opacity_enter_label = QLabel('Window opacity enter    {}%'.format(
-			str(float(self.settings.mouse_enter_opacity) * 100)
-		))
-		self.opacity_leave_label = QLabel('Window opacity leave    {}%'.format(
-			str(float(self.settings.mouse_leave_opacity) * 100)
-		))
 		self.font_combo_box = QComboBox()
 		self.show_calendar_on_startup_check_box = QCheckBox()
 		self.theme_combo_box = QComboBox()
@@ -43,10 +35,11 @@ class SettingsDialog(QDialog):
 
 		self.include_settings_backup_check_box = QCheckBox()
 
-		self.refresh_settings_values()
-
 		self.ui_is_loaded = False
 		self.setup_ui()
+
+		self.refresh_settings_values()
+
 		self.ui_is_loaded = True
 
 	def refresh_settings_values(self):
@@ -59,8 +52,6 @@ class SettingsDialog(QDialog):
 		self.font_combo_box.setCurrentIndex(curr_idx)
 		self.show_calendar_on_startup_check_box.setChecked(self.settings.show_calendar_on_startup)
 		self.always_on_top_check_box.setChecked(self.settings.is_always_on_top)
-		self.opacity_enter_slider.setValue(float(self.settings.mouse_enter_opacity) * 10)
-		self.opacity_leave_slider.setValue(float(self.settings.mouse_leave_opacity) * 10)
 		self.include_settings_backup_check_box.setChecked(self.settings.include_settings_backup)
 		self.remove_after_time_up_check_box.setChecked(self.settings.remove_event_after_time_up)
 		self.notification_duration_input.setText(str(self.settings.notification_duration))
@@ -100,27 +91,9 @@ class SettingsDialog(QDialog):
 		self.always_on_top_check_box.stateChanged.connect(self.always_on_top_changed)
 		layout.addWidget(self.always_on_top_check_box, 3, 1)
 
-		layout.addWidget(self.opacity_enter_label, 4, 0)
-		self.opacity_enter_slider.setFocusPolicy(Qt.StrongFocus)
-		self.opacity_enter_slider.setTickPosition(QSlider.TicksBothSides)
-		self.opacity_enter_slider.setMinimum(0)
-		self.opacity_enter_slider.setMaximum(10)
-		self.opacity_enter_slider.setSingleStep(1)
-		self.opacity_enter_slider.valueChanged.connect(self.opacity_enter_changed)
-		layout.addWidget(self.opacity_enter_slider, 4, 1)
-
-		layout.addWidget(self.opacity_leave_label, 5, 0)
-		self.opacity_leave_slider.setFocusPolicy(Qt.StrongFocus)
-		self.opacity_leave_slider.setTickPosition(QSlider.TicksBothSides)
-		self.opacity_leave_slider.setMinimum(0)
-		self.opacity_leave_slider.setMaximum(10)
-		self.opacity_leave_slider.setSingleStep(1)
-		self.opacity_leave_slider.valueChanged.connect(self.opacity_leave_changed)
-		layout.addWidget(self.opacity_leave_slider, 5, 1)
-
-		layout.addWidget(QLabel('Include settings while backup'), 6, 0)
+		layout.addWidget(QLabel('Backup settings'), 4, 0)
 		self.include_settings_backup_check_box.stateChanged.connect(self.include_settings_backup_changed)
-		layout.addWidget(self.include_settings_backup_check_box, 6, 1)
+		layout.addWidget(self.include_settings_backup_check_box, 4, 1)
 
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'App')
@@ -149,20 +122,6 @@ class SettingsDialog(QDialog):
 
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'Events')
-
-	def opacity_enter_changed(self):
-		if self.ui_is_loaded:
-			self.settings.set_mouse_enter_opacity(float(self.opacity_enter_slider.value()) / 10)
-			self.opacity_enter_label.setText('Window opacity enter    {}%'.format(
-				int(self.opacity_enter_slider.value()) * 10)
-			)
-
-	def opacity_leave_changed(self):
-		if self.ui_is_loaded:
-			self.settings.set_mouse_leave_opacity(float(self.opacity_leave_slider.value()) / 10)
-			self.opacity_leave_label.setText('Window opacity leave    {}%'.format(
-				int(self.opacity_leave_slider.value()) * 10)
-			)
 
 	def always_on_top_changed(self):
 		if self.ui_is_loaded:

@@ -21,7 +21,6 @@ class MainWindow(QMainWindow):
 		self.calendar = self.init_calendar()
 		self.setCentralWidget(self.calendar)
 		self.setup_navigation_menu()
-		self.statusBar().showMessage('Status: Ok')
 		self.setFont(QFont('SansSerif', self.settings.app_font))
 
 		self.open_action = QAction('Open {}'.format(self.settings.app_name), self)
@@ -64,7 +63,7 @@ class MainWindow(QMainWindow):
 	def init_calendar(self):
 		calendar = CalendarWidget(self, width=self.width(), height=self.height())
 		calendar.setLocale(QLocale(QLocale.English))
-		calendar.set_status_bar(self.statusBar())
+		calendar.setFirstDayOfWeek(Qt.Monday)
 		return calendar
 
 	def hide(self):
@@ -82,7 +81,6 @@ class MainWindow(QMainWindow):
 		QMainWindow.resizeEvent(self, event)
 
 	def setup_navigation_menu(self):
-		self.statusBar()
 		main_menu = self.menuBar()
 		self.setup_file_menu(main_menu)
 		self.setup_help_menu(main_menu)
@@ -121,18 +119,5 @@ class MainWindow(QMainWindow):
 			self.new_action(self, '&Account...', self.calendar.open_account_info)
 		)
 		help_menu.addAction(
-			self.new_action(
-				self, '&Check for updates...', self.calendar.open_check_for_updates, icon='system-software-update'
-			)
-		)
-		help_menu.addAction(
 			self.new_action(self, '&About', self.calendar.open_about, icon='dialog-information')
 		)
-
-	def enterEvent(self, event):
-		self.setWindowOpacity(float(self.settings.mouse_enter_opacity))
-		super().enterEvent(event)
-
-	def leaveEvent(self, event):
-		self.setWindowOpacity(float(self.settings.mouse_leave_opacity))
-		super().leaveEvent(event)

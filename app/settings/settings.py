@@ -94,14 +94,6 @@ class Settings:
 		return APP_LOG_FILE
 
 	@property
-	def mouse_enter_opacity(self):
-		return float(self.__settings.value('app_user/mouse_enter_opacity', MOUSE_ENTER_OPACITY))
-
-	@property
-	def mouse_leave_opacity(self):
-		return float(self.__settings.value('app_user/mouse_leave_opacity', MOUSE_LEAVE_OPACITY))
-
-	@property
 	def is_always_on_top(self):
 		return self.__settings.value('app_user/is_always_on_top', ALWAYS_ON_TOP) == 'true'
 
@@ -157,14 +149,6 @@ class Settings:
 		self.__settings.setValue('app_user/is_dark_theme', 'true' if is_dark else 'false')
 		self._commit()
 
-	def set_mouse_enter_opacity(self, value: float):
-		self.__settings.setValue('app_user/mouse_enter_opacity', value)
-		self._commit()
-
-	def set_mouse_leave_opacity(self, value: float):
-		self.__settings.setValue('app_user/mouse_leave_opacity', value)
-		self._commit()
-
 	def set_is_always_on_top(self, value: bool):
 		self.__settings.setValue('app_user/is_always_on_top', 'true' if value else 'false')
 		self._commit()
@@ -196,8 +180,6 @@ class Settings:
 	def to_dict(self):
 		return {
 			'is_dark_theme': self.is_dark_theme,
-			'mouse_enter_opacity': self.mouse_enter_opacity,
-			'mouse_leave_opacity': self.mouse_leave_opacity,
 			'is_always_on_top': self.is_always_on_top,
 			'font': self.app_font,
 			'remove_event_after_time_up': self.remove_event_after_time_up,
@@ -208,16 +190,14 @@ class Settings:
 
 	def from_dict(self, data):
 		keys = [
-			'is_dark_theme', 'mouse_enter_opacity', 'mouse_leave_opacity', 'is_always_on_top',
-			'font', 'remove_event_after_time_up', 'show_calendar_on_startup',
+			'is_dark_theme', 'is_always_on_top', 'font',
+			'remove_event_after_time_up', 'show_calendar_on_startup',
 			'notification_duration', 'remind_time_before_event'
 		]
 		for key in keys:
 			if key not in data:
 				raise KeyError('settings backup is invalid')
 		self.set_theme(data['is_dark_theme'])
-		self.set_mouse_enter_opacity(data['mouse_enter_opacity'])
-		self.set_mouse_leave_opacity(data['mouse_leave_opacity'])
 		self.set_is_always_on_top(data['is_always_on_top'])
 		self.set_font(data['font'])
 		self.set_remove_event_after_time_up(data['remove_event_after_time_up'])

@@ -25,7 +25,6 @@ class CalendarWidget(QCalendarWidget):
 
 		# noinspection PyUnresolvedReferences
 		self.clicked[QDate].connect(self.show_events)
-		self.status_bar = None
 
 		self.settings = Settings()
 
@@ -154,17 +153,8 @@ class CalendarWidget(QCalendarWidget):
 		painter.setPen(QPen(QColor(255, 255, 255)))
 		painter.drawText(text_rect.center(), '{} event{}'.format(num, 's' if num > 1 else ''))
 
-	def set_status_bar(self, status_bar):
-		self.status_bar = status_bar
-
 	def resize_handler(self):
 		self.resize(self.parent.width(), self.parent.height() - 20)
-
-	def reset_status(self):
-		self.set_status('Ok')
-
-	def set_status(self, msg):
-		self.status_bar.showMessage('Status: {}'.format(msg))
 
 	def show_events(self, date):
 		py_date = date.toPyDate()
@@ -179,16 +169,14 @@ class CalendarWidget(QCalendarWidget):
 			except peewee.PeeweeException as exc:
 				logger.error(log_msg('database error: {}'.format(exc), 7))
 				error(self, 'Database error: {}'.format(exc))
-		self.set_status('there is not any events for {}'.format(py_date))
 
 	def open_create_event(self):
 		date = self.selectedDate().toPyDate()
 		if datetime.now().date() <= date:
-			self.reset_status()
 			self.event_creation_dialog.reset_inputs(date)
 			self.event_creation_dialog.exec_()
 		else:
-			self.set_status('can\'t set reminder to the past')
+			info(self, 'Can not set reminder to the past')
 
 	def open_settings(self):
 		self.settings_dialog.exec_()
@@ -203,9 +191,6 @@ class CalendarWidget(QCalendarWidget):
 			cloud_storage=self.cloud_storage,
 			font=QFont('SansSerif', self.settings.app_font)
 		).exec_()
-
-	def open_check_for_updates(self):
-		info(self, 'Coming soon...')
 
 	def open_about(self):
 		AboutDialog(

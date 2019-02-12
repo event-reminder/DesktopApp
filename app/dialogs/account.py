@@ -21,15 +21,13 @@ class AccountDialog(QDialog):
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
 
-		self.setFixedSize(550, 400)
+		self.setFixedSize(550, 300)
 		self.setWindowTitle('Account')
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
 
 		self.settings = Settings()
 		self.cloud = kwargs.get('cloud_storage', CloudStorage())
 
-		self.first_name_signup_input = QLineEdit()
-		self.last_name_signup_input = QLineEdit()
 		self.username_signup_input = QLineEdit()
 		self.email_signup_input = QLineEdit()
 
@@ -87,25 +85,22 @@ class AccountDialog(QDialog):
 
 		header_layout = QVBoxLayout()
 		header_layout.setContentsMargins(0, 0, 0, 10)
+
+		username_lbl = QLabel('{}'.format(user_data['username']))
+		username_lbl.setFont(QFont('SansSerif', 18))
+		header_layout.addWidget(username_lbl, alignment=Qt.AlignCenter)
+		layout.addLayout(header_layout)
+
 		header_layout.addWidget(
 			QLabel('{}'.format(user_data['email'])),
 			alignment=Qt.AlignCenter
 		)
-		username_lbl = QLabel('{}'.format(user_data['username']))
-		username_lbl.setFont(QFont('SansSerif', 9))
-		header_layout.addWidget(username_lbl, alignment=Qt.AlignCenter)
-		layout.addLayout(header_layout)
-
-		email_lbl = QLabel('{} {}'.format(user_data['first_name'], user_data['last_name']))
-		email_lbl.setFont(QFont('SansSerif', 16))
-		email_lbl.setContentsMargins(0, 0, 0, 10)
-		layout.addWidget(email_lbl, alignment=Qt.AlignCenter)
 
 		btn = button('Logout', 70, 30, self.logout_click)
 		btn.setFixedWidth(100)
 		layout.addWidget(btn, alignment=Qt.AlignCenter)
 
-		return layout, '{} {}'.format(user_data['first_name'], user_data['last_name'])
+		return layout, user_data['username']
 
 	def setup_login_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
@@ -123,7 +118,7 @@ class AccountDialog(QDialog):
 			self.layout.addWidget(
 				QLabel('Server is not working or your internet connection is failed'), alignment=Qt.AlignCenter
 			)
-			self.layout.addWidget(QLabel('Check your connection and restart app'), alignment=Qt.AlignCenter)
+			self.layout.addWidget(QLabel('Check your connection and reopen this dialog'), alignment=Qt.AlignCenter)
 		tab.setLayout(self.layout)
 		tabs.addTab(tab, tab_name)
 
@@ -131,21 +126,9 @@ class AccountDialog(QDialog):
 		tab = QWidget(flags=tabs.windowFlags())
 		layout = QVBoxLayout()
 
-		fn_layout = QVBoxLayout()
-		fn_layout.setContentsMargins(50, 0, 50, 10)
-		fn_layout.addWidget(QLabel('First name:'))
-		fn_layout.addWidget(self.first_name_signup_input)
-		layout.addLayout(fn_layout)
-
-		ln_layout = QVBoxLayout()
-		ln_layout.setContentsMargins(50, 0, 50, 10)
-		ln_layout.addWidget(QLabel('Last name:'))
-		ln_layout.addWidget(self.last_name_signup_input)
-		layout.addLayout(ln_layout)
-
 		un_layout = QVBoxLayout()
 		un_layout.setContentsMargins(50, 0, 50, 10)
-		un_layout.addWidget(QLabel('Username (optional):'))
+		un_layout.addWidget(QLabel('Username:'))
 		un_layout.addWidget(self.username_signup_input)
 		layout.addLayout(un_layout)
 
@@ -164,10 +147,8 @@ class AccountDialog(QDialog):
 
 	def validate_signup_fields(self):
 		errors = ''
-		if len(self.first_name_signup_input.text()) < 1:
-			errors += '* first name field can not be empty\n'
-		if len(self.last_name_signup_input.text()) < 1:
-			errors += '* last name field can not be empty\n'
+		if len(self.username_signup_input.text()) < 1:
+			errors += '* username field can not be empty\n'
 		if len(self.email_signup_input.text()) < 1:
 			errors += '* email field can not be empty\n'
 		else:
@@ -181,8 +162,6 @@ class AccountDialog(QDialog):
 			self.validate_signup_fields()
 			try:
 				self.cloud.register_account(
-					self.first_name_signup_input.text(),
-					self.last_name_signup_input.text(),
 					self.username_signup_input.text(),
 					self.email_signup_input.text()
 				)
@@ -195,8 +174,6 @@ class AccountDialog(QDialog):
 						self.email_signup_input.text()
 					)
 				)
-				self.first_name_signup_input.clear()
-				self.last_name_signup_input.clear()
 				self.email_signup_input.clear()
 			except requests.exceptions.ConnectionError:
 				error(

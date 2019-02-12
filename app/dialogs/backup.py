@@ -66,6 +66,7 @@ class BackupDialog(QDialog):
 		self.setup_local_restore_ui(tabs_widget)
 		self.setup_cloud_ui(tabs_widget)
 		content.addWidget(tabs_widget, alignment=Qt.AlignLeft)
+
 		self.setLayout(content)
 
 	def setup_local_backup_ui(self, tabs):
