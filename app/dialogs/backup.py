@@ -6,9 +6,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from app.utils import popup
 from app.settings import Settings
-from app.utils import logger, log_msg, button
+from app.util import popup, logger, log_msg, button
 from app.widgets.backup_widget import BackupWidget
 from app.cloud import CloudStorage
 

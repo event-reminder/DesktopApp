@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QLabel, QWidget, QDialog, QLineEdit, QCheckBox, QTab
 
 from app.settings import Settings
 from app.cloud import CloudStorage
-from app.utils import button, info, error
+from app.util import button, info, error
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences

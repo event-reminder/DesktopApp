@@ -1,7 +1,7 @@
 import peewee
 
 from app.storage import Storage
-from app.utils import popup, error, logger, log_msg
+from app.util import popup, error, logger, log_msg
 
 from PyQt5.QtWidgets import QMenu, QLabel, QWidget, QListWidget, QVBoxLayout, QMessageBox
 

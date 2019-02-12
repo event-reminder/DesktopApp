@@ -10,10 +10,8 @@ class MainWindow(QMainWindow):
 
 	def __init__(self, **kwargs):
 		self.settings = Settings()
-		if self.settings.is_always_on_top:
-			super().__init__(None, Qt.WindowStaysOnTopHint)
-		else:
-			super().__init__()
+		super().__init__(None, Qt.WindowStaysOnTopHint if self.settings.is_always_on_top else Qt.WindowFlags())
+
 		self.window().setWindowTitle(self.settings.app_name)
 		self.resize(self.settings.app_size)
 		self.move(self.settings.app_pos)
@@ -85,6 +83,7 @@ class MainWindow(QMainWindow):
 		self.setup_file_menu(main_menu)
 		self.setup_help_menu(main_menu)
 
+	# noinspection PyUnresolvedReferences
 	@staticmethod
 	def new_action(target, title, fn, shortcut=None, tip=None, icon=None):
 		action = QAction(title, target)

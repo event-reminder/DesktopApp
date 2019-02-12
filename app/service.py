@@ -9,7 +9,7 @@ from datetime import date, datetime, timedelta
 
 from app.storage import Storage
 from app.settings import Settings
-from app.utils import logger, log_msg
+from app.util import logger, log_msg
 
 
 class ReminderService(QThread):

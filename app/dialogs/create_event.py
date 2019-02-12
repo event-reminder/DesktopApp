@@ -2,7 +2,7 @@ import peewee
 
 from datetime import datetime, timedelta
 
-from app.utils import popup, logger, log_msg, button
+from app.util import popup, logger, log_msg, button
 
 from PyQt5.QtCore import Qt, QDate, QTime
 from PyQt5.QtWidgets import QLabel, QDialog, QLineEdit, QDateEdit, QTimeEdit, QTextEdit, QCheckBox, QVBoxLayout, QHBoxLayout

@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QListWidget, QVBoxLayout, QScrollArea, QHBoxLayout, QListWidgetItem
 
-from app.utils import button
+from app.util import button
 from app.widgets import EventWidget
 
 
