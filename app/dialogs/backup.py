@@ -65,18 +65,22 @@ class BackupDialog(QDialog):
 
 	def setup_ui(self):
 		tabs_widget = QTabWidget(self)
-		content = QVBoxLayout()
-
 		tabs_widget.setMinimumWidth(self.width() - 22)
-		local_backup_tab = QTabWidget(self)
-		self.setup_local_backup_ui(local_backup_tab)
-		self.setup_local_restore_ui(local_backup_tab)
-		tabs_widget.addTab(local_backup_tab, 'Local')
 
 		self.setup_cloud_ui(tabs_widget)
+		self.setup_local_ui(tabs_widget)
 
+		content = QVBoxLayout()
 		content.addWidget(tabs_widget, alignment=Qt.AlignLeft)
 		self.setLayout(content)
+
+	def setup_local_ui(self, tabs):
+		local_backup_tab = QTabWidget(self)
+
+		self.setup_local_backup_ui(local_backup_tab)
+		self.setup_local_restore_ui(local_backup_tab)
+
+		tabs.addTab(local_backup_tab, 'Local')
 
 	def setup_local_backup_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())

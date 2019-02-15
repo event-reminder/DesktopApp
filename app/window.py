@@ -108,7 +108,10 @@ class MainWindow(QMainWindow):
 		)
 		file_menu.addAction(
 			self.new_action(
-				self, 'Backup and Restore...', self.calendar.open_backup_and_restore, 'Ctrl+Alt+B', 'Backup and restore'
+				self, 'Backup and Restore...',
+				self.calendar.open_backup_and_restore,
+				'Ctrl+Alt+B',
+				'Backup and restore'
 			)
 		)
 
