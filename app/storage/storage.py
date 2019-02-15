@@ -37,7 +37,7 @@ class Storage:
 
 	@property
 	def connected(self):
-		return not self.__instance.is_closed()
+		return self.__instance.is_closed() is False
 
 	def event_exists(self, pk):
 		return self.get_event_by_id(pk) is not None
@@ -100,6 +100,7 @@ class Storage:
 		return [item for item in result]
 
 	def to_array(self):
+		self.connect()
 		events = self.get_events()
 		return [x.to_dict() for x in events]
 

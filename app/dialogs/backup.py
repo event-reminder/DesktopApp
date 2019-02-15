@@ -68,11 +68,14 @@ class BackupDialog(QDialog):
 		content = QVBoxLayout()
 
 		tabs_widget.setMinimumWidth(self.width() - 22)
-		self.setup_local_backup_ui(tabs_widget)
-		self.setup_local_restore_ui(tabs_widget)
-		self.setup_cloud_ui(tabs_widget)
-		content.addWidget(tabs_widget, alignment=Qt.AlignLeft)
+		local_backup_tab = QTabWidget(self)
+		self.setup_local_backup_ui(local_backup_tab)
+		self.setup_local_restore_ui(local_backup_tab)
+		tabs_widget.addTab(local_backup_tab, 'Local')
 
+		self.setup_cloud_ui(tabs_widget)
+
+		content.addWidget(tabs_widget, alignment=Qt.AlignLeft)
 		self.setLayout(content)
 
 	def setup_local_backup_ui(self, tabs):
@@ -129,20 +132,25 @@ class BackupDialog(QDialog):
 			self.restore_file_input.setText(file_name[0])
 
 	def launch_restore_local(self):
-		try:
-			self.storage.restore(self.restore_file_input.text())
-			self.calendar.update()
-			self.calendar.settings_dialog.refresh_settings_values()
-		except Exception as exc:
-			logger.error(log_msg(exc))
-			popup.error(self, 'Can\'t restore backup: {}'.format(exc))
+		self.spinner.start()
+		worker = Worker(self.storage.restore, *(self.restore_file_input.text(),))
+		worker.err_format = 'Can\'t restore backup: {}'
+		worker.signals.success.connect(self.launch_restore_local_success)
+		worker.signals.error.connect(self.popup_error)
+		worker.signals.finished.connect(self.stop_spinner)
+		self.thread_pool.start(worker)
+
+	def launch_restore_local_success(self):
+		self.calendar.update()
+		self.calendar.settings_dialog.refresh_settings_values()
 
 	def launch_backup_local(self):
-		try:
-			self.storage.backup(self.backup_file_input.text(), self.settings.include_settings_backup)
-		except Exception as exc:
-			logger.error(log_msg(exc))
-			popup.error(self, 'Can\'t backup calendar data: {}'.format(exc))
+		self.spinner.start()
+		worker = Worker(self.storage.backup, *(self.backup_file_input.text(), self.settings.include_settings_backup))
+		worker.err_format = 'Can\'t backup calendar data: {}'
+		worker.signals.error.connect(self.popup_error)
+		worker.signals.finished.connect(self.stop_spinner)
+		self.thread_pool.start(worker)
 
 	def setup_cloud_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
@@ -188,13 +196,15 @@ class BackupDialog(QDialog):
 
 	def refresh_backups_cloud(self):
 		self.backups_cloud_list_widget.clear()
-		try:
-			if self.cloud.token_is_valid():
-				backups = self.cloud.backups()
-				for backup in backups:
-					self.add_backup_widget(backup)
-		except requests.exceptions.ConnectionError as exc:
-			popup.error(self, str(exc))
+		worker = Worker(self.cloud.validate_token)
+		worker.signals.success.connect(self.refresh_backups_cloud_success)
+		worker.signals.error.connect(self.popup_error)
+		self.thread_pool.start(worker)
+
+	def refresh_backups_cloud_success(self):
+		backups = self.cloud.backups()
+		for backup in backups:
+			self.add_backup_widget(backup)
 
 	def add_backup_widget(self, backup_data):
 		backup_widget = BackupWidget(
@@ -218,6 +228,7 @@ class BackupDialog(QDialog):
 		self.thread_pool.start(worker)
 
 	def upload_backup_cloud_run(self):
+		self.spinner.start()
 		timestamp = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
 		self.storage.connect()
 		backup_data = self.storage.prepare_backup_data(
@@ -227,22 +238,23 @@ class BackupDialog(QDialog):
 
 	def upload_backup_cloud_success(self):
 		self.refresh_backups_cloud()
+		self.stop_spinner()
 		popup.info(self, 'Backup was successfully uploaded to the cloud.')
-
-	def run_download_backup_cloud(self, current):
-		self.storage.restore_from_dict(
-			self.cloud.download_backup(current.hash_sum)
-		)
 
 	def download_backup_cloud(self):
 		current = self.get_current_selected()
 		if current is not None:
 			self.spinner.start()
-			worker = Worker(self.run_download_backup_cloud, *(current,))
+			worker = Worker(self.download_backup_cloud_run, *(current,))
 			worker.signals.success.connect(self.download_backup_cloud_success)
 			worker.signals.finished.connect(self.stop_spinner)
 			worker.signals.error.connect(self.popup_error)
 			self.thread_pool.start(worker)
+
+	def download_backup_cloud_run(self, current):
+		self.storage.restore_from_dict(
+			self.cloud.download_backup(current.hash_sum)
+		)
 
 	def download_backup_cloud_success(self):
 		self.calendar.reset_palette(self.settings.app_theme)
@@ -254,15 +266,12 @@ class BackupDialog(QDialog):
 	def delete_backup_cloud(self):
 		current = self.get_current_selected()
 		if current is not None:
-			worker = Worker(self.delete_backup_cloud_run, *(current.hash_sum,))
+			self.spinner.start()
+			worker = Worker(self.cloud.delete_backup, *(current.hash_sum,))
 			worker.signals.success.connect(self.delete_backup_cloud_success)
 			worker.signals.finished.connect(self.stop_spinner)
 			worker.signals.error.connect(self.popup_error)
-			self.spinner.start()
 			self.thread_pool.start(worker)
-
-	def delete_backup_cloud_run(self, hash_sum):
-		self.cloud.delete_backup(hash_sum)
 
 	def delete_backup_cloud_success(self):
 		self.refresh_backups_cloud()
@@ -278,8 +287,4 @@ class BackupDialog(QDialog):
 		self.spinner.stop()
 
 	def popup_error(self, err):
-		logger.error(log_msg('{}'.format(err[2])))
-		if isinstance(err[0], requests.exceptions.ConnectionError):
-			popup.error(self, 'Connection error...')
-		else:
-			popup.error(self, '{}'.format(err[1]))
+		popup.error(self, '{}'.format(err[1]))

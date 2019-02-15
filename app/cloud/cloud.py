@@ -24,8 +24,6 @@ class CloudStorage:
 				return token
 		except FileNotFoundError:
 			pass
-		except Exception:
-			pass
 		return None
 
 	def __remove_token(self):
@@ -76,11 +74,11 @@ class CloudStorage:
 			print(json_response)
 			raise Exception('registration failed:\n{}'.format(err_msg))
 
-	def token_is_valid(self):
+	def validate_token(self):
 		result = 'Authorization' in self.session.headers and self.session.get(routes.USER).status_code == 200
 		if result is False:
 			self.__remove_token()
-		return result
+			raise requests.exceptions.RequestException('Authorization is required')
 
 	def user(self):
 		response = self.session.get(routes.USER)

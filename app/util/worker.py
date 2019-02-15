@@ -1,6 +1,8 @@
 import sys
 import traceback
 
+from app.util import logger, log_msg
+
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QRunnable
 
 
@@ -19,17 +21,17 @@ class Worker(QRunnable):
 		self.args = args
 		self.kwargs = kwargs
 		self.signals = WorkerSignals()
-		self.success_kwargs = None
-		self.finished_kwargs = None
+		self.err_format = '{}'
 
 	@pyqtSlot()
 	def run(self):
 		try:
 			self.fn(*self.args, **self.kwargs)
 		except Exception as _:
-			traceback.print_exc()
+			# traceback.print_exc()
 			exc_type, value = sys.exc_info()[:2]
-			self.signals.error.emit((exc_type, value, traceback.format_exc()))
+			logger.error(log_msg(self.err_format.format(value)))
+			self.signals.error.emit((exc_type, self.err_format.format(value), traceback.format_exc()))
 		else:
 			self.signals.success.emit()
 		finally:

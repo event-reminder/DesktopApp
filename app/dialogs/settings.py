@@ -59,11 +59,12 @@ class SettingsDialog(QDialog):
 
 	def setup_ui(self):
 		content = QVBoxLayout()
-		settings_general_tabs = QTabWidget(self)
-		settings_general_tabs.setMinimumWidth(self.width() - 22)
-		self.setup_app_settings_ui(settings_general_tabs)
-		self.setup_events_settings_ui(settings_general_tabs)
-		content.addWidget(settings_general_tabs, alignment=Qt.AlignLeft)
+		tab_widget = QTabWidget(self)
+		tab_widget.setMinimumWidth(self.width() - 22)
+		self.setup_app_settings_ui(tab_widget)
+		self.setup_events_settings_ui(tab_widget)
+		self.setup_account_settings_ui(tab_widget)
+		content.addWidget(tab_widget, alignment=Qt.AlignLeft)
 		self.setLayout(content)
 
 	def setup_app_settings_ui(self, tabs):
@@ -122,6 +123,19 @@ class SettingsDialog(QDialog):
 
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'Events')
+
+	def setup_account_settings_ui(self, tabs):
+		tab = QWidget(flags=tabs.windowFlags())
+
+		layout = QGridLayout()
+		layout.setAlignment(Qt.AlignTop)
+		layout.setContentsMargins(50, 30, 50, 10)
+		layout.setSpacing(20)
+
+		layout.addWidget(QLabel('Coming soon...'), 0, 0)
+
+		tab.setLayout(layout)
+		tabs.addTab(tab, 'Account')
 
 	def always_on_top_changed(self):
 		if self.ui_is_loaded:

@@ -5,195 +5,212 @@ from PyQt5.QtGui import QColor, QPainter
 from PyQt5.QtCore import Qt, QRect, QTimer, pyqtSlot
 
 
-# noinspection PyArgumentList,PyUnresolvedReferences,PyPep8Naming
 class WaitingSpinner(QWidget):
-	mColor = QColor(Qt.gray)
-	mRoundness = 100.0
-	mMinimumTrailOpacity = 31.4159265358979323846
-	mTrailFadePercentage = 50.0
-	mRevolutionsPerSecond = 1.57079632679489661923
-	mNumberOfLines = 20
-	mLineLength = 10
-	mLineWidth = 2
-	mInnerRadius = 20
-	mCurrentCounter = 0
-	mIsSpinning = False
 
-	def __init__(self, centerOnParent=True, disableParentWhenSpinning=True, *args, **kwargs):
+	SPINNER_SOLID = 'solid'
+	SPINNER_STRIPED = 'striped'
+
+	def __init__(self, center_on_parent=True, disable_parent_when_spinning=True, fill=SPINNER_SOLID, *args, **kwargs):
 		QWidget.__init__(self, *args, **kwargs)
-		self.mCenterOnParent = centerOnParent
-		self.mDisableParentWhenSpinning = disableParentWhenSpinning
-		self.timer = QTimer(self)
-		self.initialize()
+		self._center_on_parent = center_on_parent
+		self._disable_parent_when_spinning = disable_parent_when_spinning
+		self._timer = QTimer(self)
+		self._color = QColor(Qt.gray)
+		self._roundness = 100.0
+		self._minimum_trail_opacity = 31.4159265358979323846
+		self._trail_fade_percentage = 50.0
+		self._revolutions_per_second = 1.57079632679489661923
+		if fill == WaitingSpinner.SPINNER_SOLID:
+			self._number_of_lines = 70
+		elif fill == WaitingSpinner.SPINNER_STRIPED:
+			self._number_of_lines = 20
+		else:
+			self._number_of_lines = 10
+		self._line_length = 10
+		self._line_width = 2
+		self._inner_radius = 20
+		self._current_counter = 0
+		self._is_spinning = False
 
-	def initialize(self):
-		self.timer.timeout.connect(self.rotate)
-		self.updateSize()
-		self.updateTimer()
+		self._init()
+
+	# noinspection PyUnresolvedReferences
+	def _init(self):
 		self.hide()
+		self._timer.timeout.connect(self._rotate)
+		self._update_size()
+		self._update_timer()
 
+	# noinspection PyArgumentList
 	@pyqtSlot()
-	def rotate(self):
-		self.mCurrentCounter += 1
-		if self.mCurrentCounter > self.numberOfLines():
-			self.mCurrentCounter = 0
+	def _rotate(self):
+		self._current_counter += 1
+		if self._current_counter > self._number_of_lines:
+			self._current_counter = 0
 		self.update()
 
-	def updateSize(self):
-		size = (self.mInnerRadius + self.mLineLength) * 2
+	def _update_size(self):
+		size = (self._inner_radius + self._line_length) * 2
 		self.setFixedSize(size, size)
 
-	def updateTimer(self):
-		self.timer.setInterval(1000 / (self.mNumberOfLines * self.mRevolutionsPerSecond))
+	def _update_timer(self):
+		self._timer.setInterval(1000 / (self._number_of_lines * self._revolutions_per_second))
 
-	def updatePosition(self):
-		if self.parentWidget() and self.mCenterOnParent:
+	def _update_position(self):
+		if self.parentWidget() and self._center_on_parent:
 			self.move(
 				self.parentWidget().width() / 2 - self.width() / 2,
 				self.parentWidget().height() / 2 - self.height() / 2
 			)
 
 	@staticmethod
-	def lineCountDistanceFromPrimary(current, primary, totalNrOfLines):
+	def _line_count_distance_from_primary(current, primary, total_num_of_lines):
 		distance = primary - current
 		if distance < 0:
-			distance += totalNrOfLines
+			distance += total_num_of_lines
 		return distance
 
-	def currentLineColor(self, countDistance, totalNrOfLines, trailFadePerc, minOpacity, color):
-		if countDistance == 0:
+	def _current_line_color(self, count_distance, total_num_of_lines, trail_fade_percentage, min_opacity, color):
+		if count_distance == 0:
 			return color
+		min_alpha_f = min_opacity / 100.0
 
-		minAlphaF = minOpacity / 100.0
-
-		distanceThreshold = ceil((totalNrOfLines - 1) * trailFadePerc / 100.0)
-		if countDistance > distanceThreshold:
-			color.setAlphaF(minAlphaF)
-
+		distance_threshold = ceil((total_num_of_lines - 1) * trail_fade_percentage / 100.0)
+		if count_distance > distance_threshold:
+			color.setAlphaF(min_alpha_f)
 		else:
-			alphaDiff = self.mColor.alphaF() - minAlphaF
-			gradient = alphaDiff / distanceThreshold + 1.0
-			resultAlpha = color.alphaF() - gradient * countDistance
-			resultAlpha = min(1.0, max(0.0, resultAlpha))
-			color.setAlphaF(resultAlpha)
+			alpha_diff = self._color.alphaF() - min_alpha_f
+			gradient = alpha_diff / distance_threshold + 1.0
+			result_alpha = min(1.0, max(0.0, color.alphaF() - gradient * count_distance))
+			color.setAlphaF(result_alpha)
 		return color
 
 	def paintEvent(self, event):
-		self.updatePosition()
+		self._update_position()
 		painter = QPainter(self)
 		painter.fillRect(self.rect(), Qt.transparent)
 		painter.setRenderHint(QPainter.Antialiasing, True)
-		if self.mCurrentCounter > self.mNumberOfLines:
-			self.mCurrentCounter = 0
+		if self._current_counter > self._number_of_lines:
+			self._current_counter = 0
 		painter.setPen(Qt.NoPen)
 
-		for i in range(self.mNumberOfLines):
+		for i in range(self._number_of_lines):
 			painter.save()
 			painter.translate(
-				self.mInnerRadius + self.mLineLength,
-				self.mInnerRadius + self.mLineLength
+				self._inner_radius + self._line_length,
+				self._inner_radius + self._line_length
 			)
-			rotateAngle = 360.0 * i / self.mNumberOfLines
-			painter.rotate(rotateAngle)
-			painter.translate(self.mInnerRadius, 0)
-			distance = self.lineCountDistanceFromPrimary(
-				i, self.mCurrentCounter, self.mNumberOfLines
+			rotate_angle = 360.0 * i / self._number_of_lines
+			painter.rotate(rotate_angle)
+			painter.translate(self._inner_radius, 0)
+			distance = self._line_count_distance_from_primary(
+				i, self._current_counter, self._number_of_lines
 			)
-			color = self.currentLineColor(
+			color = self._current_line_color(
 				distance,
-				self.mNumberOfLines,
-				self.mTrailFadePercentage,
-				self.mMinimumTrailOpacity,
-				self.mColor
+				self._number_of_lines,
+				self._trail_fade_percentage,
+				self._minimum_trail_opacity,
+				self._color
 			)
 			painter.setBrush(color)
 			painter.drawRoundedRect(
-				QRect(0, -self.mLineWidth // 2, self.mLineLength, self.mLineLength),
-				self.mRoundness, Qt.RelativeSize
+				QRect(0, -self._line_width // 2, self.line_length, self._line_length),
+				self._roundness, Qt.RelativeSize
 			)
 			painter.restore()
 
 	def start(self):
-		self.updatePosition()
-		self.mIsSpinning = True
-		self.show()
+		self._update_position()
+		self._is_spinning = True
 
-		if self.parentWidget() and self.mDisableParentWhenSpinning:
+		if self.parentWidget() and self._disable_parent_when_spinning:
 			self.parentWidget().setEnabled(False)
 
-		if not self.timer.isActive():
-			self.timer.start()
-			self.mCurrentCounter = 0
+		if not self._timer.isActive():
+			self._timer.start()
+			self._current_counter = 0
+
+		self.show()
 
 	def stop(self):
-		self.mIsSpinning = False
+		self._is_spinning = False
 		self.hide()
 
-		if self.parentWidget() and self.mDisableParentWhenSpinning:
+		if self.parentWidget() and self._disable_parent_when_spinning:
 			self.parentWidget().setEnabled(True)
+		if self._timer.isActive():
+			self._timer.stop()
+			self._current_counter = 0
 
-		if self.timer.isActive():
-			self.timer.stop()
-			self.mCurrentCounter = 0
+	def set_number_of_lines(self, value):
+		self._number_of_lines = value
+		self._update_timer()
 
-	def setNumberOfLines(self, lines):
-		self.mNumberOfLines = lines
-		self.updateTimer()
+	def set_line_length(self, value):
+		self._line_length = value
+		self._update_size()
 
-	def setLineLength(self, length):
-		self.mLineLength = length
-		self.updateSize()
+	def set_line_width(self, value):
+		self._line_width = value
+		self._update_size()
 
-	def setLineWidth(self, width):
-		self.mLineWidth = width
-		self.updateSize()
+	def set_inner_radius(self, value):
+		self._inner_radius = value
+		self._update_size()
 
-	def setInnerRadius(self, radius):
-		self.mInnerRadius = radius
-		self.updateSize()
+	def set_roundness(self, value):
+		self._roundness = min(0.0, max(100, value))
 
+	def set_color(self, value):
+		self._color = value
+
+	def set_revolutions_per_second(self, value):
+		self._revolutions_per_second = value
+		self._update_timer()
+
+	def set_trail_fade_percentage(self, value):
+		self._trail_fade_percentage = value
+
+	def set_minimum_trail_opacity(self, value):
+		self._minimum_trail_opacity = value
+
+	@property
 	def color(self):
-		return self.mColor
+		return self._color
 
+	@property
 	def roundness(self):
-		return self.mRoundness
+		return self._roundness
 
-	def minimumTrailOpacity(self):
-		return self.mMinimumTrailOpacity
+	@property
+	def minimum_trail_opacity(self):
+		return self._minimum_trail_opacity
 
-	def trailFadePercentage(self):
-		return self.mTrailFadePercentage
+	@property
+	def trail_fade_percentage(self):
+		return self._trail_fade_percentage
 
-	def revolutionsPersSecond(self):
-		return self.mRevolutionsPerSecond
+	@property
+	def revolutions_pers_second(self):
+		return self._revolutions_per_second
 
-	def numberOfLines(self):
-		return self.mNumberOfLines
+	@property
+	def number_of_lines(self):
+		return self._number_of_lines
 
-	def lineLength(self):
-		return self.mLineLength
+	@property
+	def line_length(self):
+		return self._line_length
 
-	def lineWidth(self):
-		return self.mLineWidth
+	@property
+	def line_width(self):
+		return self._line_width
 
-	def innerRadius(self):
-		return self.mInnerRadius
+	@property
+	def inner_radius(self):
+		return self._inner_radius
 
-	def isSpinning(self):
-		return self.mIsSpinning
-
-	def setRoundness(self, roundness):
-		self.mRoundness = min(0.0, max(100, roundness))
-
-	def setColor(self, color):
-		self.mColor = color
-
-	def setRevolutionsPerSecond(self, revolutionsPerSecond):
-		self.mRevolutionsPerSecond = revolutionsPerSecond
-		self.updateTimer()
-
-	def setTrailFadePercentage(self, trail):
-		self.mTrailFadePercentage = trail
-
-	def setMinimumTrailOpacity(self, minimumTrailOpacity):
-		self.mMinimumTrailOpacity = minimumTrailOpacity
+	@property
+	def is_spinning(self):
+		return self._is_spinning

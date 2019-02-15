@@ -106,12 +106,9 @@ class AccountDialog(QDialog):
 		tab = QWidget(flags=tabs.windowFlags())
 		tab_name = 'Login'
 		try:
-			if self.cloud.token_is_valid():
-				self.account_info_menu, tab_name = self.build_account_info_menu()
-				self.layout.addLayout(self.account_info_menu)
-			else:
-				self.login_menu, tab_name = self.build_login_menu()
-				self.layout.addLayout(self.login_menu)
+			self.cloud.validate_token()
+			self.account_info_menu, tab_name = self.build_account_info_menu()
+			self.layout.addLayout(self.account_info_menu)
 		except requests.exceptions.ConnectionError:
 			self.layout.setContentsMargins(0, 90, 0, 90)
 			self.layout.addWidget(QLabel('Connection error'), alignment=Qt.AlignCenter)
@@ -119,6 +116,9 @@ class AccountDialog(QDialog):
 				QLabel('Server is not working or your internet connection is failed'), alignment=Qt.AlignCenter
 			)
 			self.layout.addWidget(QLabel('Check your connection and reopen this dialog'), alignment=Qt.AlignCenter)
+		except requests.exceptions.RequestException:
+			self.login_menu, tab_name = self.build_login_menu()
+			self.layout.addLayout(self.login_menu)
 		tab.setLayout(self.layout)
 		tabs.addTab(tab, tab_name)
 
