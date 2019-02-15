@@ -162,7 +162,6 @@ class CalendarWidget(QCalendarWidget):
 			try:
 				events = self.storage.get_events(py_date)
 				if len(events) > 0:
-					self.reset_status()
 					self.event_retrieving_dialog.set_data(events, py_date)
 					self.event_retrieving_dialog.exec_()
 					return True

@@ -7,9 +7,10 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from app.settings import Settings
-from app.util import popup, logger, log_msg, button
-from app.widgets.backup_widget import BackupWidget
 from app.cloud import CloudStorage
+from app.widgets.backup_widget import BackupWidget
+from app.util import popup, logger, log_msg, button, Worker
+from app.widgets.waiting_spinner import WaitingSpinner
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
@@ -23,6 +24,10 @@ class BackupDialog(QDialog):
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
+
+		self.spinner = WaitingSpinner()
+
+		self.thread_pool = QThreadPool()
 
 		self.calendar = kwargs['calendar']
 		self.storage = kwargs['storage']
@@ -51,6 +56,8 @@ class BackupDialog(QDialog):
 		self.delete_backup_button = button('Delete', 80, 35, self.delete_backup_cloud)
 
 		self.setup_ui()
+
+		self.layout().addWidget(self.spinner)
 
 	def showEvent(self, event):
 		self.refresh_backups_cloud()
@@ -204,59 +211,75 @@ class BackupDialog(QDialog):
 		self.backups_cloud_list_widget.setItemWidget(list_widget_item, backup_widget)
 
 	def upload_backup_cloud(self):
+		worker = Worker(self.upload_backup_cloud_run)
+		worker.signals.error.connect(self.popup_error)
+		worker.signals.success.connect(self.upload_backup_cloud_success)
+		worker.signals.finished.connect(self.stop_spinner)
+		self.thread_pool.start(worker)
+
+	def upload_backup_cloud_run(self):
 		timestamp = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
+		self.storage.connect()
 		backup_data = self.storage.prepare_backup_data(
 			self.storage.to_array(), timestamp, self.settings.include_settings_backup
 		)
-		try:
-			self.cloud.upload_backup(backup_data)
-			self.refresh_backups_cloud()
-			popup.info(self, 'Backup \'{}\' was successfully uploaded to the cloud.'.format(backup_data['timestamp']))
-		except requests.exceptions.ConnectionError:
-			popup.error(self, 'Connection error...')
+		self.cloud.upload_backup(backup_data)
 
-			# TODO: add logging
+	def upload_backup_cloud_success(self):
+		self.refresh_backups_cloud()
+		popup.info(self, 'Backup was successfully uploaded to the cloud.')
 
-		except Exception as exc:
-			popup.error(self, str(exc))
+	def run_download_backup_cloud(self, current):
+		self.storage.restore_from_dict(
+			self.cloud.download_backup(current.hash_sum)
+		)
 
 	def download_backup_cloud(self):
 		current = self.get_current_selected()
 		if current is not None:
-			try:
-				self.storage.restore_from_dict(
-					self.cloud.download_backup(current.hash_sum)
-				)
-				self.calendar.reset_palette(self.settings.app_theme)
-				self.calendar.reset_font(QFont('SansSerif', self.settings.app_font))
-				self.calendar.update()
-				self.calendar.settings_dialog.refresh_settings_values()
-				popup.info(self, 'Backup \'{}\' was successfully downloaded.'.format(current.title))
-			except requests.exceptions.ConnectionError:
-				popup.error(self, 'Connection error...')
+			self.spinner.start()
+			worker = Worker(self.run_download_backup_cloud, *(current,))
+			worker.signals.success.connect(self.download_backup_cloud_success)
+			worker.signals.finished.connect(self.stop_spinner)
+			worker.signals.error.connect(self.popup_error)
+			self.thread_pool.start(worker)
 
-			# TODO: add logging
-
-			except Exception as exc:
-				popup.error(self, str(exc))
+	def download_backup_cloud_success(self):
+		self.calendar.reset_palette(self.settings.app_theme)
+		self.calendar.reset_font(QFont('SansSerif', self.settings.app_font))
+		self.calendar.update()
+		self.calendar.settings_dialog.refresh_settings_values()
+		popup.info(self, 'Backup was successfully downloaded.')
 
 	def delete_backup_cloud(self):
 		current = self.get_current_selected()
 		if current is not None:
-			try:
-				self.cloud.delete_backup(current.hash_sum)
-				self.refresh_backups_cloud()
-				popup.info(self, 'Backup \'{}\' was deleted successfully.'.format(current.title))
-			except requests.exceptions.ConnectionError:
-				popup.error(self, 'Connection error...')
+			worker = Worker(self.delete_backup_cloud_run, *(current.hash_sum,))
+			worker.signals.success.connect(self.delete_backup_cloud_success)
+			worker.signals.finished.connect(self.stop_spinner)
+			worker.signals.error.connect(self.popup_error)
+			self.spinner.start()
+			self.thread_pool.start(worker)
 
-			# TODO: add logging
+	def delete_backup_cloud_run(self, hash_sum):
+		self.cloud.delete_backup(hash_sum)
 
-			except Exception as exc:
-				popup.error(self, str(exc))
+	def delete_backup_cloud_success(self):
+		self.refresh_backups_cloud()
+		popup.info(self, 'Backup was deleted successfully.')
 
 	def get_current_selected(self):
 		current = self.backups_cloud_list_widget.currentItem()
 		if current is not None:
 			return self.backups_cloud_list_widget.itemWidget(current)
 		return None
+
+	def stop_spinner(self):
+		self.spinner.stop()
+
+	def popup_error(self, err):
+		logger.error(log_msg('{}'.format(err[2])))
+		if isinstance(err[0], requests.exceptions.ConnectionError):
+			popup.error(self, 'Connection error...')
+		else:
+			popup.error(self, '{}'.format(err[1]))

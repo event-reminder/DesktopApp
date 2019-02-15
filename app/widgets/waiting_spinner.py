@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt, QRect, QTimer, pyqtSlot
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences,PyPep8Naming
-class QtWaitingSpinner(QWidget):
+class WaitingSpinner(QWidget):
 	mColor = QColor(Qt.gray)
 	mRoundness = 100.0
 	mMinimumTrailOpacity = 31.4159265358979323846
