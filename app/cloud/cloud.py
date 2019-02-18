@@ -34,7 +34,7 @@ class CloudStorage:
 			self.session.headers.pop('Authorization')
 
 	def login(self, username, password, remember=False):
-		response = self.session.post(routes.LOGIN, json={
+		response = self.session.post(routes.AUTH_LOGIN, json={
 			'username': username,
 			'password': password
 		})
@@ -50,13 +50,13 @@ class CloudStorage:
 		return token
 
 	def logout(self):
-		response = self.session.post(routes.LOGOUT)
+		response = self.session.post(routes.AUTH_LOGOUT)
 		if response.status_code != 200:
 			raise Exception('logout failed, response status code: {}'.format(response.status_code))
 		self.__remove_token()
 
 	def register_account(self, username, email):
-		response = self.session.post(routes.REGISTER, json={
+		response = self.session.post(routes.ACCOUNT_CREATE, json={
 			'username': username,
 			'email': email
 		})
@@ -75,13 +75,13 @@ class CloudStorage:
 			raise Exception('registration failed:\n{}'.format(err_msg))
 
 	def validate_token(self):
-		result = 'Authorization' in self.session.headers and self.session.get(routes.USER).status_code == 200
+		result = 'Authorization' in self.session.headers and self.session.get(routes.ACCOUNT_DETAILS).status_code == 200
 		if result is False:
 			self.__remove_token()
 			raise requests.exceptions.RequestException('Authorization is required')
 
 	def user(self):
-		response = self.session.get(routes.USER)
+		response = self.session.get(routes.ACCOUNT_DETAILS)
 		if response.status_code != 200:
 			raise Exception('retrieving user data failed, response status code: {}'.format(response.json()))
 		return response.json()
@@ -93,7 +93,7 @@ class CloudStorage:
 		return response.json()
 
 	def upload_backup(self, backup):
-		response = self.session.post(routes.BACKUPS_CREATE, data=backup)
+		response = self.session.post(routes.BACKUP_CREATE, data=backup)
 		code = response.status_code
 		if code != 201:
 			if code == 400:
