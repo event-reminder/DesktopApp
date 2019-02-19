@@ -167,6 +167,7 @@ class BackupDialog(QDialog):
 		center_buttons_layout = QHBoxLayout()
 		center_buttons_layout.setAlignment(Qt.AlignLeft)
 		self.upload_backup_button.setToolTip('Upload')
+		self.upload_backup_button.setEnabled(False)
 		center_buttons_layout.addWidget(self.upload_backup_button, alignment=Qt.AlignCenter)
 		self.download_backup_button.setToolTip('Download')
 		self.download_backup_button.setEnabled(False)
@@ -206,6 +207,7 @@ class BackupDialog(QDialog):
 		self.thread_pool.start(worker)
 
 	def refresh_backups_cloud_success(self):
+		self.upload_backup_button.setEnabled(True)
 		backups = self.cloud.backups()
 		for backup in backups:
 			self.add_backup_widget(backup)
