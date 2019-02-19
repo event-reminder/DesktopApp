@@ -11,7 +11,7 @@ class Settings:
 	"""
 
 	def __init__(self, autocommit=True):
-		self.__settings = QSettings(APP_ORGANIZATION, APP_NAME)
+		self.__settings = QSettings(SETTINGS_FILE, QSettings.IniFormat)
 		self.__is_dark_theme = self.__settings.value('app_user/is_dark_theme', APP_IS_DARK_THEME)
 		self.__autocommit = autocommit
 

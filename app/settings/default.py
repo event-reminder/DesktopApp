@@ -11,6 +11,9 @@ def resources(init_path):
 	return abs_path('resources/{}'.format(init_path))
 
 
+APP_DATA_PATH = abs_path('tmp/')
+
+
 APP_WIDTH = 1024
 APP_HEIGHT = 768
 
@@ -24,6 +27,8 @@ APP_RELEASE_DATE = 'February 2, 2019'
 
 BACKUP_FILE_NAME = '{} Backup'.format(APP_NAME)
 
+SETTINGS_FILE = '{}settings.ini'.format(APP_DATA_PATH)
+
 
 APP_ICON_DARK = resources('app-icon-dark.png')
 APP_ICON_DARK_MEDIUM = resources('app-icon-dark-70x70.png')
@@ -36,9 +41,8 @@ APP_ICON_LIGHT_ICO = resources('app-icon-light.ico')
 
 
 # path to files created by application: db, log, etc.
-APP_DATA_PATH = abs_path('tmp/')
 
-APP_LOG_FILE = '{}app.log'.format(APP_DATA_PATH)
+APP_LOG_FILE = '{}application.log'.format(APP_DATA_PATH)
 
 APP_DB_PATH = APP_DATA_PATH
 APP_DB_FILE = '{}storage.db'.format(APP_DATA_PATH)
