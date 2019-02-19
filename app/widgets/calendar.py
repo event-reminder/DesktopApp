@@ -9,7 +9,8 @@ from datetime import datetime
 from app.storage import Storage
 from app.settings import Settings
 from app.cloud import CloudStorage
-from app.util import logger, log_msg, info, error
+from app.util import logger, log_msg
+from app.widgets.util.popup import info, error
 from app.settings.default import FONT_LARGE, FONT_NORMAL
 from app.dialogs import AboutDialog, BackupDialog, AccountDialog, SettingsDialog, EventsListDialog, CreateEventDialog
 

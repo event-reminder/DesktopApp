@@ -1,8 +1,8 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QListWidget, QVBoxLayout, QScrollArea, QHBoxLayout, QListWidgetItem
 
-from app.util import button
 from app.widgets import EventWidget
+from app.widgets.util import PushButton
 
 
 class EventsListDialog(QDialog):
@@ -31,9 +31,9 @@ class EventsListDialog(QDialog):
 		content.addWidget(scroll_view)
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
-		btn_new_event = button('New', 90, 30, self.handle_create_event)
+		btn_new_event = PushButton('New', 90, 30, self.handle_create_event)
 		buttons.addWidget(btn_new_event, 0, Qt.AlignRight)
-		btn_close = button('Close', 90, 30, self.close_btn_click)
+		btn_close = PushButton('Close', 90, 30, self.close_btn_click)
 		buttons.addWidget(btn_close, 0, Qt.AlignRight)
 		content.addLayout(buttons)
 		self.setLayout(content)

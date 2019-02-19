@@ -1,6 +1,7 @@
 import platform
 
 from app.settings import Settings
+from app.settings import APP_ORGANIZATION, APP_NAME, APP_VERSION, APP_RELEASE_DATE
 
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QFont, QPixmap
@@ -33,7 +34,7 @@ class AboutDialog(QDialog):
 		logo_image.setFixedSize(QSize(70, 70))
 		# noinspection PyArgumentList
 		title_section.addWidget(logo_image)
-		name_label = QLabel(self.settings.app_name)
+		name_label = QLabel(APP_NAME)
 		name_label.setFont(QFont('SansSerif', 26))
 		title_section.addWidget(name_label, alignment=Qt.AlignVCenter)
 
@@ -42,11 +43,11 @@ class AboutDialog(QDialog):
 
 		data_section = QVBoxLayout()
 		data_section.setSpacing(0)
-		version_label = QLabel('{} {}'.format(self.settings.app_name, self.settings.app_version))
+		version_label = QLabel('{} {}'.format(APP_NAME, APP_VERSION))
 		version_label.setFont(bold_font)
 		data_section.addWidget(version_label, alignment=Qt.AlignTop)
 		data_section.addWidget(
-			QLabel('Built on {}'.format(self.settings.app_build_date)),
+			QLabel('Released on {}'.format(APP_RELEASE_DATE)),
 			alignment=Qt.AlignTop
 		)
 		data_section.addWidget(
@@ -57,7 +58,7 @@ class AboutDialog(QDialog):
 		content.addLayout(title_section)
 		content.addLayout(data_section)
 		content.addWidget(
-			QLabel('Copyright (c) 2019 {}'.format(self.settings.app_organization)),
+			QLabel('Copyright (c) 2019 {}'.format(APP_ORGANIZATION)),
 			alignment=Qt.AlignBottom
 		)
 

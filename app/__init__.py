@@ -1,2 +1,2 @@
 from app.window import MainWindow
-from app.service import ReminderService
+from app.util.service import ReminderService

@@ -7,7 +7,9 @@ from PyQt5.QtWidgets import QLabel, QWidget, QDialog, QLineEdit, QCheckBox, QTab
 
 from app.settings import Settings
 from app.cloud import CloudStorage
-from app.util import button, info, error
+from app.widgets.util import PushButton
+from app.widgets.util.popup import info, error
+from app.exceptions import CloudStorageException
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
@@ -73,7 +75,7 @@ class AccountDialog(QDialog):
 		rl_layout.addWidget(self.remember_login_check_box)
 		layout.addLayout(rl_layout)
 
-		btn = button('Login', 70, 30, self.login_click)
+		btn = PushButton('Login', 70, 30, self.login_click)
 		btn.setFixedWidth(100)
 		layout.addWidget(btn, alignment=Qt.AlignCenter)
 
@@ -96,7 +98,7 @@ class AccountDialog(QDialog):
 			alignment=Qt.AlignCenter
 		)
 
-		btn = button('Logout', 70, 30, self.logout_click)
+		btn = PushButton('Logout', 70, 30, self.logout_click)
 		btn.setFixedWidth(100)
 		layout.addWidget(btn, alignment=Qt.AlignCenter)
 
@@ -105,8 +107,8 @@ class AccountDialog(QDialog):
 	def setup_login_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 		tab_name = 'Login'
+		# noinspection PyBroadException
 		try:
-			self.cloud.validate_token()
 			self.account_info_menu, tab_name = self.build_account_info_menu()
 			self.layout.addLayout(self.account_info_menu)
 		except requests.exceptions.ConnectionError:
@@ -116,7 +118,7 @@ class AccountDialog(QDialog):
 				QLabel('Server is not working or your internet connection is failed'), alignment=Qt.AlignCenter
 			)
 			self.layout.addWidget(QLabel('Check your connection and reopen this dialog'), alignment=Qt.AlignCenter)
-		except requests.exceptions.RequestException:
+		except CloudStorageException as _:
 			self.login_menu, tab_name = self.build_login_menu()
 			self.layout.addLayout(self.login_menu)
 		tab.setLayout(self.layout)
@@ -138,7 +140,7 @@ class AccountDialog(QDialog):
 		e_layout.addWidget(self.email_signup_input)
 		layout.addLayout(e_layout)
 
-		btn = button('Register', 70, 30, self.signup_click)
+		btn = PushButton('Register', 70, 30, self.signup_click)
 		btn.setFixedWidth(100)
 		layout.addWidget(btn, alignment=Qt.AlignCenter)
 
@@ -148,21 +150,21 @@ class AccountDialog(QDialog):
 	def validate_signup_fields(self):
 		errors = ''
 		if len(self.username_signup_input.text()) < 1:
-			errors += '* username field can not be empty\n'
+			errors += '* Username field can not be empty\n'
 		if len(self.email_signup_input.text()) < 1:
-			errors += '* email field can not be empty\n'
+			errors += '* Email field can not be empty\n'
 		else:
 			if not re.match(r'[a-zA-Z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}', self.email_signup_input.text()):
-				errors += '* email is not valid'
+				errors += '* Email is not valid'
 		if errors != '':
 			raise RuntimeError(errors)
 
 	def validate_login_fields(self):
 		errors = ''
 		if len(self.username_login_input.text()) < 1:
-			errors += '* username field can not be empty\n'
+			errors += '* Username field can not be empty\n'
 		if len(self.password_login_input.text()) < 1:
-			errors += '* password field can not be empty\n'
+			errors += '* Password field can not be empty\n'
 		if errors != '':
 			raise RuntimeError(errors)
 

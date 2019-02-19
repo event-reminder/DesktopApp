@@ -2,7 +2,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from app.settings import Settings
+from app.settings import Settings, APP_NAME
 from app.widgets import CalendarWidget
 
 
@@ -12,7 +12,7 @@ class MainWindow(QMainWindow):
 		self.settings = Settings()
 		super().__init__(None, Qt.WindowStaysOnTopHint if self.settings.is_always_on_top else Qt.WindowFlags())
 
-		self.window().setWindowTitle(self.settings.app_name)
+		self.window().setWindowTitle(APP_NAME)
 		self.resize(self.settings.app_size)
 		self.move(self.settings.app_pos)
 		self.setWindowIcon(self.settings.app_icon(icon_size='medium'))
@@ -21,11 +21,11 @@ class MainWindow(QMainWindow):
 		self.setup_navigation_menu()
 		self.setFont(QFont('SansSerif', self.settings.app_font))
 
-		self.open_action = QAction('Open {}'.format(self.settings.app_name), self)
+		self.open_action = QAction('Open {}'.format(APP_NAME), self)
 		self.hide_action = QAction('Minimize To Tray', self)
 		if not self.settings.show_calendar_on_startup:
 			self.hide_action.setEnabled(False)
-		self.close_action = QAction('Quit {}'.format(self.settings.app_name), self)
+		self.close_action = QAction('Quit {}'.format(APP_NAME), self)
 
 		self.tray_icon = self.init_tray(kwargs.get('app'))
 		self.tray_icon.show()

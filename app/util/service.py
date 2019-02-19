@@ -8,8 +8,8 @@ from pynotifier import Notification
 from datetime import date, datetime, timedelta
 
 from app.storage import Storage
-from app.settings import Settings
 from app.util import logger, log_msg
+from app.settings import Settings, APP_NAME
 
 
 class ReminderService(QThread):
@@ -57,7 +57,7 @@ class ReminderService(QThread):
 
 	def __send_notification(self, event):
 		Notification(
-			title=self.__settings.app_name,
+			title=APP_NAME,
 			icon_path=self.__settings.app_icon('Linux' not in platform.system(), q_icon=False, icon_size='medium'),
 			description='{}\n\n{}'.format(event.title, event.description),
 			duration=self.__settings.notification_duration,

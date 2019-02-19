@@ -5,6 +5,9 @@ from app.storage.instance import DATABASE_INSTANCE
 
 
 class EventModel(peewee.Model):
+	"""
+	Represents event in database.
+	"""
 
 	title = peewee.CharField(max_length=500)
 	date = peewee.DateField(formats=['%Y-%m-%d'])

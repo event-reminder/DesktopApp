@@ -8,7 +8,8 @@ from PyQt5.QtWidgets import *
 from app.settings import Settings
 from app.cloud import CloudStorage
 from app.widgets.backup_widget import BackupWidget
-from app.util import popup, button, Worker
+from app.util import Worker
+from app.widgets.util import PushButton, popup
 from app.widgets.waiting_spinner import WaitingSpinner
 
 
@@ -37,22 +38,24 @@ class BackupDialog(QDialog):
 
 		self.search_dir = '/home/{}'.format(getpass.getuser())
 
+		self.backups_pool = []
+
 		self.settings = Settings()
 
 		self.backup_file_input = QLineEdit()
 		self.restore_file_input = QLineEdit()
 
-		self.backup_file_button = button('+', 40, 30, self.get_folder_path)
-		self.restore_file_button = button('+', 40, 30, self.get_file_path)
+		self.backup_file_button = PushButton('+', 40, 30, self.get_folder_path)
+		self.restore_file_button = PushButton('+', 40, 30, self.get_file_path)
 
-		self.launch_restore_button = button('Start', 100, 35, self.launch_restore_local)
-		self.launch_backup_button = button('Start', 100, 35, self.launch_backup_local)
+		self.launch_restore_button = PushButton('Start', 100, 35, self.launch_restore_local)
+		self.launch_backup_button = PushButton('Start', 100, 35, self.launch_backup_local)
 
 		self.backups_cloud_list_widget = QListWidget()
 
-		self.upload_backup_button = button('Upload', 80, 35, self.upload_backup_cloud)
-		self.download_backup_button = button('Download', 110, 35, self.download_backup_cloud)
-		self.delete_backup_button = button('Delete', 80, 35, self.delete_backup_cloud)
+		self.upload_backup_button = PushButton('Upload', 80, 35, self.upload_backup_cloud)
+		self.download_backup_button = PushButton('Download', 110, 35, self.download_backup_cloud)
+		self.delete_backup_button = PushButton('Delete', 80, 35, self.delete_backup_cloud)
 
 		self.setup_ui()
 
@@ -200,15 +203,17 @@ class BackupDialog(QDialog):
 
 	def refresh_backups_cloud(self):
 		self.backups_cloud_list_widget.clear()
-		worker = Worker(self.cloud.validate_token)
+		worker = Worker(self.refresh_backups_cloud_run)
 		worker.signals.success.connect(self.refresh_backups_cloud_success)
 		worker.signals.error.connect(self.popup_error)
 		self.thread_pool.start(worker)
 
+	def refresh_backups_cloud_run(self):
+		self.backups_pool = self.cloud.backups()
+
 	def refresh_backups_cloud_success(self):
 		self.upload_backup_button.setEnabled(True)
-		backups = self.cloud.backups()
-		for backup in backups:
+		for backup in self.backups_pool:
 			self.add_backup_widget(backup)
 
 	def add_backup_widget(self, backup_data):

@@ -7,6 +7,10 @@ def abs_path(init_path):
 	return '{}/{}'.format(APP_ROOT, init_path.lstrip('/'))
 
 
+def resources(init_path):
+	return abs_path('resources/{}'.format(init_path))
+
+
 APP_WIDTH = 1024
 APP_HEIGHT = 768
 
@@ -16,29 +20,31 @@ APP_POS_Y = 100
 APP_NAME = 'Event Reminder'
 APP_ORGANIZATION = 'YuriyLisovskiy'
 APP_VERSION = '2019.0.1'
-APP_BUILD_DATE = 'February 2, 2019'
+APP_RELEASE_DATE = 'February 2, 2019'
+
+BACKUP_FILE_NAME = '{} Backup'.format(APP_NAME)
+
+
+APP_ICON_DARK = resources('app-icon-dark.png')
+APP_ICON_DARK_MEDIUM = resources('app-icon-dark-70x70.png')
+
+APP_ICON_LIGHT = resources('app-icon-light.png')
+APP_ICON_LIGHT_MEDIUM = resources('app-icon-light-70x70.png')
+
+APP_ICON_DARK_ICO = resources('app-icon-light.ico')
+APP_ICON_LIGHT_ICO = resources('app-icon-light.ico')
+
+
+# path to files created by application: db, log, etc.
+APP_DATA_PATH = abs_path('tmp/')
+
+APP_LOG_FILE = '{}app.log'.format(APP_DATA_PATH)
+
+APP_DB_PATH = APP_DATA_PATH
+APP_DB_FILE = '{}storage.db'.format(APP_DATA_PATH)
+
 
 APP_IS_DARK_THEME = 'false'
-
-APP_ICON_DARK = abs_path('resources/app-icon-dark.png')
-APP_ICON_DARK_MEDIUM = abs_path('resources/app-icon-dark-70x70.png')
-
-APP_ICON_LIGHT = abs_path('resources/app-icon-light.png')
-APP_ICON_LIGHT_MEDIUM = abs_path('resources/app-icon-light-70x70.png')
-
-APP_ICON_DARK_ICO = abs_path('resources/app-icon-light.ico')
-APP_ICON_LIGHT_ICO = abs_path('resources/app-icon-light.ico')
-
-
-# path to files created by application, etc db, log
-APP_PATH = abs_path('event-reminder-tmp/')
-
-APP_LOG_PATH = APP_PATH
-APP_LOG_FILE = '{}event_reminder.log'.format(APP_PATH)
-
-APP_DB_PATH = APP_PATH
-APP_DB_FILE = '{}event_reminder.db'.format(APP_PATH)
-
 
 ALWAYS_ON_TOP = 'false'
 

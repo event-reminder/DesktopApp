@@ -6,6 +6,9 @@ from app.settings.theme import dark_theme_palette, light_theme_palette
 
 
 class Settings:
+	"""
+	Implements methods for application settings storage access.
+	"""
 
 	def __init__(self, autocommit=True):
 		self.__settings = QSettings(APP_ORGANIZATION, APP_NAME)
@@ -22,22 +25,6 @@ class Settings:
 	def _commit(self):
 		if self.__autocommit:
 			self.__settings.sync()
-
-	@property
-	def app_name(self):
-		return APP_NAME
-
-	@property
-	def app_organization(self):
-		return APP_ORGANIZATION
-
-	@property
-	def app_version(self):
-		return APP_VERSION
-
-	@property
-	def app_build_date(self):
-		return APP_BUILD_DATE
 
 	@property
 	def is_first_launch(self):
@@ -76,22 +63,6 @@ class Settings:
 	@property
 	def is_dark_theme(self):
 		return self.__settings.value('app_user/is_dark_theme', APP_IS_DARK_THEME) == 'true'
-
-	@property
-	def db_path(self):
-		return APP_DB_PATH
-
-	@property
-	def db_file(self):
-		return APP_DB_FILE
-
-	@property
-	def log_path(self):
-		return APP_LOG_PATH
-
-	@property
-	def log_file(self):
-		return APP_LOG_FILE
 
 	@property
 	def is_always_on_top(self):
@@ -196,7 +167,7 @@ class Settings:
 		]
 		for key in keys:
 			if key not in data:
-				raise KeyError('settings backup is invalid')
+				raise KeyError('Settings failure: backup is invalid.')
 		self.set_theme(data['is_dark_theme'])
 		self.set_is_always_on_top(data['is_always_on_top'])
 		self.set_font(data['font'])

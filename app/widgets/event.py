@@ -1,5 +1,6 @@
 from app.storage import Storage
-from app.util import popup, error, logger, log_msg, Worker
+from app.widgets.util import popup
+from app.util import logger, log_msg, Worker
 from app.widgets.waiting_spinner import WaitingSpinner
 
 from PyQt5.QtCore import QThreadPool
@@ -75,4 +76,4 @@ class EventWidget(QWidget):
 
 	def error(self, err):
 		logger.error(log_msg('{}'.format(err[2])))
-		error(self, 'Error: {}'.format(err[1]))
+		popup.error(self, 'Error: {}'.format(err[1]))
