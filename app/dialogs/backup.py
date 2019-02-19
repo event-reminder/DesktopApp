@@ -1,5 +1,4 @@
 import getpass
-import requests
 from datetime import datetime
 
 from PyQt5.QtGui import *
@@ -9,7 +8,7 @@ from PyQt5.QtWidgets import *
 from app.settings import Settings
 from app.cloud import CloudStorage
 from app.widgets.backup_widget import BackupWidget
-from app.util import popup, logger, log_msg, button, Worker
+from app.util import popup, button, Worker
 from app.widgets.waiting_spinner import WaitingSpinner
 
 

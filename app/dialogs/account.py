@@ -157,34 +157,6 @@ class AccountDialog(QDialog):
 		if errors != '':
 			raise RuntimeError(errors)
 
-	def signup_click(self):
-		try:
-			self.validate_signup_fields()
-			try:
-				self.cloud.register_account(
-					self.username_signup_input.text(),
-					self.email_signup_input.text()
-				)
-				info(
-					self,
-					'Thank you for registration.'
-					'Check out {} for credentials information.'
-					'To activate, simply login to Your account, otherwise it will be deleted in 24 hours after registration.'
-					.format(
-						self.email_signup_input.text()
-					)
-				)
-				self.email_signup_input.clear()
-			except requests.exceptions.ConnectionError:
-				error(
-					self,
-					'Connection error'
-					'Server is not working or your internet connection is failed.'
-					'Check your connection and restart app.'
-				)
-		except Exception as exc:
-			error(self, str(exc))
-
 	def validate_login_fields(self):
 		errors = ''
 		if len(self.username_login_input.text()) < 1:
@@ -194,24 +166,34 @@ class AccountDialog(QDialog):
 		if errors != '':
 			raise RuntimeError(errors)
 
+	def signup_click(self):
+		try:
+			self.validate_signup_fields()
+			self.cloud.register_account(
+				self.username_signup_input.text(),
+				self.email_signup_input.text()
+			)
+			info(
+				self,
+				'Thank you for registration.\n'
+				'Check out {} for credentials information.\n'
+				'To activate, simply login to Your account, otherwise'
+				'it will be deleted in 24 hours after registration.'.format(self.email_signup_input.text())
+			)
+			self.email_signup_input.clear()
+		except Exception as exc:
+			error(self, str(exc))
+
 	def login_click(self):
 		try:
 			self.validate_login_fields()
-			try:
-				self.cloud.login(
-					self.username_login_input.text(),
-					self.password_login_input.text(),
-					self.remember_login_check_box.isChecked()
-				)
-				info(self, 'Logged in as {}'.format(self.username_login_input.text()))
-				self.close()
-			except requests.exceptions.ConnectionError:
-				error(
-					self,
-					'Connection error'
-					'Server is not working or your internet connection is failed.'
-					'Check your connection and restart app.'
-				)
+			self.cloud.login(
+				self.username_login_input.text(),
+				self.password_login_input.text(),
+				self.remember_login_check_box.isChecked()
+			)
+			info(self, 'Logged in as {}'.format(self.username_login_input.text()))
+			self.close()
 		except Exception as exc:
 			error(self, str(exc))
 
@@ -220,10 +202,5 @@ class AccountDialog(QDialog):
 			self.cloud.logout()
 			info(self, 'Successfully logged out.')
 			self.close()
-		except requests.exceptions.ConnectionError:
-			error(
-				self,
-				'Connection error'
-				'Server is not working or your internet connection is failed.'
-				'Check your connection and restart app.'
-			)
+		except Exception as exc:
+			error(self, str(exc))

@@ -1,7 +1,6 @@
-_HOST = 'localhost'
-_PORT = '8000'
+_HOST = 'localhost:8000'
 
-_BASE = 'http://{}:{}/api/v1'.format(_HOST, _PORT)
+_BASE = 'http://{}/api/v1'.format(_HOST)
 
 
 AUTH_LOGIN = '{}/login'.format(_BASE)
