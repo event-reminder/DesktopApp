@@ -1,8 +1,10 @@
-APP_ROOT = './'
+import os
+
+APP_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def abs_path(init_path):
-	return '{}{}'.format(APP_ROOT, init_path.lstrip('/'))
+	return '{}/{}'.format(APP_ROOT, init_path.lstrip('/'))
 
 
 APP_WIDTH = 1024
@@ -18,14 +20,14 @@ APP_BUILD_DATE = 'February 2, 2019'
 
 APP_IS_DARK_THEME = 'false'
 
-APP_ICON_DARK = abs_path('app/resources/app-icon-dark.png')
-APP_ICON_DARK_MEDIUM = abs_path('app/resources/app-icon-dark-70x70.png')
+APP_ICON_DARK = abs_path('resources/app-icon-dark.png')
+APP_ICON_DARK_MEDIUM = abs_path('resources/app-icon-dark-70x70.png')
 
-APP_ICON_LIGHT = abs_path('app/resources/app-icon-light.png')
-APP_ICON_LIGHT_MEDIUM = abs_path('app/resources/app-icon-light-70x70.png')
+APP_ICON_LIGHT = abs_path('resources/app-icon-light.png')
+APP_ICON_LIGHT_MEDIUM = abs_path('resources/app-icon-light-70x70.png')
 
-APP_ICON_DARK_ICO = abs_path('app/resources/app-icon-light.ico')
-APP_ICON_LIGHT_ICO = abs_path('app/resources/app-icon-light.ico')
+APP_ICON_DARK_ICO = abs_path('resources/app-icon-light.ico')
+APP_ICON_LIGHT_ICO = abs_path('resources/app-icon-light.ico')
 
 
 # path to files created by application, etc db, log
