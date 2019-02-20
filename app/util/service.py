@@ -26,10 +26,14 @@ class ReminderService(QThread):
 	def run(self):
 		try:
 			self.__storage.connect()
+			try:
+				self.__process_events(today=date.today())
+			except Exception as exc:
+				logger.error(log_msg('Service error, can not process non-today events: {}'.format(exc)))
 			while True:
 				try:
 					time.sleep(1)
-					self.__process_events()
+					self.__process_events(today=date.today(), date_filter=date.today())
 				except Exception as exc:
 					logger.error(log_msg('Processing event error: {}'.format(exc)))
 		except Exception as exc:
@@ -37,15 +41,18 @@ class ReminderService(QThread):
 		finally:
 			self.storage.disconnect()
 
-	def __process_events(self):
-		events = self.__storage.get_events(date.today())
+	def __process_events(self, today, date_filter=None):
+		events = self.__storage.get_events(date_filter)
 		need_to_update = False
 		for event in events:
 			now = datetime.now()
 			if event.is_past is False and event.time <= now.time().strftime('%H:%M:00') and event.date <= now.date():
 				self.__send_notification(event)
 				if event.repeat_weekly is True:
-					self.__storage.update_event(pk=event.id, e_date=event.date + timedelta(days=7))
+					new_date = event.date
+					while new_date <= today:
+						new_date += timedelta(days=7)
+					self.__storage.update_event(pk=event.id, e_date=new_date)
 				else:
 					if self.__settings.remove_event_after_time_up is True:
 						self.__storage.delete_event(event.id)
