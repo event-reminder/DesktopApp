@@ -19,8 +19,9 @@ class Storage:
 	Backup:
 		Prepare data
 			Backup is represented in json (python dictionary) format. 'Data' contains
-			a list of events took from the database and settings if it is included in
-			backup. It is serialized to a binary string. 'Digest' is sha512 sum of
+			a list of events took from the database, settings if it is included in
+			backup and username of its author if backup is preparing for uploading to
+			cloud. It is serialized to a binary string. 'Digest' is sha512 sum of
 			serialized 'data'. 'Timestamp' is date and time when backups is created.
 			'Backup' is serialized 'data' which is encoded using base64 algorithm.
 
@@ -136,13 +137,15 @@ class Storage:
 			EventModel.from_dict(item)
 
 	@staticmethod
-	def prepare_backup_data(db, timestamp, include_settings):
+	def prepare_backup_data(db, timestamp, include_settings, username=None):
 		data = {
 			'db': db
 		}
 		if include_settings:
 			data['settings'] = Settings().to_dict()
-		data = pickle.dumps(json.dumps(data).encode('utf-8'))
+		if username is not None:
+			data['username'] = username
+		data = pickle.dumps(json.dumps(data))
 		return {
 			'digest': sha512(data).hexdigest(),
 			'timestamp': timestamp,

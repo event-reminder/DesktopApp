@@ -231,6 +231,7 @@ class BackupDialog(QDialog):
 		self.backups_cloud_list_widget.setItemWidget(list_widget_item, backup_widget)
 
 	def upload_backup_cloud(self):
+		self.spinner.start()
 		worker = Worker(self.upload_backup_cloud_run)
 		worker.signals.error.connect(self.popup_error)
 		worker.signals.success.connect(self.upload_backup_cloud_success)
@@ -238,11 +239,11 @@ class BackupDialog(QDialog):
 		self.thread_pool.start(worker)
 
 	def upload_backup_cloud_run(self):
-		self.spinner.start()
+		user = self.cloud.user()
 		timestamp = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
 		self.storage.connect()
 		backup_data = self.storage.prepare_backup_data(
-			self.storage.to_array(), timestamp, self.settings.include_settings_backup
+			self.storage.to_array(), timestamp, self.settings.include_settings_backup, user['username']
 		)
 		self.cloud.upload_backup(backup_data)
 
