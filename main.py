@@ -10,8 +10,7 @@ if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	window = MainWindow(app=app)
 
-	# Commented temporary
-	# ReminderService(window, window.calendar).start()
+	ReminderService(window, window.calendar).start()
 
 	if Settings().show_calendar_on_startup:
 		window.show()
