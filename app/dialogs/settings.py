@@ -2,7 +2,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from app.settings import Settings, FONT_LARGE, FONT_SMALL, FONT_NORMAL
+from app.widgets.util import PushButton, popup
+from app.settings import Settings, FONT_LARGE, FONT_SMALL, FONT_NORMAL, AVAILABLE_LANGUAGES
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
@@ -18,7 +19,7 @@ class SettingsDialog(QDialog):
 
 		self.calendar = kwargs['calendar']
 
-		self.setFixedSize(550, 280)
+		self.setFixedSize(550, 330)
 		self.setWindowTitle('Settings')
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
 
@@ -34,6 +35,14 @@ class SettingsDialog(QDialog):
 		self.remind_time_before_event_input = QLineEdit()
 
 		self.include_settings_backup_check_box = QCheckBox()
+
+		self.new_password_input = QLineEdit()
+		self.new_password_repeat_input = QLineEdit()
+		self.verification_token_input = QLineEdit()
+		self.lang_combo_box = QComboBox()
+		self.backups_number_input = QLineEdit()
+		self.token_layout = QVBoxLayout()
+		self.change_password_btn = PushButton('Send Token', 150, 30, self.change_password_btn_click)
 
 		self.ui_is_loaded = False
 		self.setup_ui()
@@ -124,18 +133,77 @@ class SettingsDialog(QDialog):
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'Events')
 
-	def setup_account_settings_ui(self, tabs):
+	def setup_account_change_password_ui(self, tabs):
+		tab = QWidget(flags=tabs.windowFlags())
+
+		layout = QVBoxLayout()
+
+		new_pwd_layout = QVBoxLayout()
+		new_pwd_layout.setContentsMargins(50, 0, 50, 10)
+		new_pwd_layout.addWidget(QLabel('New Password:'))
+		self.new_password_input.textChanged.connect(self.change_password_inputs_changed)
+		self.new_password_input.setEchoMode(QLineEdit.Password)
+		new_pwd_layout.addWidget(self.new_password_input)
+		layout.addLayout(new_pwd_layout)
+
+		repeat_pwd_layout = QVBoxLayout()
+		repeat_pwd_layout.setContentsMargins(50, 0, 50, 10)
+		repeat_pwd_layout.addWidget(QLabel('Repeat Password:'))
+		self.new_password_repeat_input.textChanged.connect(self.change_password_inputs_changed)
+		self.new_password_repeat_input.setEchoMode(QLineEdit.Password)
+		repeat_pwd_layout.addWidget(self.new_password_repeat_input)
+		layout.addLayout(repeat_pwd_layout)
+
+		self.token_layout.setContentsMargins(50, 0, 50, 10)
+		self.token_layout.setEnabled(False)
+		self.token_layout.addWidget(QLabel('Verification Token:'))
+		self.verification_token_input.setEnabled(False)
+		self.verification_token_input.textChanged.connect(self.change_password_inputs_changed)
+		self.token_layout.addWidget(self.verification_token_input)
+		layout.addLayout(self.token_layout)
+
+		h_layout = QHBoxLayout()
+		self.change_password_btn.setEnabled(False)
+		h_layout.addWidget(self.change_password_btn)
+		reset_change_password_btn = PushButton('Reset Inputs', 150, 30, self.reset_change_password_btn_click)
+		h_layout.addWidget(reset_change_password_btn)
+		layout.addLayout(h_layout)
+
+		tab.setLayout(layout)
+		tabs.addTab(tab, 'Change Password')
+
+	def setup_account_other_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 
 		layout = QGridLayout()
 		layout.setAlignment(Qt.AlignTop)
-		layout.setContentsMargins(50, 30, 50, 10)
+		layout.setContentsMargins(50, 10, 50, 10)
 		layout.setSpacing(20)
 
-		layout.addWidget(QLabel('Coming soon...'), 0, 0)
+		layout.addWidget(QLabel('Language'), 0, 0)
+		self.lang_combo_box.addItems(AVAILABLE_LANGUAGES.keys())
+		layout.addWidget(self.lang_combo_box, 0, 1)
 
-		tab.setLayout(layout)
-		tabs.addTab(tab, 'Account')
+		layout.addWidget(QLabel('Backups number'), 1, 0)
+		self.backups_number_input.setValidator(QIntValidator())
+		layout.addWidget(self.backups_number_input, 1, 1)
+
+		v_layout = QVBoxLayout()
+		v_layout.addLayout(layout)
+
+		btn = PushButton('Save', 100, 30, self.save_account_other_btn_click)
+		v_layout.addWidget(btn, alignment=Qt.AlignCenter)
+
+		tab.setLayout(v_layout)
+		tabs.addTab(tab, 'Other')
+
+	def setup_account_settings_ui(self, tabs):
+		account_settings_tabs = QTabWidget(self)
+
+		self.setup_account_change_password_ui(account_settings_tabs)
+		self.setup_account_other_ui(account_settings_tabs)
+
+		tabs.addTab(account_settings_tabs, 'Account')
 
 	def always_on_top_changed(self):
 		if self.ui_is_loaded:
@@ -178,5 +246,46 @@ class SettingsDialog(QDialog):
 		if self.ui_is_loaded:
 			self.settings.set_include_settings_backup(self.include_settings_backup_check_box.isChecked())
 
-	def save_btn_click(self):
+	def reset_change_password_btn_click(self):
+		self.new_password_input.clear()
+		self.new_password_repeat_input.clear()
+		self.verification_token_input.clear()
+		self.change_password_btn.setText('Send Token')
+		self.change_password_btn.setEnabled(False)
+
+	def change_password_inputs_changed(self):
+		password_is_filled = len(self.new_password_input.text()) > 0 and len(self.new_password_repeat_input.text()) > 0
+		self.change_password_btn.setEnabled(False)
+		if not self.verification_token_input.isEnabled():
+			if password_is_filled:
+				if self.new_password_input.text() == self.new_password_repeat_input.text():
+					self.change_password_btn.setEnabled(True)
+		else:
+			if len(self.verification_token_input.text()) > 0 and password_is_filled:
+				self.change_password_btn.setEnabled(True)
+
+	def change_password_btn_click(self):
+
+		if len(self.verification_token_input.text()) > 0:
+			self.close()
+		else:
+			# TODO: send token request
+
+			popup.info(self, 'Check your email box for verification token')
+			self.token_layout.setEnabled(True)
+			self.verification_token_input.setEnabled(True)
+			self.verification_token_input.setFocus()
+			self.change_password_btn.setText('Change')
+			self.change_password_btn.setEnabled(False)
+
+	def save_account_other_btn_click(self):
+
+		# TODO: implement saving account settings
+
 		self.close()
+
+	def stop_spinner(self):
+		self.spinner.stop()
+
+	def popup_error(self, err):
+		popup.error(self, '{}'.format(err[1]))

@@ -48,6 +48,11 @@ APP_DB_PATH = APP_DATA_PATH
 APP_DB_FILE = '{}storage.db'.format(APP_DATA_PATH)
 
 
+AVAILABLE_LANGUAGES = {
+	'English': [0, 'en']
+}
+
+
 APP_IS_DARK_THEME = 'false'
 
 ALWAYS_ON_TOP = 'false'
