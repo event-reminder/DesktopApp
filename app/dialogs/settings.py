@@ -312,26 +312,22 @@ class SettingsDialog(QDialog):
 			if self.new_password_input.text() != self.new_password_repeat_input.text():
 				popup.error(self, 'Password confirmation failed')
 			else:
-				self.spinner.start()
-				worker = Worker(self.cloud.reset_password, *(
-					self.email_input.text(),
-					self.new_password_input.text(),
-					self.new_password_repeat_input.text(),
-					self.verification_token_input.text()
-				))
-				worker.err_format = 'Can\'t reset password: {}'
-				worker.signals.success.connect(self.change_password_success)
-				worker.signals.error.connect(self.popup_error)
-				worker.signals.finished.connect(self.stop_spinner)
-				self.thread_pool.start(worker)
+				self.exec_worker(
+					self.cloud.reset_password,
+					self.change_password_success,
+					*(
+						self.email_input.text(),
+						self.new_password_input.text(),
+						self.new_password_repeat_input.text(),
+						self.verification_token_input.text()
+					)
+				)
 		else:
-			self.spinner.start()
-			worker = Worker(self.cloud.request_token, *(self.email_input.text(),))
-			worker.err_format = 'Can\'t request token: {}'
-			worker.signals.success.connect(self.change_password_request_token_success)
-			worker.signals.error.connect(self.popup_error)
-			worker.signals.finished.connect(self.stop_spinner)
-			self.thread_pool.start(worker)
+			self.exec_worker(
+				self.cloud.request_token,
+				self.change_password_request_token_success,
+				*(self.email_input.text(),)
+			)
 
 	def change_password_request_token_success(self):
 		popup.info(self, 'Check your email box for verification token')
@@ -352,22 +348,25 @@ class SettingsDialog(QDialog):
 	def save_account_general_btn_click(self):
 		max_backups = self.backups_number_input.text()
 		lang = AVAILABLE_LANGUAGES[self.lang_combo_box.currentText()]
-		self.spinner.start()
-		worker = Worker(self.cloud.update_user, **{
-			'lang': lang if lang != '' else None,
-			'max_backups': max_backups if max_backups != '' else None
-		})
-		worker.err_format = 'Can\'t save account settings: {}'
-		worker.signals.success.connect(self.save_account_general_success)
-		worker.signals.error.connect(self.popup_error)
-		worker.signals.finished.connect(self.stop_spinner)
-		self.thread_pool.start(worker)
+		self.exec_worker(
+			self.cloud.update_user,
+			self.save_account_general_success,
+			**{
+				'lang': lang if lang != '' else None,
+				'max_backups': max_backups if max_backups != '' else None
+			}
+		)
 
 	def save_account_general_success(self):
 		popup.info(self, 'Account has been updated')
 
-	def stop_spinner(self):
-		self.spinner.stop()
+	def exec_worker(self, fn, fn_success, *args, **kwargs):
+		self.spinner.start()
+		worker = Worker(fn, *args, **kwargs)
+		worker.signals.success.connect(fn_success)
+		worker.signals.error.connect(self.popup_error)
+		worker.signals.finished.connect(self.spinner.stop)
+		self.thread_pool.start(worker)
 
 	def popup_error(self, err):
 		popup.error(self, '{}'.format(err[1]))

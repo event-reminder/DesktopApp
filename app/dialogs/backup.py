@@ -5,11 +5,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
+from app.util import Worker
 from app.settings import Settings
 from app.cloud import CloudStorage
-from app.widgets.backup_widget import BackupWidget
-from app.util import Worker
 from app.widgets.util import PushButton, popup
+from app.widgets.backup_widget import BackupWidget
 from app.widgets.waiting_spinner import WaitingSpinner
 
 
@@ -138,25 +138,25 @@ class BackupDialog(QDialog):
 			self.restore_file_input.setText(file_name[0])
 
 	def launch_restore_local(self):
-		self.spinner.start()
-		worker = Worker(self.storage.restore, *(self.restore_file_input.text(),))
-		worker.err_format = 'Can\'t restore backup: {}'
-		worker.signals.success.connect(self.launch_restore_local_success)
-		worker.signals.error.connect(self.popup_error)
-		worker.signals.finished.connect(self.stop_spinner)
-		self.thread_pool.start(worker)
+		self.exec_worker(
+			self.storage.restore,
+			self.launch_restore_local_success,
+			*(self.restore_file_input.text(),)
+		)
 
 	def launch_restore_local_success(self):
 		self.calendar.update()
 		self.calendar.settings_dialog.refresh_settings_values()
 
 	def launch_backup_local(self):
-		self.spinner.start()
-		worker = Worker(self.storage.backup, *(self.backup_file_input.text(), self.settings.include_settings_backup))
-		worker.err_format = 'Can\'t backup calendar data: {}'
-		worker.signals.error.connect(self.popup_error)
-		worker.signals.finished.connect(self.stop_spinner)
-		self.thread_pool.start(worker)
+		self.exec_worker(
+			self.storage.backup,
+			self.launch_backup_local_success,
+			*(self.backup_file_input.text(), self.settings.include_settings_backup)
+		)
+
+	def launch_backup_local_success(self):
+		popup.info(self, 'Backup has been created')
 
 	def setup_cloud_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
@@ -231,12 +231,10 @@ class BackupDialog(QDialog):
 		self.backups_cloud_list_widget.setItemWidget(list_widget_item, backup_widget)
 
 	def upload_backup_cloud(self):
-		self.spinner.start()
-		worker = Worker(self.upload_backup_cloud_run)
-		worker.signals.error.connect(self.popup_error)
-		worker.signals.success.connect(self.upload_backup_cloud_success)
-		worker.signals.finished.connect(self.stop_spinner)
-		self.thread_pool.start(worker)
+		self.exec_worker(
+			self.upload_backup_cloud_run,
+			self.upload_backup_cloud_success
+		)
 
 	def upload_backup_cloud_run(self):
 		user = self.cloud.user()
@@ -249,18 +247,16 @@ class BackupDialog(QDialog):
 
 	def upload_backup_cloud_success(self):
 		self.refresh_backups_cloud()
-		self.stop_spinner()
 		popup.info(self, 'Backup was successfully uploaded to the cloud.')
 
 	def download_backup_cloud(self):
 		current = self.get_current_selected()
 		if current is not None:
-			self.spinner.start()
-			worker = Worker(self.download_backup_cloud_run, *(current,))
-			worker.signals.success.connect(self.download_backup_cloud_success)
-			worker.signals.finished.connect(self.stop_spinner)
-			worker.signals.error.connect(self.popup_error)
-			self.thread_pool.start(worker)
+			self.exec_worker(
+				self.download_backup_cloud_run,
+				self.download_backup_cloud_success,
+				*(current,)
+			)
 
 	def download_backup_cloud_run(self, current):
 		self.storage.restore_from_dict(
@@ -277,12 +273,11 @@ class BackupDialog(QDialog):
 	def delete_backup_cloud(self):
 		current = self.get_current_selected()
 		if current is not None:
-			self.spinner.start()
-			worker = Worker(self.cloud.delete_backup, *(current.hash_sum,))
-			worker.signals.success.connect(self.delete_backup_cloud_success)
-			worker.signals.finished.connect(self.stop_spinner)
-			worker.signals.error.connect(self.popup_error)
-			self.thread_pool.start(worker)
+			self.exec_worker(
+				self.cloud.delete_backup,
+				self.delete_backup_cloud_success,
+				*(current.hash_sum,)
+			)
 
 	def delete_backup_cloud_success(self):
 		self.refresh_backups_cloud()
@@ -294,8 +289,14 @@ class BackupDialog(QDialog):
 			return self.backups_cloud_list_widget.itemWidget(current)
 		return None
 
-	def stop_spinner(self):
-		self.spinner.stop()
+	def exec_worker(self, fn, fn_success=None, *args, **kwargs):
+		self.spinner.start()
+		worker = Worker(fn, *args, **kwargs)
+		if fn_success is not None:
+			worker.signals.success.connect(fn_success)
+		worker.signals.error.connect(self.popup_error)
+		worker.signals.finished.connect(self.spinner.stop)
+		self.thread_pool.start(worker)
 
 	def popup_error(self, err):
 		popup.error(self, '{}'.format(err[1]))

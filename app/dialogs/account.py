@@ -172,14 +172,6 @@ class AccountDialog(QDialog):
 			errors += '* Password field can not be empty\n'
 		return errors
 
-	def exec_worker(self, fn, fn_success, *args, **kwargs):
-		self.spinner.start()
-		worker = Worker(fn, *args, **kwargs)
-		worker.signals.success.connect(fn_success)
-		worker.signals.error.connect(self.popup_error)
-		worker.signals.finished.connect(self.spinner.stop)
-		self.thread_pool.start(worker)
-
 	def signup_click(self):
 		errors = self.validate_signup_fields()
 		if errors != '':
@@ -229,6 +221,14 @@ class AccountDialog(QDialog):
 	def logout_success(self):
 		self.close()
 		info(self, 'Successfully logged out.')
+
+	def exec_worker(self, fn, fn_success, *args, **kwargs):
+		self.spinner.start()
+		worker = Worker(fn, *args, **kwargs)
+		worker.signals.success.connect(fn_success)
+		worker.signals.error.connect(self.popup_error)
+		worker.signals.finished.connect(self.spinner.stop)
+		self.thread_pool.start(worker)
 
 	def popup_error(self, err):
 		error(self, '{}'.format(err[1]))
