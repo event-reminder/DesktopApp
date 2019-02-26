@@ -1,15 +1,17 @@
 import re
 import requests
 
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt, QThreadPool
 from PyQt5.QtWidgets import QLabel, QWidget, QDialog, QLineEdit, QCheckBox, QTabWidget, QVBoxLayout
 
+from app.util import Worker
 from app.settings import Settings
 from app.cloud import CloudStorage
 from app.widgets.util import PushButton
 from app.widgets.util.popup import info, error
 from app.exceptions import CloudStorageException
+from app.widgets.waiting_spinner import WaitingSpinner
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
@@ -28,6 +30,8 @@ class AccountDialog(QDialog):
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
 
 		self.settings = Settings()
+		self.spinner = WaitingSpinner()
+		self.thread_pool = QThreadPool()
 		self.cloud = kwargs.get('cloud_storage', CloudStorage())
 
 		self.username_signup_input = QLineEdit()
@@ -40,10 +44,12 @@ class AccountDialog(QDialog):
 		self.login_menu = None
 		self.account_info_menu = None
 
-		self.layout = QVBoxLayout()
+		self.v_layout = QVBoxLayout()
 		self.tabs = QTabWidget(self)
 
 		self.setup_ui()
+
+		self.layout().addWidget(self.spinner)
 
 	def setup_ui(self):
 		content = QVBoxLayout()
@@ -110,18 +116,18 @@ class AccountDialog(QDialog):
 		# noinspection PyBroadException
 		try:
 			self.account_info_menu, tab_name = self.build_account_info_menu()
-			self.layout.addLayout(self.account_info_menu)
+			self.v_layout.addLayout(self.account_info_menu)
 		except requests.exceptions.ConnectionError:
-			self.layout.setContentsMargins(0, 90, 0, 90)
-			self.layout.addWidget(QLabel('Connection error'), alignment=Qt.AlignCenter)
-			self.layout.addWidget(
+			self.v_layout.setContentsMargins(0, 90, 0, 90)
+			self.v_layout.addWidget(QLabel('Connection error'), alignment=Qt.AlignCenter)
+			self.v_layout.addWidget(
 				QLabel('Server is not working or your internet connection is failed'), alignment=Qt.AlignCenter
 			)
-			self.layout.addWidget(QLabel('Check your connection and reopen this dialog'), alignment=Qt.AlignCenter)
+			self.v_layout.addWidget(QLabel('Check your connection and reopen this dialog'), alignment=Qt.AlignCenter)
 		except CloudStorageException as _:
 			self.login_menu, tab_name = self.build_login_menu()
-			self.layout.addLayout(self.login_menu)
-		tab.setLayout(self.layout)
+			self.v_layout.addLayout(self.login_menu)
+		tab.setLayout(self.v_layout)
 		tabs.addTab(tab, tab_name)
 
 	def setup_signup_ui(self, tabs):
@@ -156,8 +162,7 @@ class AccountDialog(QDialog):
 		else:
 			if not re.match(r'[a-zA-Z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}', self.email_signup_input.text()):
 				errors += '* Email is not valid'
-		if errors != '':
-			raise RuntimeError(errors)
+		return errors
 
 	def validate_login_fields(self):
 		errors = ''
@@ -165,44 +170,65 @@ class AccountDialog(QDialog):
 			errors += '* Username field can not be empty\n'
 		if len(self.password_login_input.text()) < 1:
 			errors += '* Password field can not be empty\n'
-		if errors != '':
-			raise RuntimeError(errors)
+		return errors
+
+	def exec_worker(self, fn, fn_success, *args, **kwargs):
+		self.spinner.start()
+		worker = Worker(fn, *args, **kwargs)
+		worker.signals.success.connect(fn_success)
+		worker.signals.error.connect(self.popup_error)
+		worker.signals.finished.connect(self.spinner.stop)
+		self.thread_pool.start(worker)
 
 	def signup_click(self):
-		try:
-			self.validate_signup_fields()
-			self.cloud.register_account(
-				self.username_signup_input.text(),
-				self.email_signup_input.text()
+		errors = self.validate_signup_fields()
+		if errors != '':
+			error(self, errors)
+		else:
+			self.exec_worker(
+				self.cloud.register_account,
+				self.signup_success,
+				*(self.username_signup_input.text(), self.email_signup_input.text())
 			)
-			info(
-				self,
-				'Thank you for registration.\n'
-				'Check out {} for credentials information.\n'
-				'To activate, simply login to Your account, otherwise'
-				'it will be deleted in 24 hours after registration.'.format(self.email_signup_input.text())
-			)
-			self.email_signup_input.clear()
-		except Exception as exc:
-			error(self, str(exc))
+
+	def signup_success(self):
+		info(
+			self,
+			'Thank you for registration.\n'
+			'Check out {} for credentials information.\n'
+			'To activate, simply login to Your account, otherwise'
+			'it will be deleted in 24 hours after registration.'.format(self.email_signup_input.text())
+		)
+		self.email_signup_input.clear()
 
 	def login_click(self):
-		try:
-			self.validate_login_fields()
-			self.cloud.login(
-				self.username_login_input.text(),
-				self.password_login_input.text(),
-				self.remember_login_check_box.isChecked()
+		errors = self.validate_login_fields()
+		if errors != '':
+			pass
+		else:
+			self.exec_worker(
+				self.cloud.login,
+				self.login_success,
+				*(
+					self.username_login_input.text(),
+					self.password_login_input.text(),
+					self.remember_login_check_box.isChecked()
+				)
 			)
-			info(self, 'Logged in as {}'.format(self.username_login_input.text()))
-			self.close()
-		except Exception as exc:
-			error(self, str(exc))
+
+	def login_success(self):
+		self.close()
+		info(self, 'Logged in as {}'.format(self.username_login_input.text()))
 
 	def logout_click(self):
-		try:
-			self.cloud.logout()
-			info(self, 'Successfully logged out.')
-			self.close()
-		except Exception as exc:
-			error(self, str(exc))
+		self.exec_worker(
+			self.cloud.logout,
+			self.logout_success
+		)
+
+	def logout_success(self):
+		self.close()
+		info(self, 'Successfully logged out.')
+
+	def popup_error(self, err):
+		error(self, '{}'.format(err[1]))
