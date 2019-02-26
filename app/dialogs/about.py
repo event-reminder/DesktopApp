@@ -1,7 +1,5 @@
-import platform
-
-from app.settings import Settings
-from app.settings import APP_ORGANIZATION, APP_NAME, APP_VERSION, APP_RELEASE_DATE
+from app.cloud import CloudStorage
+from app.settings import Settings, APP_ORGANIZATION, APP_NAME, APP_VERSION, APP_RELEASE_DATE
 
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QFont, QPixmap
@@ -50,10 +48,15 @@ class AboutDialog(QDialog):
 			QLabel('Released on {}'.format(APP_RELEASE_DATE)),
 			alignment=Qt.AlignTop
 		)
-		data_section.addWidget(
-			QLabel('Copy of this software is distributed to {}.'.format(platform.node())),
-			alignment=Qt.AlignTop
-		)
+
+		try:
+			user = CloudStorage().user()
+			data_section.addWidget(
+				QLabel('Copy of this software is distributed to {}.'.format(user.get('username'))),
+				alignment=Qt.AlignTop
+			)
+		except Exception as exc:
+			print(exc)
 
 		content.addLayout(title_section)
 		content.addLayout(data_section)

@@ -14,10 +14,10 @@ class CloudStorage:
 	"""
 
 	def __init__(self):
-		self.session = requests.Session()
+		self.client = requests.Session()
 		token = self.__retrieve_token()
 		if token:
-			self.session.headers.update({
+			self.client.headers.update({
 				'Authorization': 'Token {}'.format(token)
 			})
 
@@ -31,17 +31,17 @@ class CloudStorage:
 			pass
 		return None
 
-	def __remove_token(self):
+	def remove_token(self):
 		token_path = '{}/token'.format(APP_DATA_PATH)
 		if os.path.exists(token_path):
 			os.remove(token_path)
-		if 'Authorization' in self.session.headers:
-			self.session.headers.pop('Authorization')
+		if 'Authorization' in self.client.headers:
+			self.client.headers.pop('Authorization')
 
 	@failure_wrapper(method_desc='Login')
 	def login(self, username, password, remember=False):
 		login_failed_template = 'Login failed: {}.'
-		response = self.session.post(routes.AUTH_LOGIN, json={
+		response = self.client.post(routes.AUTH_LOGIN, json={
 			'username': username,
 			'password': password
 		})
@@ -54,7 +54,7 @@ class CloudStorage:
 				'unable to login, status {}'.format(response.status_code))
 			)
 		token = response.json()['key']
-		self.session.headers.update({
+		self.client.headers.update({
 			'Authorization': 'Token {}'.format(token)
 		})
 		if remember:
@@ -64,17 +64,17 @@ class CloudStorage:
 
 	@failure_wrapper(method_desc='Logout')
 	def logout(self):
-		response = self.session.post(routes.AUTH_LOGOUT)
+		response = self.client.post(routes.AUTH_LOGOUT)
 		if response.status_code != status.HTTP_200_OK:
 			raise CloudStorageException(
 				'Logout failure: unable to logout, status {}'.format(response.status_code)
 			)
-		self.__remove_token()
+		self.remove_token()
 
 	@failure_wrapper(method_desc='Registration')
 	def register_account(self, username, email):
 		registration_failed_template = 'Registration failed: {}.'
-		response = self.session.post(routes.ACCOUNT_CREATE, json={
+		response = self.client.post(routes.ACCOUNT_CREATE, json={
 			'username': username,
 			'email': email
 		})
@@ -94,17 +94,48 @@ class CloudStorage:
 
 	@failure_wrapper(method_desc='Reading account')
 	def user(self):
-		response = self.session.get(routes.ACCOUNT_DETAILS)
+		response = self.client.get(routes.ACCOUNT_DETAILS)
 		if response.status_code == status.HTTP_401_UNAUTHORIZED:
 			raise CloudStorageException('Reading account failure: authentication is required.')
 		if response.status_code != status.HTTP_200_OK:
 			raise CloudStorageException('Reading account failure: unable to retrieve account information.')
 		return response.json()
 
+	@failure_wrapper(method_desc='Updating account')
+	def update_user(self, lang=None, max_backups=None):
+		context = {}
+		if lang is not None:
+			context['lang'] = lang
+		if max_backups is not None:
+			context['max_backups'] = max_backups
+		response = self.client.post(routes.ACCOUNT_EDIT, json=context)
+		if response.status_code != status.HTTP_201_CREATED:
+			raise CloudStorageException('unable to update user')
+		return response.json()
+
+	@failure_wrapper(method_desc='Token request')
+	def request_token(self, email):
+		response = self.client.post(routes.ACCOUNT_SEND_TOKEN, json={'email': email})
+		if response.status_code != status.HTTP_201_CREATED:
+			raise CloudStorageException('unable to send token')
+		return response.json()
+
+	@failure_wrapper(method_desc='Password reset')
+	def reset_password(self, email, new_password, new_password_confirm, token):
+		response = self.client.post(routes.ACCOUNT_PASSWORD_RESET, json={
+			'email': email,
+			'new_password': new_password,
+			'new_password_confirm': new_password_confirm,
+			'confirmation_token': token
+		})
+		if response.status_code != status.HTTP_201_CREATED:
+			raise CloudStorageException('unable to reset password')
+		return response.json()
+
 	@failure_wrapper(method_desc='Reading backups')
 	def backups(self):
 		get_backups_failed_template = 'Reading backups failed: {}.'
-		response = self.session.get(routes.BACKUPS)
+		response = self.client.get(routes.BACKUPS)
 		if response.status_code == status.HTTP_401_UNAUTHORIZED:
 			raise CloudStorageException(
 				get_backups_failed_template.format('authentication is required')
@@ -118,7 +149,7 @@ class CloudStorage:
 	@failure_wrapper(method_desc='Backup uploading')
 	def upload_backup(self, backup):
 		backup_upload_failed_template = 'Backup uploading failed: {}.'
-		response = self.session.post(routes.BACKUP_CREATE, data=backup)
+		response = self.client.post(routes.BACKUP_CREATE, data=backup)
 		if response.status_code == status.HTTP_401_UNAUTHORIZED:
 			raise CloudStorageException(backup_upload_failed_template.format('authentication is required'))
 		if response.status_code == status.HTTP_400_BAD_REQUEST:
@@ -135,7 +166,7 @@ class CloudStorage:
 	@failure_wrapper(method_desc='Backup downloading')
 	def download_backup(self, backup_hash):
 		backup_download_failed_template = 'Backup downloading failed: {}.'
-		response = self.session.get('{}{}'.format(routes.BACKUP_DETAILS, backup_hash))
+		response = self.client.get('{}{}'.format(routes.BACKUP_DETAILS, backup_hash))
 		if response.status_code == status.HTTP_401_UNAUTHORIZED:
 			raise CloudStorageException(
 				backup_download_failed_template.format('authentication is required')
@@ -149,7 +180,7 @@ class CloudStorage:
 	@failure_wrapper(method_desc='Backup deleting')
 	def delete_backup(self, backup_hash):
 		backup_delete_failed_template = 'Backup deleting failed: {}.'
-		response = self.session.post('{}{}'.format(routes.BACKUP_DELETE, backup_hash))
+		response = self.client.post('{}{}'.format(routes.BACKUP_DELETE, backup_hash))
 		if response.status_code == status.HTTP_400_BAD_REQUEST:
 			raise CloudStorageException(
 				backup_delete_failed_template.format('authentication is required')
@@ -160,22 +191,3 @@ class CloudStorage:
 					'unable to delete backup, status {}'.format(response.status_code)
 				)
 			)
-
-	@failure_wrapper(method_desc='Token request')
-	def request_token(self, email):
-		response = self.session.post(routes.ACCOUNT_SEND_TOKEN, json={'email': email})
-		if response.status_code != status.HTTP_201_CREATED:
-			raise CloudStorageException('unable to send token')
-		return response.json()
-
-	@failure_wrapper(method_desc='Password reset')
-	def reset_password(self, email, new_password, new_password_confirm, token):
-		response = self.session.post(routes.ACCOUNT_PASSWORD_RESET, json={
-			'email': email,
-			'new_password': new_password,
-			'new_password_confirm': new_password_confirm,
-			'confirmation_token': token
-		})
-		if response.status_code != status.HTTP_201_CREATED:
-			raise CloudStorageException('unable to reset password')
-		return response.json()

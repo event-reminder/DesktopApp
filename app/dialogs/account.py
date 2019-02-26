@@ -23,7 +23,7 @@ class AccountDialog(QDialog):
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
 
-		self.setFixedSize(550, 300)
+		self.setFixedSize(500, 280)
 		self.setWindowTitle('Account')
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
 

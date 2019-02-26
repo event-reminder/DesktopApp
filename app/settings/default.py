@@ -48,10 +48,19 @@ APP_DB_PATH = APP_DATA_PATH
 APP_DB_FILE = '{}storage.db'.format(APP_DATA_PATH)
 
 
-AVAILABLE_LANGUAGES = {
-	'English': [0, 'en']
+AVAILABLE_LANGUAGES_IDX = {
+	'en': 0,
+	'ua': 1
 }
 
+AVAILABLE_LANGUAGES = {
+	'English': 'en',
+	'Ukrainian': 'ua'
+}
+
+LANG = 'en'
+
+MAX_BACKUPS = 5
 
 APP_IS_DARK_THEME = 'false'
 

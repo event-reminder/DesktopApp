@@ -15,7 +15,7 @@ class EventsListDialog(QDialog):
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
 		self.setFixedSize(500, 400)
-		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
+		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
 
 		self.calendar = kwargs['calendar']
 		self.list_view = QListWidget()

@@ -6,7 +6,7 @@ from app.util import Worker
 from app.cloud import CloudStorage
 from app.widgets.util import PushButton, popup
 from app.widgets.waiting_spinner import WaitingSpinner
-from app.settings import Settings, FONT_LARGE, FONT_SMALL, FONT_NORMAL, AVAILABLE_LANGUAGES
+from app.settings import Settings, FONT_LARGE, FONT_SMALL, FONT_NORMAL, AVAILABLE_LANGUAGES, AVAILABLE_LANGUAGES_IDX
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
@@ -22,9 +22,9 @@ class SettingsDialog(QDialog):
 
 		self.calendar = kwargs['calendar']
 
-		self.setFixedSize(550, 400)
+		self.setFixedSize(500, 400)
 		self.setWindowTitle('Settings')
-		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
+		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
 
 		self.settings = Settings()
 		self.spinner = WaitingSpinner()
@@ -61,6 +61,21 @@ class SettingsDialog(QDialog):
 		self.layout().addWidget(self.spinner)
 
 		self.ui_is_loaded = True
+
+	def showEvent(self, event):
+		lang = self.settings.app_lang
+		max_backups = self.settings.app_max_backups
+		try:
+			user = self.cloud.user()
+			lang = user.get('lang')
+			max_backups = user.get('max_backups')
+			self.settings.set_max_backups(int(max_backups))
+			self.settings.set_lang(lang)
+		except Exception as exc:
+			print(exc)
+		self.lang_combo_box.setCurrentIndex(AVAILABLE_LANGUAGES_IDX[lang])
+		self.backups_number_input.setText(str(max_backups))
+		super().showEvent(event)
 
 	def refresh_settings_values(self):
 		self.theme_combo_box.setCurrentIndex(1 if self.settings.is_dark_theme else 0)
@@ -108,7 +123,7 @@ class SettingsDialog(QDialog):
 		self.show_calendar_on_startup_check_box.stateChanged.connect(self.show_calendar_on_startup_changed)
 		layout.addWidget(self.show_calendar_on_startup_check_box, 2, 1)
 
-		layout.addWidget(QLabel('Always on top (need restart)'), 3, 0)
+		layout.addWidget(QLabel('Always on top (restart required)'), 3, 0)
 		self.always_on_top_check_box.stateChanged.connect(self.always_on_top_changed)
 		layout.addWidget(self.always_on_top_check_box, 3, 1)
 
@@ -192,7 +207,7 @@ class SettingsDialog(QDialog):
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'Change Password')
 
-	def setup_account_other_ui(self, tabs):
+	def setup_account_general_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 
 		layout = QGridLayout()
@@ -200,7 +215,7 @@ class SettingsDialog(QDialog):
 		layout.setContentsMargins(50, 10, 50, 10)
 		layout.setSpacing(20)
 
-		layout.addWidget(QLabel('Language'), 0, 0)
+		layout.addWidget(QLabel('Language (restart required)'), 0, 0)
 		self.lang_combo_box.addItems(AVAILABLE_LANGUAGES.keys())
 		layout.addWidget(self.lang_combo_box, 0, 1)
 
@@ -211,16 +226,16 @@ class SettingsDialog(QDialog):
 		v_layout = QVBoxLayout()
 		v_layout.addLayout(layout)
 
-		btn = PushButton('Save', 100, 30, self.save_account_other_btn_click)
+		btn = PushButton('Save', 100, 30, self.save_account_general_btn_click)
 		v_layout.addWidget(btn, alignment=Qt.AlignCenter)
 
 		tab.setLayout(v_layout)
-		tabs.addTab(tab, 'Other')
+		tabs.addTab(tab, 'General')
 
 	def setup_account_settings_ui(self, tabs):
 		account_settings_tabs = QTabWidget(self)
 
-		self.setup_account_other_ui(account_settings_tabs)
+		self.setup_account_general_ui(account_settings_tabs)
 		self.setup_account_change_password_ui(account_settings_tabs)
 
 		tabs.addTab(account_settings_tabs, 'Account')
@@ -331,13 +346,25 @@ class SettingsDialog(QDialog):
 
 	def change_password_success(self):
 		self.reset_change_password_btn_click()
+		self.cloud.remove_token()
 		popup.info(self, 'New password has been set')
 
-	def save_account_other_btn_click(self):
+	def save_account_general_btn_click(self):
+		max_backups = self.backups_number_input.text()
+		lang = AVAILABLE_LANGUAGES[self.lang_combo_box.currentText()]
+		self.spinner.start()
+		worker = Worker(self.cloud.update_user, **{
+			'lang': lang if lang != '' else None,
+			'max_backups': max_backups if max_backups != '' else None
+		})
+		worker.err_format = 'Can\'t save account settings: {}'
+		worker.signals.success.connect(self.save_account_general_success)
+		worker.signals.error.connect(self.popup_error)
+		worker.signals.finished.connect(self.stop_spinner)
+		self.thread_pool.start(worker)
 
-		# TODO: implement saving account settings
-
-		self.close()
+	def save_account_general_success(self):
+		popup.info(self, 'Account has been updated')
 
 	def stop_spinner(self):
 		self.spinner.stop()

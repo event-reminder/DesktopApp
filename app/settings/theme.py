@@ -6,7 +6,10 @@ def dark_theme_palette():
 	palette = QPalette()
 	palette.setColor(QPalette.Window, QColor(55, 55, 55))
 	palette.setColor(QPalette.WindowText, Qt.white)
+
 	palette.setColor(QPalette.Base, QColor(53, 53, 53))
+	palette.setColor(QPalette.Disabled, QPalette.Base, QColor(73, 73, 73))
+
 	palette.setColor(QPalette.AlternateBase, QColor(63, 63, 63))
 	palette.setColor(QPalette.ToolTipBase, QColor(53, 53, 53))
 	palette.setColor(QPalette.ToolTipText, Qt.white)

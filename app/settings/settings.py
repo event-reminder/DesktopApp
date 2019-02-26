@@ -73,6 +73,14 @@ class Settings:
 		return int(self.__settings.value('app_user/font', FONT))
 
 	@property
+	def app_lang(self):
+		return self.__settings.value('app_user/lang', LANG)
+
+	@property
+	def app_max_backups(self):
+		return int(self.__settings.value('app_user/max_backups', MAX_BACKUPS))
+
+	@property
 	def badge_color(self):
 		return self.__settings.value('app/badge_color', BADGE_COLOR)
 
@@ -126,6 +134,14 @@ class Settings:
 
 	def set_font(self, value: int):
 		self.__settings.setValue('app_user/font', value)
+		self._commit()
+
+	def set_lang(self, value: str):
+		self.__settings.setValue('app_user/lang', value)
+		self._commit()
+
+	def set_max_backups(self, value: int):
+		self.__settings.setValue('app_user/max_backups', value)
 		self._commit()
 
 	def set_remove_event_after_time_up(self, value: bool):
