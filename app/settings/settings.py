@@ -1,3 +1,5 @@
+import getpass
+
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize, QPoint, QSettings
 
@@ -41,6 +43,14 @@ class Settings:
 	@property
 	def app_pos(self):
 		return self.__settings.value('app/pos', QPoint(APP_POS_X, APP_POS_Y))
+
+	@property
+	def app_last_backup_path(self):
+		return self.__settings.value('app/last_backup_path', './')
+
+	@property
+	def app_last_restore_path(self):
+		return self.__settings.value('app/last_restore_path', '')
 
 	def app_icon(self, is_ico=False, q_icon=True, is_dark=False, icon_size='default'):
 		icon = ''
@@ -122,6 +132,14 @@ class Settings:
 
 	def set_pos(self, pos: QPoint):
 		self.__settings.setValue('app/pos', pos)
+		self._commit()
+
+	def set_last_backup_path(self, path: str):
+		self.__settings.setValue('app/last_backup_path', path)
+		self._commit()
+
+	def set_last_restore_path(self, path: str):
+		self.__settings.value('app/last_restore_path', path)
 		self._commit()
 
 	def set_theme(self, is_dark: bool):

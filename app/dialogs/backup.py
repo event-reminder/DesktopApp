@@ -1,3 +1,4 @@
+import os
 import getpass
 from datetime import datetime
 
@@ -35,8 +36,6 @@ class BackupDialog(QDialog):
 
 		self.setFixedSize(500, 320)
 		self.setWindowTitle('Backup and Restore')
-
-		self.search_dir = '/home/{}'.format(getpass.getuser())
 
 		self.backups_pool = []
 
@@ -90,7 +89,8 @@ class BackupDialog(QDialog):
 		h2_layout = QHBoxLayout()
 		h2_layout.addWidget(QLabel('Location:'))
 		h2_layout.setContentsMargins(10, 0, 10, 20)
-		self.backup_file_input.setText(self.search_dir)
+		if os.path.exists(self.settings.app_last_backup_path):
+			self.backup_file_input.setText(self.settings.app_last_backup_path)
 		h2_layout.addWidget(self.backup_file_input)
 		self.backup_file_button.setIcon(QIcon().fromTheme('folder'))
 		h2_layout.addWidget(self.backup_file_button)
@@ -112,6 +112,8 @@ class BackupDialog(QDialog):
 		h2_layout = QHBoxLayout()
 		h2_layout.addWidget(QLabel('Location:'))
 		h2_layout.setContentsMargins(10, 0, 10, 20)
+		if os.path.isfile(self.settings.app_last_restore_path):
+			self.restore_file_input.setText(self.settings.app_last_restore_path)
 		h2_layout.addWidget(self.restore_file_input)
 		self.restore_file_button.setIcon(QIcon().fromTheme('document-open'))
 		h2_layout.addWidget(self.restore_file_button)
@@ -128,31 +130,44 @@ class BackupDialog(QDialog):
 		tabs.addTab(tab, 'Restore')
 
 	def get_folder_path(self):
-		file_name = QFileDialog().getExistingDirectory(caption='Select Directory', directory=self.search_dir)
+		file_name = QFileDialog().getExistingDirectory(
+			caption='Select Directory',
+			directory=self.backup_file_input.text()
+		)
 		if len(file_name) > 0:
 			self.backup_file_input.setText(str(file_name))
 
 	def get_file_path(self):
-		file_name = QFileDialog().getOpenFileName(caption='Open file', directory=self.search_dir, filter='(*.bak)')
+		path = self.restore_file_input.text()
+		file_name = QFileDialog().getOpenFileName(
+			caption='Open file',
+			directory=path if os.path.isfile(path) else './',
+			filter='(*.bak)'
+		)
 		if len(file_name) > 0:
 			self.restore_file_input.setText(file_name[0])
 
 	def launch_restore_local(self):
+		path = self.restore_file_input.text()
+		self.settings.set_last_restore_path(path)
 		self.exec_worker(
 			self.storage.restore,
 			self.launch_restore_local_success,
-			*(self.restore_file_input.text(),)
+			*(path,)
 		)
 
 	def launch_restore_local_success(self):
 		self.calendar.update()
 		self.calendar.settings_dialog.refresh_settings_values()
+		popup.info(self, 'Data has been restored')
 
 	def launch_backup_local(self):
+		path = self.backup_file_input.text()
+		self.settings.set_last_backup_path(path)
 		self.exec_worker(
 			self.storage.backup,
 			self.launch_backup_local_success,
-			*(self.backup_file_input.text(), self.settings.include_settings_backup)
+			*(path, self.settings.include_settings_backup)
 		)
 
 	def launch_backup_local_success(self):
