@@ -160,3 +160,22 @@ class CloudStorage:
 					'unable to delete backup, status {}'.format(response.status_code)
 				)
 			)
+
+	@failure_wrapper(method_desc='Token request')
+	def request_token(self, email):
+		response = self.session.post(routes.ACCOUNT_SEND_TOKEN, json={'email': email})
+		if response.status_code != status.HTTP_201_CREATED:
+			raise CloudStorageException('unable to send token')
+		return response.json()
+
+	@failure_wrapper(method_desc='Password reset')
+	def reset_password(self, email, new_password, new_password_confirm, token):
+		response = self.session.post(routes.ACCOUNT_PASSWORD_RESET, json={
+			'email': email,
+			'new_password': new_password,
+			'new_password_confirm': new_password_confirm,
+			'confirmation_token': token
+		})
+		if response.status_code != status.HTTP_201_CREATED:
+			raise CloudStorageException('unable to reset password')
+		return response.json()

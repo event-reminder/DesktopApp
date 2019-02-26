@@ -27,7 +27,7 @@ class Worker(QRunnable):
 	@pyqtSlot()
 	def run(self):
 		try:
-			self.fn(*self.args, **self.kwargs)
+			print(self.fn(*self.args, **self.kwargs))
 		except Exception as _:
 			if DEBUG:
 				traceback.print_exc()

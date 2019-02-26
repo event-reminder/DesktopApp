@@ -2,7 +2,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
+from app.util import Worker
+from app.cloud import CloudStorage
 from app.widgets.util import PushButton, popup
+from app.widgets.waiting_spinner import WaitingSpinner
 from app.settings import Settings, FONT_LARGE, FONT_SMALL, FONT_NORMAL, AVAILABLE_LANGUAGES
 
 
@@ -19,11 +22,14 @@ class SettingsDialog(QDialog):
 
 		self.calendar = kwargs['calendar']
 
-		self.setFixedSize(550, 330)
+		self.setFixedSize(550, 400)
 		self.setWindowTitle('Settings')
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
 
 		self.settings = Settings()
+		self.spinner = WaitingSpinner()
+		self.thread_pool = QThreadPool()
+		self.cloud = kwargs.get('cloud_storage', CloudStorage())
 
 		self.always_on_top_check_box = QCheckBox()
 		self.font_combo_box = QComboBox()
@@ -36,6 +42,7 @@ class SettingsDialog(QDialog):
 
 		self.include_settings_backup_check_box = QCheckBox()
 
+		self.email_input = QLineEdit()
 		self.new_password_input = QLineEdit()
 		self.new_password_repeat_input = QLineEdit()
 		self.verification_token_input = QLineEdit()
@@ -44,10 +51,14 @@ class SettingsDialog(QDialog):
 		self.token_layout = QVBoxLayout()
 		self.change_password_btn = PushButton('Send Token', 150, 30, self.change_password_btn_click)
 
+		self.token_is_sent = False
+
 		self.ui_is_loaded = False
 		self.setup_ui()
 
 		self.refresh_settings_values()
+
+		self.layout().addWidget(self.spinner)
 
 		self.ui_is_loaded = True
 
@@ -138,10 +149,18 @@ class SettingsDialog(QDialog):
 
 		layout = QVBoxLayout()
 
+		email_layout = QVBoxLayout()
+		email_layout.setContentsMargins(50, 0, 50, 10)
+		email_layout.addWidget(QLabel('Email:'))
+		self.email_input.textChanged.connect(self.change_password_inputs_changed)
+		email_layout.addWidget(self.email_input)
+		layout.addLayout(email_layout)
+
 		new_pwd_layout = QVBoxLayout()
 		new_pwd_layout.setContentsMargins(50, 0, 50, 10)
 		new_pwd_layout.addWidget(QLabel('New Password:'))
 		self.new_password_input.textChanged.connect(self.change_password_inputs_changed)
+		self.new_password_input.setEnabled(False)
 		self.new_password_input.setEchoMode(QLineEdit.Password)
 		new_pwd_layout.addWidget(self.new_password_input)
 		layout.addLayout(new_pwd_layout)
@@ -150,6 +169,7 @@ class SettingsDialog(QDialog):
 		repeat_pwd_layout.setContentsMargins(50, 0, 50, 10)
 		repeat_pwd_layout.addWidget(QLabel('Repeat Password:'))
 		self.new_password_repeat_input.textChanged.connect(self.change_password_inputs_changed)
+		self.new_password_repeat_input.setEnabled(False)
 		self.new_password_repeat_input.setEchoMode(QLineEdit.Password)
 		repeat_pwd_layout.addWidget(self.new_password_repeat_input)
 		layout.addLayout(repeat_pwd_layout)
@@ -200,8 +220,8 @@ class SettingsDialog(QDialog):
 	def setup_account_settings_ui(self, tabs):
 		account_settings_tabs = QTabWidget(self)
 
-		self.setup_account_change_password_ui(account_settings_tabs)
 		self.setup_account_other_ui(account_settings_tabs)
+		self.setup_account_change_password_ui(account_settings_tabs)
 
 		tabs.addTab(account_settings_tabs, 'Account')
 
@@ -247,36 +267,71 @@ class SettingsDialog(QDialog):
 			self.settings.set_include_settings_backup(self.include_settings_backup_check_box.isChecked())
 
 	def reset_change_password_btn_click(self):
+		self.email_input.clear()
 		self.new_password_input.clear()
 		self.new_password_repeat_input.clear()
 		self.verification_token_input.clear()
+		self.new_password_input.setEnabled(False)
+		self.new_password_repeat_input.setEnabled(False)
+		self.verification_token_input.setEnabled(False)
 		self.change_password_btn.setText('Send Token')
 		self.change_password_btn.setEnabled(False)
 
 	def change_password_inputs_changed(self):
-		password_is_filled = len(self.new_password_input.text()) > 0 and len(self.new_password_repeat_input.text()) > 0
 		self.change_password_btn.setEnabled(False)
-		if not self.verification_token_input.isEnabled():
-			if password_is_filled:
-				if self.new_password_input.text() == self.new_password_repeat_input.text():
-					self.change_password_btn.setEnabled(True)
-		else:
-			if len(self.verification_token_input.text()) > 0 and password_is_filled:
+		if len(self.email_input.text()) > 0:
+			if not self.token_is_sent:
 				self.change_password_btn.setEnabled(True)
+			else:
+				if all(
+						(
+							len(self.verification_token_input.text()) > 0,
+							len(self.new_password_input.text()) > 0,
+							len(self.new_password_repeat_input.text()) > 0
+						)
+				):
+					self.change_password_btn.setEnabled(True)
 
 	def change_password_btn_click(self):
-
-		if len(self.verification_token_input.text()) > 0:
-			self.close()
+		if self.token_is_sent:
+			if self.new_password_input.text() != self.new_password_repeat_input.text():
+				popup.error(self, 'Password confirmation failed')
+			else:
+				self.spinner.start()
+				worker = Worker(self.cloud.reset_password, *(
+					self.email_input.text(),
+					self.new_password_input.text(),
+					self.new_password_repeat_input.text(),
+					self.verification_token_input.text()
+				))
+				worker.err_format = 'Can\'t reset password: {}'
+				worker.signals.success.connect(self.change_password_success)
+				worker.signals.error.connect(self.popup_error)
+				worker.signals.finished.connect(self.stop_spinner)
+				self.thread_pool.start(worker)
 		else:
-			# TODO: send token request
+			self.spinner.start()
+			worker = Worker(self.cloud.request_token, *(self.email_input.text(),))
+			worker.err_format = 'Can\'t request token: {}'
+			worker.signals.success.connect(self.change_password_request_token_success)
+			worker.signals.error.connect(self.popup_error)
+			worker.signals.finished.connect(self.stop_spinner)
+			self.thread_pool.start(worker)
 
-			popup.info(self, 'Check your email box for verification token')
-			self.token_layout.setEnabled(True)
-			self.verification_token_input.setEnabled(True)
-			self.verification_token_input.setFocus()
-			self.change_password_btn.setText('Change')
-			self.change_password_btn.setEnabled(False)
+	def change_password_request_token_success(self):
+		popup.info(self, 'Check your email box for verification token')
+		self.token_is_sent = True
+		self.token_layout.setEnabled(True)
+		self.new_password_input.setEnabled(True)
+		self.new_password_input.setFocus()
+		self.new_password_repeat_input.setEnabled(True)
+		self.verification_token_input.setEnabled(True)
+		self.change_password_btn.setText('Change')
+		self.change_password_btn.setEnabled(False)
+
+	def change_password_success(self):
+		self.reset_change_password_btn_click()
+		popup.info(self, 'New password has been set')
 
 	def save_account_other_btn_click(self):
 

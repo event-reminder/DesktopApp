@@ -53,7 +53,8 @@ class CalendarWidget(QCalendarWidget):
 			flags=self.parent.windowFlags(),
 			calendar=self,
 			palette=self.settings.app_theme,
-			font=font
+			font=font,
+			cloud_storage=self.cloud_storage
 		)
 
 		self.backup_dialog = BackupDialog(
