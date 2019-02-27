@@ -1,5 +1,4 @@
 import os
-import getpass
 from datetime import datetime
 
 from PyQt5.QtGui import *

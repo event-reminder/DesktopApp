@@ -59,7 +59,7 @@ class EventWidget(QWidget):
 		else:
 			popup.info(self.parent, 'Event is already removed!')
 
-	def remove_event_success(self, _):
+	def remove_event_success(self):
 		self.parent.takeItem(self.parent.currentRow())
 		self.update_day(self.parent.count() < 1)
 
