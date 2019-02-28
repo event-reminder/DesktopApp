@@ -41,7 +41,7 @@ class Storage:
 			and settings if the last one is included in backup.
 	"""
 
-	def __init__(self, connect=True):
+	def __init__(self, try_to_reconnect=False):
 		if not os.path.exists(APP_DB_PATH):
 			os.makedirs(APP_DB_PATH)
 
@@ -50,8 +50,9 @@ class Storage:
 		if len(self.__instance.get_tables()) < 1:
 			self.__instance.create_tables([EventModel])
 
-		if connect:
-			self.connect()
+		self.try_to_reconnect = try_to_reconnect
+
+		self.connect()
 
 	@property
 	def is_connected(self):
@@ -71,6 +72,8 @@ class Storage:
 		return self.get_event_by_id(pk) is not None
 
 	def create_event(self, title, e_date, e_time, description, repeat_weekly, is_past=False):
+		if self.try_to_reconnect:
+			self.connect()
 		if not self.is_connected:
 			raise DatabaseException('Creation failure: connect to the database first.')
 		EventModel.create(**{
@@ -83,6 +86,8 @@ class Storage:
 		}).save()
 
 	def update_event(self, pk, title=None, e_date=None, e_time=None, description=None, is_past=None, repeat_weekly=None):
+		if self.try_to_reconnect:
+			self.connect()
 		if not self.is_connected:
 			raise DatabaseException('Updating failure: connect to the database first.')
 		event = self.get_event_by_id(pk)
@@ -103,6 +108,8 @@ class Storage:
 		return event
 
 	def delete_event(self, pk):
+		if self.try_to_reconnect:
+			self.connect()
 		if not self.is_connected:
 			raise DatabaseException('Deleting failure: connect to the database first.')
 		event = self.get_event_by_id(pk)

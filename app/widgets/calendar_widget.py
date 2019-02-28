@@ -25,46 +25,27 @@ class CalendarWidget(QCalendarWidget):
 		self.setGridVisible(True)
 
 		# noinspection PyUnresolvedReferences
-		self.clicked[QDate].connect(self.show_events)
+		self.clicked[QDate].connect(self.open_events)
 
 		self.settings = Settings()
+		font = QFont('SansSerif', self.settings.app_font)
+		self.setFont(font)
+		self.setPalette(self.settings.app_theme)
 
-		self.storage = Storage(connect=False)
+		self.storage = Storage()
 		self.cloud_storage = CloudStorage()
 
-		font = QFont('SansSerif', self.settings.app_font)
+		params = {
+			'font': font,
+			'calendar': self,
+			'flags': self.parent.windowFlags(),
+			'palette': self.settings.app_theme
+		}
 
-		self.event_retrieving_dialog = EventsListDialog(
-			flags=self.parent.windowFlags(),
-			calendar=self,
-			palette=self.settings.app_theme,
-			font=font
-		)
-
-		self.event_creation_dialog = CreateEventDialog(
-			flags=self.parent.windowFlags(),
-			calendar=self,
-			storage=self.storage,
-			palette=self.settings.app_theme,
-			font=font
-		)
-
-		self.settings_dialog = SettingsDialog(
-			flags=self.parent.windowFlags(),
-			calendar=self,
-			palette=self.settings.app_theme,
-			font=font,
-			cloud_storage=self.cloud_storage
-		)
-
-		self.backup_dialog = BackupDialog(
-			flags=self.parent.windowFlags(),
-			calendar=self,
-			storage=self.storage,
-			palette=self.settings.app_theme,
-			font=font,
-			cloud_storage=self.cloud_storage
-		)
+		self.event_creation_dialog = CreateEventDialog(storage=self.storage, **params)
+		self.event_retrieving_dialog = EventsListDialog(**params)
+		self.settings_dialog = SettingsDialog(cloud_storage=self.cloud_storage, **params)
+		self.backup_dialog = BackupDialog(storage=self.storage, cloud_storage=self.cloud_storage, **params)
 
 		self.dialogs = [
 			self.event_retrieving_dialog,
@@ -72,9 +53,6 @@ class CalendarWidget(QCalendarWidget):
 			self.settings_dialog,
 			self.backup_dialog
 		]
-
-		self.setFont(font)
-		self.setPalette(self.settings.app_theme)
 
 		self.marked_dates = []
 		self.update()
@@ -85,14 +63,13 @@ class CalendarWidget(QCalendarWidget):
 
 	def update(self, *__args):
 		try:
-			self.storage.connect()
 			self.marked_dates = self.events_to_dates(self.storage.get_events())
 		except peewee.PeeweeException:
 			info(self, 'Can\'t find related database, it will be created automatically')
 		except Exception as exc:
-			logger.error(log_msg('unknown error: {}'.format(exc)))
+			logger.error(log_msg('Unknown error: {}'.format(exc)))
 			error(self, 'Error occurred: {}'.format(exc))
-		super().update()
+		super(CalendarWidget, self).update(*__args)
 
 	def closeEvent(self, event):
 		self.storage.disconnect()
@@ -106,7 +83,7 @@ class CalendarWidget(QCalendarWidget):
 			action = menu.exec_(self.mapToGlobal(event.pos()))
 			if action == create_action:
 				self.open_create_event()
-		super().contextMenuEvent(event)
+		super(CalendarWidget, self).contextMenuEvent(event)
 
 	def paintCell(self, painter, rect, date, **kwargs):
 		QCalendarWidget.paintCell(self, painter, rect, date)
@@ -158,7 +135,7 @@ class CalendarWidget(QCalendarWidget):
 	def resize_handler(self):
 		self.resize(self.parent.width(), self.parent.height() - 20)
 
-	def show_events(self, date):
+	def open_events(self, date):
 		py_date = date.toPyDate()
 		if datetime.now().date() <= py_date:
 			try:
@@ -174,7 +151,7 @@ class CalendarWidget(QCalendarWidget):
 	def open_create_event(self):
 		date = self.selectedDate().toPyDate()
 		if datetime.now().date() <= date:
-			self.event_creation_dialog.reset_inputs(date)
+			self.event_creation_dialog.reset_inputs(date=date)
 			self.event_creation_dialog.exec_()
 		else:
 			info(self, 'Can not set reminder to the past')

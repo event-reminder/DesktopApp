@@ -1,5 +1,3 @@
-import getpass
-
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize, QPoint, QSettings
 

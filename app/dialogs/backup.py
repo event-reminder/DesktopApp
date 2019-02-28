@@ -6,6 +6,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from app.util import Worker
+from app.storage import Storage
 from app.settings import Settings
 from app.cloud import CloudStorage
 from app.widgets.util import PushButton, popup
@@ -29,8 +30,11 @@ class BackupDialog(QDialog):
 
 		self.thread_pool = QThreadPool()
 
-		self.calendar = kwargs['calendar']
-		self.storage = kwargs['storage']
+		self.calendar = kwargs.get('calendar', None)
+		if self.calendar is None:
+			raise RuntimeError('BackupDialog: calendar is not set')
+
+		self.storage = kwargs.get('storage', Storage())
 		self.cloud = kwargs.get('cloud_storage', CloudStorage())
 
 		self.setFixedSize(500, 320)
@@ -253,7 +257,7 @@ class BackupDialog(QDialog):
 	def upload_backup_cloud_run(self):
 		user = self.cloud.user()
 		timestamp = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
-		self.storage.connect()
+		# self.storage.connect()
 		backup_data = self.storage.prepare_backup_data(
 			self.storage.to_array(), timestamp, self.settings.include_settings_backup, user['username']
 		)
