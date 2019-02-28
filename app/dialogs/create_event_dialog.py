@@ -24,7 +24,7 @@ class CreateEventDialog(QDialog):
 			self.setPalette(kwargs.get('palette'))
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
-		self.setWindowTitle('New Event')
+		self.setWindowTitle(self.tr('New Event'))
 
 		self.thread_pool = QThreadPool()
 		self.spinner = WaitingSpinner()
@@ -41,7 +41,7 @@ class CreateEventDialog(QDialog):
 		self.description_input = QTextEdit(self)
 		self.date_input = QDateEdit(self)
 		self.time_input = QTimeEdit(self)
-		self.repeat_weekly_input = QCheckBox('Repeat weekly', self)
+		self.repeat_weekly_input = QCheckBox(self.tr('Repeat weekly'), self)
 
 		self.event_id = None
 		self.del_btn = None
@@ -52,23 +52,23 @@ class CreateEventDialog(QDialog):
 
 	def setup_ui(self):
 		content = QVBoxLayout()
-		content.addWidget(QLabel('Title:'), alignment=Qt.AlignLeft)
+		content.addWidget(QLabel('{}:'.format(self.tr('Title'))), alignment=Qt.AlignLeft)
 		content.addWidget(self.title_input)
-		content.addWidget(QLabel('Description (optional):'), alignment=Qt.AlignLeft)
+		content.addWidget(QLabel('{}:'.format(self.tr('Description (optional)'))), alignment=Qt.AlignLeft)
 		content.addWidget(self.description_input)
-		content.addWidget(QLabel('Date:'), alignment=Qt.AlignLeft)
+		content.addWidget(QLabel('{}:'.format(self.tr('Date'))), alignment=Qt.AlignLeft)
 		content.addWidget(self.date_input)
-		content.addWidget(QLabel('Time:'), alignment=Qt.AlignLeft)
+		content.addWidget(QLabel('{}:'.format(self.tr('Time'))), alignment=Qt.AlignLeft)
 		content.addWidget(self.time_input)
 		self.repeat_weekly_input.setChecked(False)
 		content.addWidget(self.repeat_weekly_input)
 
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
-		buttons.addWidget(PushButton('Save', 90, 30, self.save_event_click), 0, Qt.AlignRight)
-		self.del_btn = PushButton('Delete', 90, 30, self.delete_event_click)
+		buttons.addWidget(PushButton(self.tr('Save'), 90, 30, self.save_event_click), 0, Qt.AlignRight)
+		self.del_btn = PushButton(self.tr('Delete'), 90, 30, self.delete_event_click)
 		buttons.addWidget(self.del_btn)
-		buttons.addWidget(PushButton('Cancel', 90, 30, self.close), 0, Qt.AlignRight)
+		buttons.addWidget(PushButton(self.tr('Cancel'), 90, 30, self.close), 0, Qt.AlignRight)
 		content.addLayout(buttons)
 
 		self.setLayout(content)
@@ -84,7 +84,7 @@ class CreateEventDialog(QDialog):
 			self.description_input.setText('')
 		elif event_data is not None:
 			self.event_id = event_data.id
-			self.setWindowTitle('Update Event')
+			self.setWindowTitle(self.tr('Update Event'))
 			self.title_input.setText(event_data.title)
 			self.description_input.setText(event_data.description)
 			self.date_input.setDate(event_data.date)
@@ -94,7 +94,11 @@ class CreateEventDialog(QDialog):
 
 	def delete_event_click(self):
 		if self.storage.event_exists(self.event_id):
-			ret_action = popup.question(self, 'Deleting an event', 'Do you really want to delete the event?')
+			ret_action = popup.question(
+				self,
+				self.tr('Deleting an event'),
+				'{}?'.format(self.tr('Do you really want to delete the event'))
+			)
 			if ret_action == QMessageBox.Yes:
 				self.exec_worker(
 					self.delete_event,
@@ -103,7 +107,7 @@ class CreateEventDialog(QDialog):
 					*(self.event_id,)
 				)
 		else:
-			popup.info(self.parent, 'Event is already removed!')
+			popup.info(self.parent, '{}!'.format(self.tr('Event is already removed')))
 
 	def delete_event(self, event_id):
 		self.storage.connect()
@@ -111,15 +115,15 @@ class CreateEventDialog(QDialog):
 
 	def validate_inputs(self):
 		if len(self.title_input.text()) < 1:
-			popup.warning(self, 'Provide title for the event!')
+			popup.warning(self, '{}!'.format(self.tr('Provide title for the event')))
 			return False
 		if self.event_id is None:
 			if self.date_input.date().toPyDate() < datetime.now().date():
-				popup.warning(self, 'Can\'t set past event, check date input')
+				popup.warning(self, self.tr('Unable to set past event, check date input'))
 				return False
 			if self.time_input.time().toPyTime() < datetime.now().time() and \
 				self.date_input.date().toPyDate() == datetime.now().date():
-				popup.warning(self, 'Can\'t set past event, check time input')
+				popup.warning(self, self.tr('Unable to set past event, check time input'))
 				return False
 		return True
 
@@ -132,7 +136,7 @@ class CreateEventDialog(QDialog):
 				'description': self.description_input.toPlainText(),
 				'repeat_weekly': self.repeat_weekly_input.isChecked()
 			}
-			err_format = 'Saving event to database failed: {}'
+			err_format = '{}'.format(self.tr('Saving event to database failed')) + ': {}'
 			fn = self.storage.create_event
 			if self.event_id is not None:
 				data['pk'] = self.event_id
@@ -140,7 +144,7 @@ class CreateEventDialog(QDialog):
 			self.exec_worker(fn, self.save_event_success, err_format, **data)
 
 	def save_event_success(self):
-		popup.info(self, 'Saved successfully')
+		popup.info(self, self.tr('Saved successfully'))
 		self.close_and_update()
 
 	def close_and_update(self):

@@ -2,6 +2,49 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US" sourcelanguage="en_US">
 <context>
+    <name>MainWindow</name>
+    <message>
+        <source>Open</source>
+        <translation>Open</translation>
+    </message>
+    <message>
+        <source>Minimize To Tray</source>
+        <translation>Minimize To Tray</translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation>Quit</translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation>File</translation>
+    </message>
+    <message>
+        <source>New Event</source>
+        <translation>New Event</translation>
+    </message>
+    <message>
+        <source>Se{}ttings</source>
+        <translation>Se{}ttings</translation>
+    </message>
+    <message>
+        <source>Backup and Restore</source>
+        <translation>Backup and Restore</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>Help</translation>
+    </message>
+    <message>
+        <source>Account</source>
+        <translation>Account</translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation>About</translation>
+    </message>
+</context>
+<context>
     <name>AccountDialog</name>
     <message>
         <source>Account</source>
@@ -86,6 +129,80 @@
     <message>
         <source>Successfully logged out</source>
         <translation>Successfully logged out</translation>
+    </message>
+</context>
+<context>
+    <name>CreateEventDialog</name>
+    <message>
+        <source>New Event</source>
+        <translation>New Event</translation>
+    </message>
+    <message>
+        <source>Repeat weekly</source>
+        <translation>Repeat weekly</translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation>Title</translation>
+    </message>
+    <message>
+        <source>Description (optional)</source>
+        <translation>Description (optional)</translation>
+    </message>
+    <message>
+        <source>Date</source>
+        <translation>Date</translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation>Time</translation>
+    </message><message>
+        <source>Save</source>
+        <translation>Save</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Delete</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <source>Update Event</source>
+        <translation>Update Event</translation>
+    </message>
+    <message>
+        <source>Deleting an event</source>
+        <translation>Deleting an event</translation>
+    </message>
+    <message>
+        <source>Do you really want to delete the event</source>
+        <translation>Do you really want to delete the event</translation>
+    </message>
+    <message>
+        <source>Event is already removed</source>
+        <translation>Event is already removed</translation>
+    </message>
+    <message>
+        <source>Provide title for the event</source>
+        <translation>Provide title for the event</translation>
+    </message>
+    <message>
+        <source>Unable to set past event, check date input</source>
+        <translation>Unable to set past event, check date input</translation>
+    </message>
+    <message>
+        <source>Unable to set past event, check time input</source>
+        <translation>Unable to set past event, check time input</translation>
+    </message>
+    <message>
+        <source>Saving event to database failed</source>
+        <translation>Saving event to database failed</translation>
+    </message>
+    <message>
+        <source>Saved successfully</source>
+        <translation>Saved successfully</translation>
     </message>
 </context>
 </TS>

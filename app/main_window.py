@@ -21,11 +21,11 @@ class MainWindow(QMainWindow):
 		self.setup_navigation_menu()
 		self.setFont(QFont('SansSerif', self.settings.app_font))
 
-		self.open_action = QAction('Open {}'.format(APP_NAME), self)
-		self.hide_action = QAction('Minimize To Tray', self)
+		self.open_action = QAction('{} {}'.format(self.tr('Open'), APP_NAME), self)
+		self.hide_action = QAction(self.tr('Minimize To Tray'), self)
 		if not self.settings.show_calendar_on_startup:
 			self.hide_action.setEnabled(False)
-		self.close_action = QAction('Quit {}'.format(APP_NAME), self)
+		self.close_action = QAction('{} {}'.format(self.tr('Quit'), APP_NAME), self)
 
 		self.tray_icon = self.init_tray(kwargs.get('app'))
 		self.tray_icon.show()
@@ -35,6 +35,7 @@ class MainWindow(QMainWindow):
 	def closeEvent(self, event):
 		event.ignore()
 		self.hide()
+		super(MainWindow, self).closeEvent(event)
 
 	def quit_app(self):
 		self.settings.autocommit(False)
@@ -67,16 +68,17 @@ class MainWindow(QMainWindow):
 	def hide(self):
 		self.hide_action.setEnabled(False)
 		self.open_action.setEnabled(True)
-		super().hide()
+		super(MainWindow, self).hide()
 
 	def show(self):
 		self.hide_action.setEnabled(True)
 		self.open_action.setEnabled(False)
-		super().show()
+		super(MainWindow, self).show()
 
 	def resizeEvent(self, event):
 		self.calendar.resize_handler()
 		QMainWindow.resizeEvent(self, event)
+		super(MainWindow, self).resizeEvent(event)
 
 	def setup_navigation_menu(self):
 		main_menu = self.menuBar()
@@ -97,29 +99,37 @@ class MainWindow(QMainWindow):
 		return action
 
 	def setup_file_menu(self, main_menu):
-		file_menu = main_menu.addMenu('&File')
-		file_menu.addAction(
-			self.new_action(self, 'New Event...', self.calendar.open_create_event, 'Ctrl+N', 'Create event')
-		)
+		file_menu = main_menu.addMenu('&{}'.format(self.tr('File')))
 		file_menu.addAction(
 			self.new_action(
-				self, 'Se&ttings...', self.calendar.open_settings, 'Ctrl+Alt+S', 'Settings', 'emblem-system'
+				self,
+				'{}...'.format(self.tr('New Event')),
+				self.calendar.open_create_event,
+				'Ctrl+N'
 			)
 		)
 		file_menu.addAction(
 			self.new_action(
-				self, 'Backup and Restore...',
+				self,
+				'{}...'.format(self.tr('Se{}ttings').format('&')),
+				self.calendar.open_settings,
+				'Ctrl+Alt+S',
+				icon='emblem-system'
+			)
+		)
+		file_menu.addAction(
+			self.new_action(
+				self, '{}...'.format(self.tr('Backup and Restore')),
 				self.calendar.open_backup_and_restore,
 				'Ctrl+Alt+B',
-				'Backup and restore'
 			)
 		)
 
 	def setup_help_menu(self, main_menu):
-		help_menu = main_menu.addMenu('&Help')
+		help_menu = main_menu.addMenu('&{}'.format(self.tr('Help')))
 		help_menu.addAction(
-			self.new_action(self, '&Account...', self.calendar.open_account_info)
+			self.new_action(self, '&{}...'.format(self.tr('Account')), self.calendar.open_account_info)
 		)
 		help_menu.addAction(
-			self.new_action(self, '&About', self.calendar.open_about, icon='dialog-information')
+			self.new_action(self, '&{}'.format(self.tr('About')), self.calendar.open_about, icon='dialog-information')
 		)

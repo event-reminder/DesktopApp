@@ -2,6 +2,49 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="uk_UA" sourcelanguage="en_US">
 <context>
+    <name>MainWindow</name>
+    <message>
+        <source>Open</source>
+        <translation>Відкрити</translation>
+    </message>
+    <message>
+        <source>Minimize To Tray</source>
+        <translation>Згорнути до трею</translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation>Закрити</translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation>Файл</translation>
+    </message>
+    <message>
+        <source>New Event</source>
+        <translation>Нова подія</translation>
+    </message>
+    <message>
+        <source>Se{}ttings</source>
+        <translation>Нала{}штування</translation>
+    </message>
+    <message>
+        <source>Backup and Restore</source>
+        <translation>Резервне копіювання та Відновлення</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>Допомога</translation>
+    </message>
+    <message>
+        <source>Account</source>
+        <translation>Обліковий запис</translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation>Інформація</translation>
+    </message>
+</context>
+<context>
     <name>AccountDialog</name>
     <message>
         <source>Account</source>
@@ -86,6 +129,80 @@
     <message>
         <source>Successfully logged out</source>
         <translation>Успішний вихід зі системи</translation>
+    </message>
+</context>
+<context>
+    <name>CreateEventDialog</name>
+    <message>
+        <source>New Event</source>
+        <translation>Нова подія</translation>
+    </message>
+    <message>
+        <source>Repeat weekly</source>
+        <translation>Повторювати щотижня</translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation>Заголовок</translation>
+    </message>
+    <message>
+        <source>Description (optional)</source>
+        <translation>Опис (необов'язково)</translation>
+    </message>
+    <message>
+        <source>Date</source>
+        <translation>Дата</translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation>Час</translation>
+    </message><message>
+        <source>Save</source>
+        <translation>Зберегти</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Видалити</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Відмінити</translation>
+    </message>
+    <message>
+        <source>Update Event</source>
+        <translation>Оновити подію</translation>
+    </message>
+    <message>
+        <source>Deleting an event</source>
+        <translation>Видалення події</translation>
+    </message>
+    <message>
+        <source>Do you really want to delete the event</source>
+        <translation>Ви справді хочете видалити подію</translation>
+    </message>
+    <message>
+        <source>Event is already removed</source>
+        <translation>Подія вже видалена</translation>
+    </message>
+    <message>
+        <source>Provide title for the event</source>
+        <translation>Вкажіть заголовок події</translation>
+    </message>
+    <message>
+        <source>Unable to set past event, check date input</source>
+        <translation>Неможливо створити минулу подію, перевірте введення дати</translation>
+    </message>
+    <message>
+        <source>Unable to set past event, check time input</source>
+        <translation>Неможливо створити минулу подію, перевірте введення часу</translation>
+    </message>
+    <message>
+        <source>Saving event to database failed</source>
+        <translation>Не вдалося зберегти подію до бази даних</translation>
+    </message>
+    <message>
+        <source>Saved successfully</source>
+        <translation>Збережено успішно</translation>
     </message>
 </context>
 </TS>

@@ -13,7 +13,7 @@ class AboutDialog(QDialog):
 		if 'palette' in kwargs:
 			self.setPalette(kwargs.get('palette'))
 		self.setFixedSize(500, 250)
-		self.setWindowTitle('About')
+		self.setWindowTitle('Legal Information')
 		self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint)
 
 		self.settings = Settings()
