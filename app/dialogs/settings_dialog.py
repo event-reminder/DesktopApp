@@ -73,7 +73,12 @@ class SettingsDialog(QDialog):
 			self.settings.set_lang(lang)
 		except Exception as exc:
 			print(exc)
-		self.lang_combo_box.setCurrentIndex(AVAILABLE_LANGUAGES_IDX[lang])
+		try:
+			print(lang)
+			idx = AVAILABLE_LANGUAGES_IDX[lang]
+		except KeyError:
+			idx = 0
+		self.lang_combo_box.setCurrentIndex(idx)
 		self.backups_number_input.setText(str(max_backups))
 		super().showEvent(event)
 
@@ -348,6 +353,8 @@ class SettingsDialog(QDialog):
 	def save_account_general_btn_click(self):
 		max_backups = self.backups_number_input.text()
 		lang = AVAILABLE_LANGUAGES[self.lang_combo_box.currentText()]
+		self.settings.set_max_backups(int(max_backups))
+		self.settings.set_lang(lang)
 		self.exec_worker(
 			self.cloud.update_user,
 			self.save_account_general_success,

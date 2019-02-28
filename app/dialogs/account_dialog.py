@@ -25,8 +25,8 @@ class AccountDialog(QDialog):
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
 
-		self.setFixedSize(500, 280)
-		self.setWindowTitle('Account')
+		self.setFixedSize(550, 280)
+		self.setWindowTitle(self.tr('Account'))
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
 
 		self.settings = Settings()
@@ -39,7 +39,7 @@ class AccountDialog(QDialog):
 
 		self.username_login_input = QLineEdit()
 		self.password_login_input = QLineEdit()
-		self.remember_login_check_box = QCheckBox('Remember me')
+		self.remember_login_check_box = QCheckBox(self.tr('Remember me'))
 
 		self.login_menu = None
 		self.account_info_menu = None
@@ -64,13 +64,13 @@ class AccountDialog(QDialog):
 
 		un_layout = QVBoxLayout()
 		un_layout.setContentsMargins(50, 0, 50, 10)
-		un_layout.addWidget(QLabel('Username:'))
+		un_layout.addWidget(QLabel('{}:'.format(self.tr('Username'))))
 		un_layout.addWidget(self.username_login_input)
 		layout.addLayout(un_layout)
 
 		pwd_layout = QVBoxLayout()
 		pwd_layout.setContentsMargins(50, 0, 50, 10)
-		pwd_layout.addWidget(QLabel('Password:'))
+		pwd_layout.addWidget(QLabel('{}:'.format(self.tr('Password'))))
 		self.password_login_input.setEchoMode(QLineEdit.Password)
 		pwd_layout.addWidget(self.password_login_input)
 		layout.addLayout(pwd_layout)
@@ -81,11 +81,11 @@ class AccountDialog(QDialog):
 		rl_layout.addWidget(self.remember_login_check_box)
 		layout.addLayout(rl_layout)
 
-		btn = PushButton('Login', 70, 30, self.login_click)
+		btn = PushButton(self.tr('Login'), 70, 30, self.login_click)
 		btn.setFixedWidth(100)
 		layout.addWidget(btn, alignment=Qt.AlignCenter)
 
-		return layout, 'Login'
+		return layout, self.tr('Login')
 
 	def build_account_info_menu(self):
 		user_data = self.cloud.user()
@@ -104,7 +104,7 @@ class AccountDialog(QDialog):
 			alignment=Qt.AlignCenter
 		)
 
-		btn = PushButton('Logout', 70, 30, self.logout_click)
+		btn = PushButton(self.tr('Logout'), 70, 30, self.logout_click)
 		btn.setFixedWidth(100)
 		layout.addWidget(btn, alignment=Qt.AlignCenter)
 
@@ -112,18 +112,22 @@ class AccountDialog(QDialog):
 
 	def setup_login_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
-		tab_name = 'Login'
+		tab_name = self.tr('Login')
 		# noinspection PyBroadException
 		try:
 			self.account_info_menu, tab_name = self.build_account_info_menu()
 			self.v_layout.addLayout(self.account_info_menu)
 		except requests.exceptions.ConnectionError:
-			self.v_layout.setContentsMargins(0, 90, 0, 90)
-			self.v_layout.addWidget(QLabel('Connection error'), alignment=Qt.AlignCenter)
+			self.v_layout.setContentsMargins(0, 80, 0, 80)
+			self.v_layout.addWidget(QLabel(self.tr('Connection error')), alignment=Qt.AlignCenter)
 			self.v_layout.addWidget(
-				QLabel('Server is not working or your internet connection is failed'), alignment=Qt.AlignCenter
+				QLabel(self.tr(
+					'Server is not working or your internet connection is failed'
+				)), alignment=Qt.AlignCenter
 			)
-			self.v_layout.addWidget(QLabel('Check your connection and reopen this dialog'), alignment=Qt.AlignCenter)
+			self.v_layout.addWidget(QLabel(
+				self.tr('Check your connection and reopen this dialog')
+			), alignment=Qt.AlignCenter)
 		except CloudStorageException as _:
 			self.login_menu, tab_name = self.build_login_menu()
 			self.v_layout.addLayout(self.login_menu)
@@ -136,40 +140,39 @@ class AccountDialog(QDialog):
 
 		un_layout = QVBoxLayout()
 		un_layout.setContentsMargins(50, 0, 50, 10)
-		un_layout.addWidget(QLabel('Username:'))
+		un_layout.addWidget(QLabel('{}:'.format(self.tr('Username'))))
 		un_layout.addWidget(self.username_signup_input)
 		layout.addLayout(un_layout)
 
 		e_layout = QVBoxLayout()
 		e_layout.setContentsMargins(50, 0, 50, 10)
-		e_layout.addWidget(QLabel('Email:'))
+		e_layout.addWidget(QLabel('{}:'.format(self.tr('Email'))))
 		e_layout.addWidget(self.email_signup_input)
 		layout.addLayout(e_layout)
 
-		btn = PushButton('Register', 70, 30, self.signup_click)
-		btn.setFixedWidth(100)
+		btn = PushButton(self.tr('Register'), 150, 30, self.signup_click)
 		layout.addWidget(btn, alignment=Qt.AlignCenter)
 
 		tab.setLayout(layout)
-		tabs.addTab(tab, 'New account')
+		tabs.addTab(tab, self.tr('New account'))
 
 	def validate_signup_fields(self):
 		errors = ''
 		if len(self.username_signup_input.text()) < 1:
-			errors += '* Username field can not be empty\n'
+			errors += '* {}\n'.format(self.tr('Username field can not be empty'))
 		if len(self.email_signup_input.text()) < 1:
-			errors += '* Email field can not be empty\n'
+			errors += '* {}\n'.format(self.tr('Email field can not be empty'))
 		else:
 			if not re.match(r'[a-zA-Z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}', self.email_signup_input.text()):
-				errors += '* Email is not valid'
+				errors += '* {}'.format(self.tr('Email is not valid'))
 		return errors
 
 	def validate_login_fields(self):
 		errors = ''
 		if len(self.username_login_input.text()) < 1:
-			errors += '* Username field can not be empty\n'
+			errors += '* {}\n'.format(self.tr('Username field can not be empty'))
 		if len(self.password_login_input.text()) < 1:
-			errors += '* Password field can not be empty\n'
+			errors += '* {}\n'.format(self.tr('Password field can not be empty'))
 		return errors
 
 	def signup_click(self):
@@ -186,10 +189,11 @@ class AccountDialog(QDialog):
 	def signup_success(self):
 		info(
 			self,
-			'Thank you for registration.\n'
-			'Check out {} for credentials information.\n'
-			'To activate, simply login to Your account, otherwise'
-			'it will be deleted in 24 hours after registration.'.format(self.email_signup_input.text())
+			'{}.\n{}.\n{}.'.format(
+				self.tr('Thank you for registration'),
+				self.tr('Check out {} for credentials information').format(self.email_signup_input.text()),
+				self.tr('To activate, simply login to Your account, otherwise it will be deleted in 24 hours after registration')
+			)
 		)
 		self.email_signup_input.clear()
 
@@ -210,7 +214,7 @@ class AccountDialog(QDialog):
 
 	def login_success(self):
 		self.close()
-		info(self, 'Logged in as {}'.format(self.username_login_input.text()))
+		info(self, '{} {}'.format(self.tr('Logged in as'), self.username_login_input.text()))
 
 	def logout_click(self):
 		self.exec_worker(
@@ -220,7 +224,7 @@ class AccountDialog(QDialog):
 
 	def logout_success(self):
 		self.close()
-		info(self, 'Successfully logged out.')
+		info(self, '{}.'.format(self.tr('Successfully logged out')))
 
 	def exec_worker(self, fn, fn_success, *args, **kwargs):
 		self.spinner.start()

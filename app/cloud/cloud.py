@@ -73,6 +73,10 @@ class CloudStorage:
 
 	@failure_wrapper(method_desc='Registration')
 	def register_account(self, username, email):
+		if 'Authorization' in self.client.headers:
+			token = self.client.headers.pop('Authorization')
+		else:
+			token = None
 		registration_failed_template = 'Registration failed: {}.'
 		response = self.client.post(routes.ACCOUNT_CREATE, json={
 			'username': username,
@@ -83,14 +87,18 @@ class CloudStorage:
 			err_msg = 'credentials error'
 			if 'non_field_errors' in json_response:
 				if 'username' in json_response['non_field_errors']:
-					err_msg = 'username is not provided'
+					err_msg = json_response['non_field_errors']['username']
 				elif 'email' in json_response['non_field_errors']:
-					err_msg = 'email is not provided'
+					err_msg = json_response['non_field_errors']['email']
 			raise CloudStorageException(registration_failed_template.format(err_msg))
 		elif response.status_code != status.HTTP_201_CREATED:
 			raise CloudStorageException(registration_failed_template.format(
 				'unable to register an account, status'.format(response.status_code))
 			)
+		if token is not None:
+			self.client.headers.update({
+				'Authorization': token
+			})
 
 	@failure_wrapper(method_desc='Reading account')
 	def user(self):

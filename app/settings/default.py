@@ -30,6 +30,7 @@ BACKUP_FILE_NAME = '{} Backup'.format(APP_NAME)
 
 SETTINGS_FILE = '{}settings.ini'.format(APP_DATA_PATH)
 
+LOCALE = abs_path('locale/qm')
 
 APP_ICON_DARK = resources('app-icon-dark.png')
 APP_ICON_DARK_MEDIUM = resources('app-icon-dark-70x70.png')
@@ -50,16 +51,16 @@ APP_DB_FILE = '{}storage.db'.format(APP_DATA_PATH)
 
 
 AVAILABLE_LANGUAGES_IDX = {
-	'en': 0,
-	'ua': 1
+	'en_US': 0,
+	'uk_UA': 1
 }
 
 AVAILABLE_LANGUAGES = {
-	'English': 'en',
-	'Ukrainian': 'ua'
+	'English': 'en_US',
+	'Ukrainian': 'uk_UA'
 }
 
-LANG = 'en'
+LANG = 'en_US'
 
 MAX_BACKUPS = 5
 
