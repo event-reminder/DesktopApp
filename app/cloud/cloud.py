@@ -4,8 +4,8 @@ import requests
 
 from app.cloud import routes, status
 from app.settings import APP_DATA_PATH
-from app.decorators import failure_wrapper
-from app.exceptions import CloudStorageException
+from app.util.decorators import failure_wrapper
+from app.util.exceptions import CloudStorageException
 
 
 class CloudStorage:

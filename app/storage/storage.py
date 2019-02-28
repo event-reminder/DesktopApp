@@ -7,7 +7,7 @@ from datetime import datetime
 
 from app.settings import Settings
 from app.storage.models import EventModel
-from app.exceptions import DatabaseException
+from app.util.exceptions import DatabaseException
 from app.storage.instance import DATABASE_INSTANCE
 from app.settings.default import APP_DB_PATH, BACKUP_FILE_NAME
 

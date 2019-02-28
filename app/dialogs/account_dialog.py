@@ -10,7 +10,7 @@ from app.settings import Settings
 from app.cloud import CloudStorage
 from app.widgets.util import PushButton
 from app.widgets.util.popup import info, error
-from app.exceptions import CloudStorageException
+from app.util.exceptions import CloudStorageException
 from app.widgets.waiting_spinner import WaitingSpinner
 
 

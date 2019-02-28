@@ -1,7 +1,7 @@
 all: test run
 
 run:
-	python ./main.py
+	python ./app/app_main.py
 
 clean:
 	rm -rf event-reminder-tmp/

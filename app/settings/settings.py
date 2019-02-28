@@ -10,8 +10,8 @@ class Settings:
 	Implements methods for application settings storage access.
 	"""
 
-	def __init__(self, autocommit=True):
-		self.__settings = QSettings(SETTINGS_FILE, QSettings.IniFormat)
+	def __init__(self, autocommit=True, settings_file=SETTINGS_FILE):
+		self.__settings = QSettings(settings_file, QSettings.IniFormat)
 		self.__is_dark_theme = self.__settings.value('app_user/is_dark_theme', APP_IS_DARK_THEME)
 		self.__autocommit = autocommit
 
@@ -116,69 +116,57 @@ class Settings:
 	def include_settings_backup(self):
 		return self.__settings.value('app_user/include_settings_backup', INCLUDE_SETTINGS_BACKUP) == 'true'
 
-	def set_first_launch(self, value: bool):
-		self.__settings.setValue('app/first_launch', 'true' if value else 'false')
+	def _set_value(self, key, value):
+		self.__settings.setValue(key, value)
 		self._commit()
+
+	def set_first_launch(self, value: bool):
+		self._set_value('app/first_launch', 'true' if value else 'false')
 
 	def set_root(self, root: str):
-		self.__settings.setValue('app/root', root)
-		self._commit()
+		self._set_value('app/root', root)
 
 	def set_size(self, size: QSize):
-		self.__settings.setValue('app/size', size)
-		self._commit()
+		self._set_value('app/size', size)
 
 	def set_pos(self, pos: QPoint):
-		self.__settings.setValue('app/pos', pos)
-		self._commit()
+		self._set_value('app/pos', pos)
 
 	def set_last_backup_path(self, path: str):
-		self.__settings.setValue('app/last_backup_path', path)
-		self._commit()
+		self._set_value('app/last_backup_path', path)
 
 	def set_last_restore_path(self, path: str):
-		self.__settings.value('app/last_restore_path', path)
-		self._commit()
+		self._set_value('app/last_restore_path', path)
 
 	def set_theme(self, is_dark: bool):
-		self.__settings.setValue('app_user/is_dark_theme', 'true' if is_dark else 'false')
-		self._commit()
+		self._set_value('app_user/is_dark_theme', 'true' if is_dark else 'false')
 
 	def set_is_always_on_top(self, value: bool):
-		self.__settings.setValue('app_user/is_always_on_top', 'true' if value else 'false')
-		self._commit()
+		self._set_value('app_user/is_always_on_top', 'true' if value else 'false')
 
 	def set_font(self, value: int):
-		self.__settings.setValue('app_user/font', value)
-		self._commit()
+		self._set_value('app_user/font', value)
 
 	def set_lang(self, value: str):
-		self.__settings.setValue('app_user/lang', value)
-		self._commit()
+		self._set_value('app_user/lang', value)
 
 	def set_max_backups(self, value: int):
-		self.__settings.setValue('app_user/max_backups', value)
-		self._commit()
+		self._set_value('app_user/max_backups', value)
 
 	def set_remove_event_after_time_up(self, value: bool):
-		self.__settings.setValue('app_user/remove_event_after_time_up', 'true' if value else 'false')
-		self._commit()
+		self._set_value('app_user/remove_event_after_time_up', 'true' if value else 'false')
 
 	def set_show_calendar_on_startup(self, value: bool):
-		self.__settings.setValue('app_user/show_calendar_on_startup', 'true' if value else 'false')
-		self._commit()
+		self._set_value('app_user/show_calendar_on_startup', 'true' if value else 'false')
 
 	def set_notification_duration(self, value: int):
-		self.__settings.setValue('event_user/notification_duration', value)
-		self._commit()
+		self._set_value('event_user/notification_duration', value)
 
 	def set_remind_time_before_event(self, value: int):
-		self.__settings.setValue('event_user/remind_time_before_event', value)
-		self._commit()
+		self._set_value('event_user/remind_time_before_event', value)
 
 	def set_include_settings_backup(self, value: bool):
-		self.__settings.setValue('app_user/include_settings_backup', 'true' if value else 'false')
-		self._commit()
+		self._set_value('app_user/include_settings_backup', 'true' if value else 'false')
 
 	def to_dict(self):
 		return {
