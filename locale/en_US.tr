@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="en_US" sourcelanguage="en_US">
+<context>
+    <name>AccountDialog</name>
+    <message>
+        <source>Account</source>
+        <translation>Account</translation>
+    </message>
+    <message>
+        <source>Remember me</source>
+        <translation>Remember me</translation>
+    </message>
+    <message>
+        <source>Username</source>
+        <translation>Username</translation>
+    </message>
+    <message>
+        <source>Email</source>
+        <translation>Email</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation>Password</translation>
+    </message>
+    <message>
+        <source>Login</source>
+        <translation>Login</translation>
+    </message>
+    <message>
+        <source>Register</source>
+        <translation>Register</translation>
+    </message>
+    <message>
+        <source>Logout</source>
+        <translation>Logout</translation>
+    </message>
+    <message>
+        <source>Connection error</source>
+        <translation>Connection error</translation>
+    </message>
+    <message>
+        <source>Server is not working or your internet connection is failed</source>
+        <translation>Server is not working or your internet connection is failed</translation>
+    </message>
+    <message>
+        <source>Check your connection and reopen this dialog</source>
+        <translation>Check your connection and reopen this dialog</translation>
+    </message>
+    <message>
+        <source>New account</source>
+        <translation>New account</translation>
+    </message>
+    <message>
+        <source>Username field can not be empty</source>
+        <translation>Username field can not be empty</translation>
+    </message>
+    <message>
+        <source>Email field can not be empty</source>
+        <translation>Email field can not be empty</translation>
+    </message>
+    <message>
+        <source>Email is not valid</source>
+        <translation>Email is not valid</translation>
+    </message>
+    <message>
+        <source>Password field can not be empty</source>
+        <translation>Password field can not be empty</translation>
+    </message>
+    <message>
+        <source>Thank you for registration</source>
+        <translation>Thank you for registration</translation>
+    </message>
+    <message>
+        <source>Check out {} for credentials information</source>
+        <translation>Check out {} for credentials information</translation>
+    </message>
+    <message>
+        <source>To activate, simply login to Your account, otherwise it will be deleted in 24 hours after registration</source>
+        <translation>To activate, simply login to Your account, otherwise it will be deleted in 24 hours after registration</translation>
+    </message>
+    <message>
+        <source>Logged in as</source>
+        <translation>Logged in as</translation>
+    </message>
+    <message>
+        <source>Successfully logged out</source>
+        <translation>Successfully logged out</translation>
+    </message>
+</context>
+</TS>

@@ -30,7 +30,7 @@ BACKUP_FILE_NAME = '{} Backup'.format(APP_NAME)
 
 SETTINGS_FILE = '{}settings.ini'.format(APP_DATA_PATH)
 
-LOCALE = abs_path('locale/qm')
+LOCALE = abs_path('locale')
 
 APP_ICON_DARK = resources('app-icon-dark.png')
 APP_ICON_DARK_MEDIUM = resources('app-icon-dark-70x70.png')
@@ -57,7 +57,7 @@ AVAILABLE_LANGUAGES_IDX = {
 
 AVAILABLE_LANGUAGES = {
 	'English': 'en_US',
-	'Ukrainian': 'uk_UA'
+	'Українська': 'uk_UA'
 }
 
 LANG = 'en_US'

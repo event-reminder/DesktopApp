@@ -66,15 +66,16 @@ class SettingsDialog(QDialog):
 		lang = self.settings.app_lang
 		max_backups = self.settings.app_max_backups
 		try:
-			user = self.cloud.user()
-			lang = user.get('lang')
-			max_backups = user.get('max_backups')
-			self.settings.set_max_backups(int(max_backups))
-			self.settings.set_lang(lang)
+			self.cloud.user()
+			lang = AVAILABLE_LANGUAGES[self.lang_combo_box.currentText()]
+			worker = Worker(self.cloud.update_user, **{
+				'lang': lang if lang != '' else None,
+				'max_backups': max_backups if max_backups != '' else None
+			})
+			self.thread_pool.start(worker)
 		except Exception as exc:
 			print(exc)
 		try:
-			print(lang)
 			idx = AVAILABLE_LANGUAGES_IDX[lang]
 		except KeyError:
 			idx = 0
@@ -136,6 +137,16 @@ class SettingsDialog(QDialog):
 		self.include_settings_backup_check_box.stateChanged.connect(self.include_settings_backup_changed)
 		layout.addWidget(self.include_settings_backup_check_box, 4, 1)
 
+		layout.addWidget(QLabel('Language (restart required)'), 5, 0)
+		self.lang_combo_box.addItems(AVAILABLE_LANGUAGES.keys())
+		self.lang_combo_box.currentIndexChanged.connect(self.lang_changed)
+		layout.addWidget(self.lang_combo_box, 5, 1)
+
+		layout.addWidget(QLabel('Backups number'), 6, 0)
+		self.backups_number_input.setValidator(QIntValidator())
+		self.backups_number_input.textChanged.connect(self.max_backups_changed)
+		layout.addWidget(self.backups_number_input, 6, 1)
+
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'App')
 
@@ -164,7 +175,7 @@ class SettingsDialog(QDialog):
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'Events')
 
-	def setup_account_change_password_ui(self, tabs):
+	def setup_account_settings_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 
 		layout = QVBoxLayout()
@@ -210,40 +221,7 @@ class SettingsDialog(QDialog):
 		layout.addLayout(h_layout)
 
 		tab.setLayout(layout)
-		tabs.addTab(tab, 'Change Password')
-
-	def setup_account_general_ui(self, tabs):
-		tab = QWidget(flags=tabs.windowFlags())
-
-		layout = QGridLayout()
-		layout.setAlignment(Qt.AlignTop)
-		layout.setContentsMargins(50, 10, 50, 10)
-		layout.setSpacing(20)
-
-		layout.addWidget(QLabel('Language (restart required)'), 0, 0)
-		self.lang_combo_box.addItems(AVAILABLE_LANGUAGES.keys())
-		layout.addWidget(self.lang_combo_box, 0, 1)
-
-		layout.addWidget(QLabel('Backups number'), 1, 0)
-		self.backups_number_input.setValidator(QIntValidator())
-		layout.addWidget(self.backups_number_input, 1, 1)
-
-		v_layout = QVBoxLayout()
-		v_layout.addLayout(layout)
-
-		btn = PushButton('Save', 100, 30, self.save_account_general_btn_click)
-		v_layout.addWidget(btn, alignment=Qt.AlignCenter)
-
-		tab.setLayout(v_layout)
-		tabs.addTab(tab, 'General')
-
-	def setup_account_settings_ui(self, tabs):
-		account_settings_tabs = QTabWidget(self)
-
-		self.setup_account_general_ui(account_settings_tabs)
-		self.setup_account_change_password_ui(account_settings_tabs)
-
-		tabs.addTab(account_settings_tabs, 'Account')
+		tabs.addTab(tab, 'Reset Password')
 
 	def always_on_top_changed(self):
 		if self.ui_is_loaded:
@@ -285,6 +263,23 @@ class SettingsDialog(QDialog):
 	def include_settings_backup_changed(self):
 		if self.ui_is_loaded:
 			self.settings.set_include_settings_backup(self.include_settings_backup_check_box.isChecked())
+
+	def lang_changed(self):
+		lang = AVAILABLE_LANGUAGES[self.lang_combo_box.currentText()]
+		self.settings.set_lang(lang)
+		worker = Worker(self.cloud.update_user, **{
+			'lang': lang if lang != '' else None
+		})
+		self.thread_pool.start(worker)
+
+	def max_backups_changed(self):
+		max_backups = self.backups_number_input.text()
+		if len(max_backups) > 0:
+			self.settings.set_max_backups(int(max_backups))
+			worker = Worker(self.cloud.update_user, **{
+				'max_backups': max_backups if max_backups != '' else None
+			})
+			self.thread_pool.start(worker)
 
 	def reset_change_password_btn_click(self):
 		self.email_input.clear()
@@ -349,23 +344,6 @@ class SettingsDialog(QDialog):
 		self.reset_change_password_btn_click()
 		self.cloud.remove_token()
 		popup.info(self, 'New password has been set')
-
-	def save_account_general_btn_click(self):
-		max_backups = self.backups_number_input.text()
-		lang = AVAILABLE_LANGUAGES[self.lang_combo_box.currentText()]
-		self.settings.set_max_backups(int(max_backups))
-		self.settings.set_lang(lang)
-		self.exec_worker(
-			self.cloud.update_user,
-			self.save_account_general_success,
-			**{
-				'lang': lang if lang != '' else None,
-				'max_backups': max_backups if max_backups != '' else None
-			}
-		)
-
-	def save_account_general_success(self):
-		popup.info(self, 'Account has been updated')
 
 	def exec_worker(self, fn, fn_success, *args, **kwargs):
 		self.spinner.start()
