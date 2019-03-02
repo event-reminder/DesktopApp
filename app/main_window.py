@@ -35,7 +35,6 @@ class MainWindow(QMainWindow):
 	def closeEvent(self, event):
 		event.ignore()
 		self.hide()
-		super(MainWindow, self).closeEvent(event)
 
 	def quit_app(self):
 		self.settings.autocommit(False)
