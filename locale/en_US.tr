@@ -327,8 +327,8 @@
         <translation>Backup was successfully uploaded to the cloud</translation>
     </message>
     <message>
-        <source>Backup was successfully downloaded</source>
-        <translation>Backup was successfully downloaded</translation>
+        <source>Backup was successfully downloaded. Restart application to set all restored settings.</source>
+        <translation>Backup was successfully downloaded. Restart application to set all restored settings.</translation>
     </message>
     <message>
         <source>Backup was deleted successfully</source>
@@ -384,6 +384,137 @@
     <message>
         <source>Retrieving failure: connect to the database first</source>
         <translation>Retrieving failure: connect to the database first</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsDialog</name>
+    <message>
+        <source>Settings</source>
+        <translation>Settings</translation>
+    </message>
+    <message>
+        <source>Send Confirmation</source>
+        <translation>Send Confirmation</translation>
+    </message>
+    <message>
+        <source>Theme</source>
+        <translation>Theme</translation>
+    </message>
+    <message>
+        <source>Light</source>
+        <translation>Light</translation>
+    </message>
+    <message>
+        <source>Dark</source>
+        <translation>Dark</translation>
+    </message>
+    <message>
+        <source>Font</source>
+        <translation>Font</translation>
+    </message>
+    <message>
+        <source>Small</source>
+        <translation>Small</translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <translation>Normal</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>Large</translation>
+    </message>
+    <message>
+        <source>Show calendar on startup</source>
+        <translation>Show calendar on startup</translation>
+    </message>
+    <message>
+        <source>Always on top (restart required)</source>
+        <translation>Always on top (restart required)</translation>
+    </message>
+    <message>
+        <source>Backup settings</source>
+        <translation>Backup settings</translation>
+    </message>
+    <message>
+        <source>Language (restart required)</source>
+        <translation>Language (restart required)</translation>
+    </message>
+    <message>
+        <source>Maximum backups number</source>
+        <translation>Maximum backups number</translation>
+    </message>
+    <message>
+        <source>App</source>
+        <translation>App</translation>
+    </message>
+    <message>
+        <source>Remove event after time is up</source>
+        <translation>Remove event after time is up</translation>
+    </message>
+    <message>
+        <source>Notification duration (sec)</source>
+        <translation>Notification duration (sec)</translation>
+    </message>
+    <message>
+        <source>Notify before event (min)</source>
+        <translation>Notify before event (min)</translation>
+    </message>
+    <message>
+        <source>Events</source>
+        <translation>Events</translation>
+    </message>
+    <message>
+        <source>Email</source>
+        <translation>Email</translation>
+    </message>
+    <message>
+        <source>New Password</source>
+        <translation>New Password</translation>
+    </message>
+    <message>
+        <source>Repeat Password</source>
+        <translation>Repeat Password</translation>
+    </message>
+    <message>
+        <source>Verification Token</source>
+        <translation>Verification Token</translation>
+    </message>
+    <message>
+        <source>Reset Inputs</source>
+        <translation>Reset Inputs</translation>
+    </message>
+    <message>
+        <source>Reset Password</source>
+        <translation>Reset Password</translation>
+    </message>
+    <message>
+        <source>Password confirmation failed</source>
+        <translation>Password confirmation failed</translation>
+    </message>
+    <message>
+        <source>Check your email box for verification token</source>
+        <translation>Check your email box for verification token</translation>
+    </message>
+    <message>
+        <source>Change</source>
+        <translation>Change</translation>
+    </message>
+    <message>
+        <source>New password has been set</source>
+        <translation>New password has been set</translation>
+    </message>
+    <message>
+        <source>Updating user failure: unable to update user account, status</source>
+        <translation>Updating user failure: unable to update user account, status</translation>
+    </message>
+    <message>
+        <source>Reset password failure: unable to request token, status</source>
+        <translation>Reset password failure: unable to request token, status</translation>
+    </message>
+    <message>
+        <source>Reset password failure: unable to reset user password, status</source>
+        <translation>Reset password failure: unable to reset user password, status</translation>
     </message>
 </context>
 </TS>

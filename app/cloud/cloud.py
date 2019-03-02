@@ -47,7 +47,6 @@ class CloudStorage:
 
 	@failure_wrapper(method_desc='Login')
 	def login(self, username, password, remember=False):
-		# login_failed_template = 'Login failed: {}.'
 		response = self.client.post(routes.AUTH_LOGIN, json={
 			'username': username,
 			'password': password
@@ -107,10 +106,8 @@ class CloudStorage:
 		return response.json()
 
 	@failure_wrapper(method_desc='Updating account')
-	def update_user(self, lang=None, max_backups=None):
+	def update_user(self, max_backups=None):
 		context = {}
-		if lang is not None:
-			context['lang'] = lang
 		if max_backups is not None:
 			context['max_backups'] = max_backups
 		response = self.client.post(routes.ACCOUNT_EDIT, json=context)

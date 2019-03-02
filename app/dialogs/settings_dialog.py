@@ -28,11 +28,15 @@ class SettingsDialog(QDialog):
 
 		self.calendar = kwargs['calendar']
 
-		self.setFixedSize(500, 400)
-		self.setWindowTitle('Settings')
+		self.settings = Settings()
+
+		if self.settings.app_lang == 'en_US':
+			self.setFixedSize(500, 400)
+		else:
+			self.setFixedSize(650, 400)
+		self.setWindowTitle(self.tr('Settings'))
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
 
-		self.settings = Settings()
 		self.spinner = WaitingSpinner()
 		self.thread_pool = QThreadPool()
 		self.cloud = kwargs.get('cloud_storage', CloudStorage())
@@ -54,7 +58,12 @@ class SettingsDialog(QDialog):
 		self.verification_token_input = QLineEdit()
 		self.lang_combo_box = QComboBox()
 		self.backups_number_input = QLineEdit()
-		self.change_password_btn = PushButton('Send Token', 150, 30, self.change_password_btn_click)
+		btn_width = 170
+		if self.settings.app_lang != 'en_US':
+			btn_width = 230
+		self.change_password_btn = PushButton(
+			self.tr('Send Confirmation'), btn_width, 30, self.change_password_btn_click
+		)
 
 		self.token_is_sent = False
 
@@ -68,25 +77,14 @@ class SettingsDialog(QDialog):
 		self.ui_is_loaded = True
 
 	def showEvent(self, event):
-		lang = self.settings.app_lang
 		max_backups = self.settings.app_max_backups
 		try:
-			self.cloud.user()
-			lang = AVAILABLE_LANGUAGES[self.lang_combo_box.currentText()]
-			worker = Worker(self.cloud.update_user, **{
-				'lang': lang if lang != '' else None,
-				'max_backups': max_backups if max_backups != '' else None
-			})
-			self.thread_pool.start(worker)
+			user = self.cloud.user()
+			max_backups = user['max_backups']
 		except Exception as exc:
 			print(exc)
-		try:
-			idx = AVAILABLE_LANGUAGES_IDX[lang]
-		except KeyError:
-			idx = 0
-		self.lang_combo_box.setCurrentIndex(idx)
 		self.backups_number_input.setText(str(max_backups))
-		super().showEvent(event)
+		super(SettingsDialog, self).showEvent(event)
 
 	def refresh_settings_values(self):
 		self.theme_combo_box.setCurrentIndex(1 if self.settings.is_dark_theme else 0)
@@ -120,40 +118,45 @@ class SettingsDialog(QDialog):
 		layout.setContentsMargins(50, 10, 50, 10)
 		layout.setSpacing(20)
 
-		layout.addWidget(QLabel('Theme'), 0, 0)
+		layout.addWidget(QLabel(self.tr('Theme')), 0, 0)
 		self.theme_combo_box.currentIndexChanged.connect(self.theme_changed)
-		self.theme_combo_box.addItems(['Light', 'Dark'])
+		self.theme_combo_box.addItems([self.tr('Light'), self.tr('Dark')])
 		layout.addWidget(self.theme_combo_box, 0, 1)
 
-		layout.addWidget(QLabel('Font'), 1, 0)
+		layout.addWidget(QLabel(self.tr('Font')), 1, 0)
 		self.font_combo_box.currentIndexChanged.connect(self.font_changed)
-		self.font_combo_box.addItems(['Small', 'Normal', 'Large'])
+		self.font_combo_box.addItems([self.tr('Small'), self.tr('Normal'), self.tr('Large')])
 		layout.addWidget(self.font_combo_box, 1, 1)
 
-		layout.addWidget(QLabel('Show calendar on startup'), 2, 0)
+		layout.addWidget(QLabel(self.tr('Show calendar on startup')), 2, 0)
 		self.show_calendar_on_startup_check_box.stateChanged.connect(self.show_calendar_on_startup_changed)
 		layout.addWidget(self.show_calendar_on_startup_check_box, 2, 1)
 
-		layout.addWidget(QLabel('Always on top (restart required)'), 3, 0)
+		layout.addWidget(QLabel(self.tr('Always on top (restart required)')), 3, 0)
 		self.always_on_top_check_box.stateChanged.connect(self.always_on_top_changed)
 		layout.addWidget(self.always_on_top_check_box, 3, 1)
 
-		layout.addWidget(QLabel('Backup settings'), 4, 0)
+		layout.addWidget(QLabel(self.tr('Backup settings')), 4, 0)
 		self.include_settings_backup_check_box.stateChanged.connect(self.include_settings_backup_changed)
 		layout.addWidget(self.include_settings_backup_check_box, 4, 1)
 
-		layout.addWidget(QLabel('Language (restart required)'), 5, 0)
+		layout.addWidget(QLabel(self.tr('Language (restart required)')), 5, 0)
 		self.lang_combo_box.addItems(AVAILABLE_LANGUAGES.keys())
+		try:
+			idx = AVAILABLE_LANGUAGES_IDX[self.settings.app_lang]
+		except KeyError:
+			idx = 0
+		self.lang_combo_box.setCurrentIndex(idx)
 		self.lang_combo_box.currentIndexChanged.connect(self.lang_changed)
 		layout.addWidget(self.lang_combo_box, 5, 1)
 
-		layout.addWidget(QLabel('Backups number'), 6, 0)
+		layout.addWidget(QLabel(self.tr('Maximum backups number')), 6, 0)
 		self.backups_number_input.setValidator(QIntValidator())
 		self.backups_number_input.textChanged.connect(self.max_backups_changed)
 		layout.addWidget(self.backups_number_input, 6, 1)
 
 		tab.setLayout(layout)
-		tabs.addTab(tab, 'App')
+		tabs.addTab(tab, self.tr('App'))
 
 	def setup_events_settings_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
@@ -163,22 +166,22 @@ class SettingsDialog(QDialog):
 		layout.setContentsMargins(50, 30, 50, 10)
 		layout.setSpacing(20)
 
-		layout.addWidget(QLabel('Remove event after time is up'), 0,  0)
+		layout.addWidget(QLabel(self.tr('Remove event after time is up')), 0,  0)
 		self.remove_after_time_up_check_box.stateChanged.connect(self.remove_after_time_up_changed)
 		layout.addWidget(self.remove_after_time_up_check_box, 0, 1)
 
-		layout.addWidget(QLabel('Notification duration (sec)'), 1, 0)
+		layout.addWidget(QLabel(self.tr('Notification duration (sec)')), 1, 0)
 		self.notification_duration_input.setValidator(QIntValidator())
 		self.notification_duration_input.textChanged.connect(self.notification_duration_changed)
 		layout.addWidget(self.notification_duration_input, 1, 1)
 
-		layout.addWidget(QLabel('Notify before event (min)'), 2, 0)
+		layout.addWidget(QLabel(self.tr('Notify before event (min)')), 2, 0)
 		self.remind_time_before_event_input.setValidator(QIntValidator())
 		self.remind_time_before_event_input.textChanged.connect(self.remind_time_before_event_changed)
 		layout.addWidget(self.remind_time_before_event_input, 2, 1)
 
 		tab.setLayout(layout)
-		tabs.addTab(tab, 'Events')
+		tabs.addTab(tab, self.tr('Events'))
 
 	@staticmethod
 	def create_field(title, enabled, func, field_input):
@@ -196,32 +199,37 @@ class SettingsDialog(QDialog):
 		layout = QVBoxLayout()
 
 		layout.addLayout(
-			self.create_field('Email', True, self.change_password_inputs_changed, self.email_input)
+			self.create_field(self.tr('Email'), True, self.change_password_inputs_changed, self.email_input)
 		)
 
 		self.new_password_input.setEchoMode(QLineEdit.Password)
 		layout.addLayout(
-			self.create_field('New Password', False, self.change_password_inputs_changed, self.new_password_input)
+			self.create_field(self.tr('New Password'), False, self.change_password_inputs_changed, self.new_password_input)
 		)
 
 		self.new_password_repeat_input.setEchoMode(QLineEdit.Password)
 		layout.addLayout(
-			self.create_field('Repeat Password', False, self.change_password_inputs_changed, self.new_password_repeat_input)
+			self.create_field(self.tr('Repeat Password'), False, self.change_password_inputs_changed, self.new_password_repeat_input)
 		)
 
 		layout.addLayout(
-			self.create_field('Verification Token', False, self.change_password_inputs_changed, self.verification_token_input)
+			self.create_field(self.tr('Verification Token'), False, self.change_password_inputs_changed, self.verification_token_input)
 		)
 
 		h_layout = QHBoxLayout()
 		self.change_password_btn.setEnabled(False)
 		h_layout.addWidget(self.change_password_btn)
-		reset_change_password_btn = PushButton('Reset Inputs', 150, 30, self.reset_change_password_btn_click)
+		btn_width = 150
+		if self.settings.app_lang != 'en_US':
+			btn_width = 200
+		reset_change_password_btn = PushButton(
+			self.tr('Reset Inputs'), btn_width, 30, self.reset_change_password_btn_click
+		)
 		h_layout.addWidget(reset_change_password_btn)
 		layout.addLayout(h_layout)
 
 		tab.setLayout(layout)
-		tabs.addTab(tab, 'Reset Password')
+		tabs.addTab(tab, self.tr('Reset Password'))
 
 	def always_on_top_changed(self):
 		if self.ui_is_loaded:
@@ -267,10 +275,6 @@ class SettingsDialog(QDialog):
 	def lang_changed(self):
 		lang = AVAILABLE_LANGUAGES[self.lang_combo_box.currentText()]
 		self.settings.set_lang(lang)
-		worker = Worker(self.cloud.update_user, **{
-			'lang': lang if lang != '' else None
-		})
-		self.thread_pool.start(worker)
 
 	def max_backups_changed(self):
 		max_backups = self.backups_number_input.text()
@@ -289,7 +293,7 @@ class SettingsDialog(QDialog):
 		self.new_password_input.setEnabled(False)
 		self.new_password_repeat_input.setEnabled(False)
 		self.verification_token_input.setEnabled(False)
-		self.change_password_btn.setText('Send Token')
+		self.change_password_btn.setText(self.tr('Send Confirmation'))
 		self.change_password_btn.setEnabled(False)
 
 	def change_password_inputs_changed(self):
@@ -310,7 +314,7 @@ class SettingsDialog(QDialog):
 	def change_password_btn_click(self):
 		if self.token_is_sent:
 			if self.new_password_input.text() != self.new_password_repeat_input.text():
-				popup.error(self, 'Password confirmation failed')
+				popup.error(self, self.tr('Password confirmation failed'))
 			else:
 				self.exec_worker(
 					self.cloud.reset_password,
@@ -330,19 +334,19 @@ class SettingsDialog(QDialog):
 			)
 
 	def change_password_request_token_success(self):
-		popup.info(self, 'Check your email box for verification token')
+		popup.info(self, self.tr('Check your email box for verification token'))
 		self.token_is_sent = True
 		self.new_password_input.setEnabled(True)
 		self.new_password_input.setFocus()
 		self.new_password_repeat_input.setEnabled(True)
 		self.verification_token_input.setEnabled(True)
-		self.change_password_btn.setText('Change')
+		self.change_password_btn.setText(self.tr('Change'))
 		self.change_password_btn.setEnabled(False)
 
 	def change_password_success(self):
 		self.reset_change_password_btn_click()
 		self.cloud.remove_token()
-		popup.info(self, 'New password has been set')
+		popup.info(self, self.tr('New password has been set'))
 
 	def exec_worker(self, fn, fn_success, *args, **kwargs):
 		self.spinner.start()
@@ -356,11 +360,11 @@ class SettingsDialog(QDialog):
 		try:
 			raise err[0](err[1])
 		except UserUpdatingError:
-			err_msg = 'Updating user failure: unable to update user account, status {}'.format(err[1])
+			err_msg = '{} {}'.format(self.tr('Updating user failure: unable to update user account, status'), err[1])
 		except RequestTokenError:
-			err_msg = 'Reset password failure: unable to request token, status {}'.format(err[1])
+			err_msg = '{} {}'.format(self.tr('Reset password failure: unable to request token, status'), err[1])
 		except ResetPasswordError:
-			err_msg = 'Reset password failure: unable to reset user password, status {}'.format(err[1])
+			err_msg = '{} {}'.format(self.tr('Reset password failure: unable to reset user password, status'), err[1])
 		except (CloudStorageException, RequestException, Exception):
 			err_msg = str(err[1])
 		popup.error(self, err_msg)

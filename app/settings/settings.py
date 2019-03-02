@@ -176,14 +176,15 @@ class Settings:
 			'remove_event_after_time_up': self.remove_event_after_time_up,
 			'show_calendar_on_startup': self.show_calendar_on_startup,
 			'notification_duration': self.notification_duration,
-			'remind_time_before_event': self.remind_time_before_event
+			'remind_time_before_event': self.remind_time_before_event,
+			'lang': self.app_lang
 		}
 
 	def from_dict(self, data):
 		keys = [
 			'is_dark_theme', 'is_always_on_top', 'font',
 			'remove_event_after_time_up', 'show_calendar_on_startup',
-			'notification_duration', 'remind_time_before_event'
+			'notification_duration', 'remind_time_before_event', 'lang'
 		]
 		for key in keys:
 			if key not in data:
@@ -195,4 +196,5 @@ class Settings:
 		self.set_show_calendar_on_startup(data['show_calendar_on_startup'])
 		self.set_notification_duration(data['notification_duration'])
 		self.set_remind_time_before_event(data['remind_time_before_event'])
+		self.set_lang(data['lang'])
 		self.commit()

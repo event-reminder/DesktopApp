@@ -288,16 +288,14 @@ class BackupDialog(QDialog):
 			)
 
 	def download_backup_cloud_run(self, current):
-		self.storage.restore_from_dict(
-			self.cloud.download_backup(current.hash_sum)
-		)
+		self.storage.restore_from_dict(self.cloud.download_backup(current.hash_sum))
 
 	def download_backup_cloud_success(self):
 		self.calendar.reset_palette(self.settings.app_theme)
 		self.calendar.reset_font(QFont('SansSerif', self.settings.app_font))
 		self.calendar.update()
 		self.calendar.settings_dialog.refresh_settings_values()
-		popup.info(self, self.tr('Backup was successfully downloaded'))
+		popup.info(self, self.tr('Backup was successfully downloaded. Restart application to set all restored settings.'))
 
 	def delete_backup_cloud(self):
 		current = self.get_current_selected()

@@ -29,7 +29,7 @@
     </message>
     <message>
         <source>Backup and Restore</source>
-        <translation>Резервне копіювання та Відновлення</translation>
+        <translation>Резервне копіювання</translation>
     </message>
     <message>
         <source>Help</source>
@@ -327,8 +327,8 @@
         <translation>Резервну копію успішно завантажено до хмарного сховища</translation>
     </message>
     <message>
-        <source>Backup was successfully downloaded</source>
-        <translation>Резервну копію успішно завантажено із хмарного сховища</translation>
+        <source>Backup was successfully downloaded. Restart application to set all restored settings.</source>
+        <translation>Резервну копію успішно завантажено із хмарного сховища. Перезапустіть додаток, щоб встановити всі відновлені параметри.</translation>
     </message>
     <message>
         <source>Backup was deleted successfully</source>
@@ -384,6 +384,137 @@
     <message>
         <source>Retrieving failure: connect to the database first</source>
         <translation>Помилка отримання даних: підключіться спочатку до бази даних</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsDialog</name>
+    <message>
+        <source>Settings</source>
+        <translation>Налаштування</translation>
+    </message>
+    <message>
+        <source>Send Confirmation</source>
+        <translation>Надіслати підтвердження</translation>
+    </message>
+    <message>
+        <source>Theme</source>
+        <translation>Тема</translation>
+    </message>
+    <message>
+        <source>Light</source>
+        <translation>Світла</translation>
+    </message>
+    <message>
+        <source>Dark</source>
+        <translation>Темна</translation>
+    </message>
+    <message>
+        <source>Font</source>
+        <translation>Шрифт</translation>
+    </message>
+    <message>
+        <source>Small</source>
+        <translation>Дрібний</translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <translation>Стандартний</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>Великий</translation>
+    </message>
+    <message>
+        <source>Show calendar on startup</source>
+        <translation>Показувати календар при запуску</translation>
+    </message>
+    <message>
+        <source>Always on top (restart required)</source>
+        <translation>Поверх всіх вікон (необхідний перезапуск)</translation>
+    </message>
+    <message>
+        <source>Backup settings</source>
+        <translation>Додати налаштування до резевної копії</translation>
+    </message>
+    <message>
+        <source>Language (restart required)</source>
+        <translation>Мова інтерфейсу (необхідний перезапуск)</translation>
+    </message>
+    <message>
+        <source>Maximum backups number</source>
+        <translation>Максимальна кількість резервних копій</translation>
+    </message>
+    <message>
+        <source>App</source>
+        <translation>Додаток</translation>
+    </message>
+    <message>
+        <source>Remove event after time is up</source>
+        <translation>Видаляти подію після закінчення її часу</translation>
+    </message>
+    <message>
+        <source>Notification duration (sec)</source>
+        <translation>Тривалість сповіщення (сек)</translation>
+    </message>
+    <message>
+        <source>Notify before event (min)</source>
+        <translation>Сповістити перед подією (хв)</translation>
+    </message>
+    <message>
+        <source>Events</source>
+        <translation>Події</translation>
+    </message>
+    <message>
+        <source>Email</source>
+        <translation>Електронна Пошта</translation>
+    </message>
+    <message>
+        <source>New Password</source>
+        <translation>Новий Пароль</translation>
+    </message>
+    <message>
+        <source>Repeat Password</source>
+        <translation>Повторіть Пароль</translation>
+    </message>
+    <message>
+        <source>Verification Token</source>
+        <translation>Токен Підтвердження</translation>
+    </message>
+    <message>
+        <source>Reset Inputs</source>
+        <translation>Скинути введення</translation>
+    </message>
+    <message>
+        <source>Reset Password</source>
+        <translation>Встановити пароль</translation>
+    </message>
+    <message>
+        <source>Password confirmation failed</source>
+        <translation>Помилка підтвердження пароля</translation>
+    </message>
+    <message>
+        <source>Check your email box for verification token</source>
+        <translation>Перевірте Вашу електронну скриньку на підтвердження скидання пароля</translation>
+    </message>
+    <message>
+        <source>Change</source>
+        <translation>Змінити</translation>
+    </message>
+    <message>
+        <source>New password has been set</source>
+        <translation>Новий пароль було встановлено успішно</translation>
+    </message>
+    <message>
+        <source>Updating user failure: unable to update user account, status</source>
+        <translation>Помилка оновлення користувача: не вдалося оновити облікові дані, статус</translation>
+    </message>
+    <message>
+        <source>Reset password failure: unable to request token, status</source>
+        <translation>Помилка скидання пароля: не вдалося надіслати повідомлення для підвердження, статус</translation>
+    </message>
+    <message>
+        <source>Reset password failure: unable to reset user password, status</source>
+        <translation>Помилка скидання пароля: не вдалося скинути пароль, статус</translation>
     </message>
 </context>
 </TS>
