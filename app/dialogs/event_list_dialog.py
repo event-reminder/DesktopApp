@@ -41,9 +41,9 @@ class EventsListDialog(QDialog):
 		content.addWidget(scroll_view)
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
-		btn_new_event = PushButton('New', 90, 30, self.create_event_click)
+		btn_new_event = PushButton(self.tr('New'), 90, 30, self.create_event_click)
 		buttons.addWidget(btn_new_event, 0, Qt.AlignRight)
-		btn_close = PushButton('Close', 90, 30, self.close)
+		btn_close = PushButton(self.tr('Close'), 90, 30, self.close)
 		buttons.addWidget(btn_close, 0, Qt.AlignRight)
 		content.addLayout(buttons)
 		self.setLayout(content)
@@ -53,5 +53,5 @@ class EventsListDialog(QDialog):
 		self.calendar.open_create_event()
 
 	def set_data(self, data, date):
-		self.setWindowTitle('Events for {}'.format(date))
+		self.setWindowTitle('{} {}'.format(self.tr('Events for'), date))
 		self.list_widget.set_data(data)

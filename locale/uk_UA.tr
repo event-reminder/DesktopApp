@@ -205,4 +205,98 @@
         <translation>Збережено успішно</translation>
     </message>
 </context>
+<context>
+    <name>EventsListDialog</name>
+    <message>
+        <source>New</source>
+        <translation>Створити</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Закрити</translation>
+    </message>
+    <message>
+        <source>Events for</source>
+        <translation>Події на</translation>
+    </message>
+</context>
+<context>
+    <name>BackupDialog</name>
+    <message>
+        <source>Backup and Restore</source>
+        <translation>Резервне копіювання та відновлення</translation>
+    </message>
+    <message>
+        <source>Start</source>
+        <translation>Розпочати</translation>
+    </message>
+    <message>
+        <source>Upload</source>
+        <translation>Створити</translation>
+    </message>
+    <message>
+        <source>Download</source>
+        <translation>Завантажити</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Видалити</translation>
+    </message>
+    <message>
+        <source>Local</source>
+        <translation>Диск</translation>
+    </message>
+    <message>
+        <source>Cloud</source>
+        <translation>Хмарне сховище</translation>
+    </message>
+    <message>
+        <source>Location</source>
+        <translation>Розташування</translation>
+    </message>
+    <message>
+        <source>Create full backup of your calendar notes</source>
+        <translation>Створити повну резервну копію нотаток календаря</translation>
+    </message>
+    <message>
+        <source>Backup</source>
+        <translation>Резервне копіювання</translation>
+    </message>
+    <message>
+        <source>Restore all your calendar notes with backup file</source>
+        <translation>Відновити всі нотатки календаря за допомогою резервної копії</translation>
+    </message>
+    <message>
+        <source>Restore</source>
+        <translation>Відновлення</translation>
+    </message>
+    <message>
+        <source>Select Directory</source>
+        <translation>Вибрати каталог</translation>
+    </message>
+    <message>
+        <source>Open file</source>
+        <translation>Відкрити файл</translation>
+    </message>
+    <message>
+        <source>Data has been restored</source>
+        <translation>Дані відновлено</translation>
+    </message>
+    <message>
+        <source>Backup has been created</source>
+        <translation>Резервну копію створено</translation>
+    </message>
+    <message>
+        <source>Backup was successfully uploaded to the cloud</source>
+        <translation>Резервну копію успішно завантажено до хмарного сховища</translation>
+    </message>
+    <message>
+        <source>Backup was successfully downloaded</source>
+        <translation>Резервну копію успішно завантажено із хмарного сховища</translation>
+    </message>
+    <message>
+        <source>Backup was deleted successfully</source>
+        <translation>Резервну копію успішно видалено із хмарного сховища</translation>
+    </message>
+</context>
 </TS>

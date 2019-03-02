@@ -205,4 +205,98 @@
         <translation>Saved successfully</translation>
     </message>
 </context>
+<context>
+    <name>EventsListDialog</name>
+    <message>
+        <source>New</source>
+        <translation>New</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Close</translation>
+    </message>
+    <message>
+        <source>Events for</source>
+        <translation>Events for</translation>
+    </message>
+</context>
+<context>
+    <name>BackupDialog</name>
+    <message>
+        <source>Backup and Restore</source>
+        <translation>Backup and Restore</translation>
+    </message>
+    <message>
+        <source>Start</source>
+        <translation>Start</translation>
+    </message>
+    <message>
+        <source>Upload</source>
+        <translation>Upload</translation>
+    </message>
+    <message>
+        <source>Download</source>
+        <translation>Download</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Delete</translation>
+    </message>
+    <message>
+        <source>Local</source>
+        <translation>Local</translation>
+    </message>
+    <message>
+        <source>Cloud</source>
+        <translation>Cloud</translation>
+    </message>
+    <message>
+        <source>Location</source>
+        <translation>Location</translation>
+    </message>
+    <message>
+        <source>Create full backup of your calendar notes</source>
+        <translation>Create full backup of your calendar notes</translation>
+    </message>
+    <message>
+        <source>Backup</source>
+        <translation>Backup</translation>
+    </message>
+    <message>
+        <source>Restore all your calendar notes with backup file</source>
+        <translation>Restore all your calendar notes with backup file</translation>
+    </message>
+    <message>
+        <source>Restore</source>
+        <translation>Restore</translation>
+    </message>
+    <message>
+        <source>Select Directory</source>
+        <translation>Select Directory</translation>
+    </message>
+    <message>
+        <source>Open file</source>
+        <translation>Open file</translation>
+    </message>
+    <message>
+        <source>Data has been restored</source>
+        <translation>Data has been restored</translation>
+    </message>
+    <message>
+        <source>Backup has been created</source>
+        <translation>Backup has been created</translation>
+    </message>
+    <message>
+        <source>Backup was successfully uploaded to the cloud</source>
+        <translation>Backup was successfully uploaded to the cloud</translation>
+    </message>
+    <message>
+        <source>Backup was successfully downloaded</source>
+        <translation>Backup was successfully downloaded</translation>
+    </message>
+    <message>
+        <source>Backup was deleted successfully</source>
+        <translation>Backup was deleted successfully</translation>
+    </message>
+</context>
 </TS>

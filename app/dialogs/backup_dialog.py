@@ -38,7 +38,7 @@ class BackupDialog(QDialog):
 		self.cloud = kwargs.get('cloud_storage', CloudStorage())
 
 		self.setFixedSize(500, 320)
-		self.setWindowTitle('Backup and Restore')
+		self.setWindowTitle(self.tr('Backup and Restore'))
 
 		self.backups_pool = []
 
@@ -50,14 +50,14 @@ class BackupDialog(QDialog):
 		self.backup_file_button = PushButton('+', 40, 30, self.get_folder_path)
 		self.restore_file_button = PushButton('+', 40, 30, self.get_file_path)
 
-		self.launch_restore_button = PushButton('Start', 100, 35, self.launch_restore_local)
-		self.launch_backup_button = PushButton('Start', 100, 35, self.launch_backup_local)
+		self.launch_restore_button = PushButton(self.tr('Start'), 120, 35, self.launch_restore_local)
+		self.launch_backup_button = PushButton(self.tr('Start'), 120, 35, self.launch_backup_local)
 
 		self.backups_cloud_list_widget = QListWidget()
 
-		self.upload_backup_button = PushButton('Upload', 80, 35, self.upload_backup_cloud)
-		self.download_backup_button = PushButton('Download', 110, 35, self.download_backup_cloud)
-		self.delete_backup_button = PushButton('Delete', 80, 35, self.delete_backup_cloud)
+		self.upload_backup_button = PushButton(self.tr('Upload'), 120, 35, self.upload_backup_cloud)
+		self.download_backup_button = PushButton(self.tr('Download'), 120, 35, self.download_backup_cloud)
+		self.delete_backup_button = PushButton(self.tr('Delete'), 120, 35, self.delete_backup_cloud)
 
 		self.setup_ui()
 
@@ -84,13 +84,13 @@ class BackupDialog(QDialog):
 		self.setup_local_backup_ui(local_backup_tab)
 		self.setup_local_restore_ui(local_backup_tab)
 
-		tabs.addTab(local_backup_tab, 'Local')
+		tabs.addTab(local_backup_tab, self.tr('Local'))
 
 	def setup_local_backup_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 
 		h2_layout = QHBoxLayout()
-		h2_layout.addWidget(QLabel('Location:'))
+		h2_layout.addWidget(QLabel('{}:'.format(self.tr('Location'))))
 		h2_layout.setContentsMargins(10, 0, 10, 20)
 		if os.path.exists(self.settings.app_last_backup_path):
 			self.backup_file_input.setText(self.settings.app_last_backup_path)
@@ -100,20 +100,20 @@ class BackupDialog(QDialog):
 
 		layout = QVBoxLayout()
 		layout.setAlignment(Qt.AlignCenter)
-		label = QLabel('Create full backup of your calendar notes')
+		label = QLabel(self.tr('Create full backup of your calendar notes'))
 		label.setContentsMargins(0, 10, 0, 30)
 		layout.addWidget(label, alignment=Qt.AlignCenter)
 		layout.addLayout(h2_layout)
 		layout.addWidget(self.launch_backup_button, alignment=Qt.AlignCenter)
 
 		tab.setLayout(layout)
-		tabs.addTab(tab, 'Backup')
+		tabs.addTab(tab, self.tr('Backup'))
 
 	def setup_local_restore_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 
 		h2_layout = QHBoxLayout()
-		h2_layout.addWidget(QLabel('Location:'))
+		h2_layout.addWidget(QLabel('{}:'.format(self.tr('Location'))))
 		h2_layout.setContentsMargins(10, 0, 10, 20)
 		if os.path.isfile(self.settings.app_last_restore_path):
 			self.restore_file_input.setText(self.settings.app_last_restore_path)
@@ -123,18 +123,19 @@ class BackupDialog(QDialog):
 
 		layout = QVBoxLayout()
 		layout.setAlignment(Qt.AlignCenter)
-		label = QLabel('Restore all your calendar notes with backup file')
+		label = QLabel(self.tr('Restore all your calendar notes with backup file'))
+		label.setWordWrap(True)
 		label.setContentsMargins(0, 10, 0, 30)
 		layout.addWidget(label, alignment=Qt.AlignCenter)
 		layout.addLayout(h2_layout)
 		layout.addWidget(self.launch_restore_button, alignment=Qt.AlignCenter)
 
 		tab.setLayout(layout)
-		tabs.addTab(tab, 'Restore')
+		tabs.addTab(tab, self.tr('Restore'))
 
 	def get_folder_path(self):
 		file_name = QFileDialog().getExistingDirectory(
-			caption='Select Directory',
+			caption=self.tr('Select Directory'),
 			directory=self.backup_file_input.text()
 		)
 		if len(file_name) > 0:
@@ -143,7 +144,7 @@ class BackupDialog(QDialog):
 	def get_file_path(self):
 		path = self.restore_file_input.text()
 		file_name = QFileDialog().getOpenFileName(
-			caption='Open file',
+			caption=self.tr('Open file'),
 			directory=path if os.path.isfile(path) else './',
 			filter='(*.bak)'
 		)
@@ -162,7 +163,7 @@ class BackupDialog(QDialog):
 	def launch_restore_local_success(self):
 		self.calendar.update()
 		self.calendar.settings_dialog.refresh_settings_values()
-		popup.info(self, 'Data has been restored')
+		popup.info(self, self.tr('Data has been restored'))
 
 	def launch_backup_local(self):
 		path = self.backup_file_input.text()
@@ -174,7 +175,7 @@ class BackupDialog(QDialog):
 		)
 
 	def launch_backup_local_success(self):
-		popup.info(self, 'Backup has been created')
+		popup.info(self, self.tr('Backup has been created'))
 
 	def setup_cloud_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
@@ -186,16 +187,16 @@ class BackupDialog(QDialog):
 
 		center_buttons_layout = QHBoxLayout()
 		center_buttons_layout.setAlignment(Qt.AlignLeft)
-		self.upload_backup_button.setToolTip('Upload')
+		self.upload_backup_button.setToolTip(self.tr('Upload'))
 		self.upload_backup_button.setEnabled(False)
 		center_buttons_layout.addWidget(self.upload_backup_button, alignment=Qt.AlignCenter)
-		self.download_backup_button.setToolTip('Download')
+		self.download_backup_button.setToolTip(self.tr('Download'))
 		self.download_backup_button.setEnabled(False)
 		center_buttons_layout.addWidget(self.download_backup_button, alignment=Qt.AlignCenter)
 		buttons_layout.addLayout(center_buttons_layout)
 
 		self.delete_backup_button.setEnabled(False)
-		self.delete_backup_button.setToolTip('Delete')
+		self.delete_backup_button.setToolTip(self.tr('Delete'))
 		buttons_layout.addWidget(self.delete_backup_button, alignment=Qt.AlignRight)
 
 		layout.addLayout(buttons_layout)
@@ -209,7 +210,7 @@ class BackupDialog(QDialog):
 		layout.addWidget(scroll_view, alignment=Qt.AlignLeft)
 
 		tab.setLayout(layout)
-		tabs.addTab(tab, 'Cloud')
+		tabs.addTab(tab, self.tr('Cloud'))
 
 	def selection_changed(self):
 		if self.backups_cloud_list_widget.currentItem() is not None:
@@ -265,7 +266,7 @@ class BackupDialog(QDialog):
 
 	def upload_backup_cloud_success(self):
 		self.refresh_backups_cloud()
-		popup.info(self, 'Backup was successfully uploaded to the cloud.')
+		popup.info(self, self.tr('Backup was successfully uploaded to the cloud'))
 
 	def download_backup_cloud(self):
 		current = self.get_current_selected()
@@ -286,7 +287,7 @@ class BackupDialog(QDialog):
 		self.calendar.reset_font(QFont('SansSerif', self.settings.app_font))
 		self.calendar.update()
 		self.calendar.settings_dialog.refresh_settings_values()
-		popup.info(self, 'Backup was successfully downloaded.')
+		popup.info(self, self.tr('Backup was successfully downloaded'))
 
 	def delete_backup_cloud(self):
 		current = self.get_current_selected()
@@ -299,7 +300,7 @@ class BackupDialog(QDialog):
 
 	def delete_backup_cloud_success(self):
 		self.refresh_backups_cloud()
-		popup.info(self, 'Backup was deleted successfully.')
+		popup.info(self, self.tr('Backup was deleted successfully'))
 
 	def get_current_selected(self):
 		current = self.backups_cloud_list_widget.currentItem()
