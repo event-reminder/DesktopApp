@@ -165,6 +165,7 @@ class CalendarWidget(QCalendarWidget):
 		AccountDialog(
 			flags=self.parent.windowFlags(),
 			palette=self.settings.app_theme,
+			calendar=self,
 			cloud_storage=self.cloud_storage,
 			font=QFont('SansSerif', self.settings.app_font)
 		).exec_()
@@ -172,5 +173,6 @@ class CalendarWidget(QCalendarWidget):
 	def open_about(self):
 		AboutDialog(
 			flags=self.parent.windowFlags(),
+			calendar=self,
 			palette=self.settings.app_theme
 		).exec_()

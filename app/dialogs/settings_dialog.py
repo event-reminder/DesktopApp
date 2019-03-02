@@ -26,7 +26,9 @@ class SettingsDialog(QDialog):
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
 
-		self.calendar = kwargs['calendar']
+		self.calendar = kwargs.get('calendar', None)
+		if self.calendar is None:
+			raise RuntimeError('SettingsDialog: calendar is not set')
 
 		self.settings = Settings()
 
@@ -77,6 +79,10 @@ class SettingsDialog(QDialog):
 		self.ui_is_loaded = True
 
 	def showEvent(self, event):
+		self.move(
+			self.calendar.window().frameGeometry().topLeft() +
+			self.calendar.window().rect().center() - self.rect().center()
+		)
 		max_backups = self.settings.app_max_backups
 		try:
 			user = self.cloud.user()

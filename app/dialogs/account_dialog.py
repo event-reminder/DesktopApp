@@ -32,6 +32,10 @@ class AccountDialog(QDialog):
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
 
+		self.calendar = kwargs.get('calendar', None)
+		if self.calendar is None:
+			raise RuntimeError('AccountDialog: calendar is not set')
+
 		self.setFixedSize(550, 280)
 		self.setWindowTitle(self.tr('Account'))
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint)
@@ -57,6 +61,13 @@ class AccountDialog(QDialog):
 		self.setup_ui()
 
 		self.layout().addWidget(self.spinner)
+
+	def showEvent(self, event):
+		self.move(
+			self.calendar.window().frameGeometry().topLeft() +
+			self.calendar.window().rect().center() - self.rect().center()
+		)
+		super(AccountDialog, self).showEvent(event)
 
 	def setup_ui(self):
 		content = QVBoxLayout()

@@ -23,4 +23,5 @@ if __name__ == '__main__':
 
 	if settings.show_calendar_on_startup:
 		window.show()
+
 	sys.exit(app.exec_())

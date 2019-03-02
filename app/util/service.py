@@ -20,9 +20,6 @@ class ReminderService(QThread):
 		self.__settings = Settings()
 		self.__storage = Storage()
 
-	def __del__(self):
-		self.wait()
-
 	def run(self):
 		try:
 			self.__storage.connect()

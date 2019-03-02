@@ -74,8 +74,12 @@ class BackupDialog(QDialog):
 		self.layout().addWidget(self.spinner)
 
 	def showEvent(self, event):
+		self.move(
+			self.calendar.window().frameGeometry().topLeft() +
+			self.calendar.window().rect().center() - self.rect().center()
+		)
 		self.refresh_backups_cloud()
-		super().showEvent(event)
+		super(BackupDialog, self).showEvent(event)
 
 	def setup_ui(self):
 		tabs_widget = QTabWidget(self)

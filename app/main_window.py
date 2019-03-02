@@ -36,11 +36,14 @@ class MainWindow(QMainWindow):
 		event.ignore()
 		self.hide()
 
-	def quit_app(self):
+	def save_state(self):
 		self.settings.autocommit(False)
 		self.settings.set_pos(self.pos())
 		self.settings.set_size(self.size())
 		self.settings.commit()
+
+	def quit_app(self):
+		self.save_state()
 		qApp.quit()
 
 	# noinspection PyUnresolvedReferences

@@ -50,6 +50,13 @@ class CreateEventDialog(QDialog):
 
 		self.layout().addWidget(self.spinner)
 
+	def showEvent(self, event):
+		self.move(
+			self.calendar.window().frameGeometry().topLeft() +
+			self.calendar.window().rect().center() - self.rect().center()
+		)
+		super(CreateEventDialog, self).showEvent(event)
+
 	def setup_ui(self):
 		content = QVBoxLayout()
 		content.addWidget(QLabel('{}:'.format(self.tr('Title'))), alignment=Qt.AlignLeft)

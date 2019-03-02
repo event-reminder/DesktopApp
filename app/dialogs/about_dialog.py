@@ -16,8 +16,19 @@ class AboutDialog(QDialog):
 		self.setWindowTitle('Legal Information')
 		self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint)
 
+		self.calendar = kwargs.get('calendar', None)
+		if self.calendar is None:
+			raise RuntimeError('AboutDialog: calendar is not set')
+
 		self.settings = Settings()
 		self.setup_ui()
+
+	def showEvent(self, event):
+		self.move(
+			self.calendar.window().frameGeometry().topLeft() +
+			self.calendar.window().rect().center() - self.rect().center()
+		)
+		super(AboutDialog, self).showEvent(event)
 
 	def setup_ui(self):
 		content = QVBoxLayout()

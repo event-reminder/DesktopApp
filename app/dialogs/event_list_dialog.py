@@ -28,6 +28,13 @@ class EventsListDialog(QDialog):
 
 		self.setup_ui()
 
+	def showEvent(self, event):
+		self.move(
+			self.calendar.window().frameGeometry().topLeft() +
+			self.calendar.window().rect().center() - self.rect().center()
+		)
+		super(EventsListDialog, self).showEvent(event)
+
 	def closeEvent(self, event):
 		self.list_widget.clear()
 		super(EventsListDialog, self).closeEvent(event)
