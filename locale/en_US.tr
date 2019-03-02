@@ -299,4 +299,31 @@
         <translation>Backup was deleted successfully</translation>
     </message>
 </context>
+<context>
+    <name>CalendarWidget</name>
+    <message>
+        <source>Unable to find related database, it will be created automatically</source>
+        <translation>Unable to find related database, it will be created automatically</translation>
+    </message>
+    <message>
+        <source>Error occurred</source>
+        <translation>Error occurred</translation>
+    </message>
+    <message>
+        <source>Create new event</source>
+        <translation>Create new event</translation>
+    </message>
+    <message>
+        <source>Database error</source>
+        <translation>Database error</translation>
+    </message>
+    <message>
+        <source>Can not set reminder to the past</source>
+        <translation>Can not set reminder to the past</translation>
+    </message>
+    <message>
+        <source>Retrieving failure: connect to the database first</source>
+        <translation>Retrieving failure: connect to the database first</translation>
+    </message>
+</context>
 </TS>

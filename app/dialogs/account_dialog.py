@@ -235,4 +235,4 @@ class AccountDialog(QDialog):
 		self.thread_pool.start(worker)
 
 	def popup_error(self, err):
-		error(self, '{}'.format(err[1]))
+		error(self, str(err[1]))

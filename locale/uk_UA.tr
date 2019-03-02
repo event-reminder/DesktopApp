@@ -299,4 +299,31 @@
         <translation>Резервну копію успішно видалено із хмарного сховища</translation>
     </message>
 </context>
+<context>
+    <name>CalendarWidget</name>
+    <message>
+        <source>Unable to find related database, it will be created automatically</source>
+        <translation>Неможливо знайти відповідну базу даних, вона буде створена автоматично</translation>
+    </message>
+    <message>
+        <source>Error occurred</source>
+        <translation>Сталася помилка</translation>
+    </message>
+    <message>
+        <source>Create new event</source>
+        <translation>Створити нову подію</translation>
+    </message>
+    <message>
+        <source>Database error</source>
+        <translation>Помилка роботи з базою даних</translation>
+    </message>
+    <message>
+        <source>Can not set reminder to the past</source>
+        <translation>Не можна встановити нагадування про минулу подію</translation>
+    </message>
+    <message>
+        <source>Retrieving failure: connect to the database first</source>
+        <translation>Помилка отримання даних: підключіться спочатку до бази даних</translation>
+    </message>
+</context>
 </TS>

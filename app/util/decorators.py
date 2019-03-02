@@ -16,7 +16,7 @@ def failure_wrapper(_func=None, *, method_desc=None):
 	RequestError -> 'Request failure: unable to retrieve data from server'
 	"""
 
-	_err_template = '{} failed: {}.'
+	_err_template = '{} failed: {}'
 
 	def decorator(func):
 

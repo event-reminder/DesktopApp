@@ -1,5 +1,3 @@
-import peewee
-
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -10,6 +8,7 @@ from app.storage import Storage
 from app.settings import Settings
 from app.cloud import CloudStorage
 from app.util import logger, log_msg
+from app.util.exceptions import DatabaseException
 from app.widgets.util.popup import info, error
 from app.settings.default import FONT_LARGE, FONT_NORMAL
 from app.dialogs import AboutDialog, BackupDialog, AccountDialog, SettingsDialog, EventsListDialog, CreateEventDialog
@@ -64,11 +63,11 @@ class CalendarWidget(QCalendarWidget):
 	def update(self, *__args):
 		try:
 			self.marked_dates = self.events_to_dates(self.storage.get_events())
-		except peewee.PeeweeException:
-			info(self, 'Can\'t find related database, it will be created automatically')
+		except DatabaseException:
+			info(self, self.tr('Unable to find related database, it will be created automatically'))
 		except Exception as exc:
 			logger.error(log_msg('Unknown error: {}'.format(exc)))
-			error(self, 'Error occurred: {}'.format(exc))
+			error(self, '{}: {}'.format(self.tr('Error occurred'), exc))
 		super(CalendarWidget, self).update(*__args)
 
 	def closeEvent(self, event):
@@ -79,7 +78,7 @@ class CalendarWidget(QCalendarWidget):
 		date = self.selectedDate().toPyDate()
 		if datetime.now().date() <= date:
 			menu = QMenu(self)
-			create_action = menu.addAction('Create new event')
+			create_action = menu.addAction(self.tr('Create new event'))
 			action = menu.exec_(self.mapToGlobal(event.pos()))
 			if action == create_action:
 				self.open_create_event()
@@ -144,9 +143,9 @@ class CalendarWidget(QCalendarWidget):
 					self.event_retrieving_dialog.set_data(events, py_date)
 					self.event_retrieving_dialog.exec_()
 					return True
-			except peewee.PeeweeException as exc:
+			except DatabaseException as exc:
 				logger.error(log_msg('database error: {}'.format(exc), 7))
-				error(self, 'Database error: {}'.format(exc))
+				error(self, '{}\n{}'.format(self.tr('Database error'), exc))
 
 	def open_create_event(self):
 		date = self.selectedDate().toPyDate()
@@ -154,7 +153,7 @@ class CalendarWidget(QCalendarWidget):
 			self.event_creation_dialog.reset_inputs(date=date)
 			self.event_creation_dialog.exec_()
 		else:
-			info(self, 'Can not set reminder to the past')
+			info(self, self.tr('Can not set reminder to the past'))
 
 	def open_settings(self):
 		self.settings_dialog.exec_()

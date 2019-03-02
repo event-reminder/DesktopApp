@@ -75,7 +75,7 @@ class Storage:
 		if self.try_to_reconnect:
 			self.connect()
 		if not self.is_connected:
-			raise DatabaseException('Creation failure: connect to the database first.')
+			raise DatabaseException('Creation failure: connect to the database first')
 		EventModel.create(**{
 			'title': title,
 			'time': e_time,
@@ -89,7 +89,7 @@ class Storage:
 		if self.try_to_reconnect:
 			self.connect()
 		if not self.is_connected:
-			raise DatabaseException('Updating failure: connect to the database first.')
+			raise DatabaseException('Updating failure: connect to the database first')
 		event = self.get_event_by_id(pk)
 		if event:
 			if title:
@@ -111,14 +111,14 @@ class Storage:
 		if self.try_to_reconnect:
 			self.connect()
 		if not self.is_connected:
-			raise DatabaseException('Deleting failure: connect to the database first.')
+			raise DatabaseException('Deleting failure: connect to the database first')
 		event = self.get_event_by_id(pk)
 		if event:
 			event.delete_instance(recursive=True)
 
 	def get_events(self, e_date=None, e_time=None):
 		if not self.is_connected:
-			raise DatabaseException('Retrieving failure: connect to the database first.')
+			raise DatabaseException('Retrieving failure: connect to the database first')
 		if e_date is not None and e_time is not None:
 			result = EventModel.select().where((EventModel.time == e_time) & (EventModel.date == e_date))
 		elif e_date is not None:

@@ -67,7 +67,7 @@ class CloudStorage:
 		response = self.client.post(routes.AUTH_LOGOUT)
 		if response.status_code != status.HTTP_200_OK:
 			raise CloudStorageException(
-				'Logout failure: unable to logout, status {}'.format(response.status_code)
+				'Logout failure: unable to log out, status {}'.format(response.status_code)
 			)
 		self.remove_token()
 
