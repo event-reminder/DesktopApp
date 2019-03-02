@@ -130,6 +130,42 @@
         <source>Successfully logged out</source>
         <translation>Successfully logged out</translation>
     </message>
+    <message>
+        <source>Login failure: unable to log in with provided credentials</source>
+        <translation>Login failure: unable to log in with provided credentials</translation>
+    </message>
+    <message>
+        <source>Login failure: unable to log in, status</source>
+        <translation>Login failure: unable to log in, status</translation>
+    </message>
+    <message>
+        <source>Logout failure: unable to log out, status</source>
+        <translation>Logout failure: unable to log out, status</translation>
+    </message>
+    <message>
+        <source>Registration failure: username is not provided</source>
+        <translation>Registration failure: username is not provided</translation>
+    </message>
+    <message>
+        <source>Registration failure: email is not provided</source>
+        <translation>Registration failure: email is not provided</translation>
+    </message>
+    <message>
+        <source>Registration failure: user already exists</source>
+        <translation>Registration failure: user already exists</translation>
+    </message>
+    <message>
+        <source>Registration failure: unable to register an account, status</source>
+        <translation>Registration failure: unable to register an account, status</translation>
+    </message>
+    <message>
+        <source>Reading account failure: authentication is required</source>
+        <translation>Reading account failure: authentication is required</translation>
+    </message>
+    <message>
+        <source>Reading account failure: unable to retrieve account information, status</source>
+        <translation>Reading account failure: unable to retrieve account information, status</translation>
+    </message>
 </context>
 <context>
     <name>CreateEventDialog</name>
@@ -297,6 +333,30 @@
     <message>
         <source>Backup was deleted successfully</source>
         <translation>Backup was deleted successfully</translation>
+    </message>
+    <message>
+        <source>Account access failure: authentication is required</source>
+        <translation>Account access failure: authentication is required</translation>
+    </message>
+    <message>
+        <source>Reading account failure: unable to retrieve account information, status</source>
+        <translation>Reading account failure: unable to retrieve account information, status</translation>
+    </message>
+    <message>
+        <source>Reading backups failure: unable to retrieve backups data from the server, status</source>
+        <translation>Reading backups failure: unable to retrieve backups data from the server, status</translation>
+    </message>
+    <message>
+        <source>Upload failure: backup already exists</source>
+        <translation>Upload failure: backup already exists</translation>
+    </message>
+    <message>
+        <source>Download failure: unable to download backup</source>
+        <translation>Download failure: unable to download backup</translation>
+    </message>
+    <message>
+        <source>Deleting failure: unable to delete backup</source>
+        <translation>Deleting failure: unable to delete backup</translation>
     </message>
 </context>
 <context>

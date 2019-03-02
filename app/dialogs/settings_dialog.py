@@ -1,11 +1,17 @@
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt, QThreadPool
+from PyQt5.QtGui import QIntValidator, QFont
+from PyQt5.QtWidgets import (
+	QDialog, QLineEdit, QCheckBox, QComboBox, QVBoxLayout,
+	QHBoxLayout, QWidget, QGridLayout, QLabel, QTabWidget
+)
+
+from requests.exceptions import RequestException
 
 from app.util import Worker
 from app.cloud import CloudStorage
 from app.widgets.util import PushButton, popup
 from app.widgets.waiting_spinner import WaitingSpinner
+from app.util.exceptions import UserUpdatingError, RequestTokenError, ResetPasswordError, CloudStorageException
 from app.settings import Settings, FONT_LARGE, FONT_SMALL, FONT_NORMAL, AVAILABLE_LANGUAGES, AVAILABLE_LANGUAGES_IDX
 
 
@@ -48,7 +54,6 @@ class SettingsDialog(QDialog):
 		self.verification_token_input = QLineEdit()
 		self.lang_combo_box = QComboBox()
 		self.backups_number_input = QLineEdit()
-		self.token_layout = QVBoxLayout()
 		self.change_password_btn = PushButton('Send Token', 150, 30, self.change_password_btn_click)
 
 		self.token_is_sent = False
@@ -175,43 +180,38 @@ class SettingsDialog(QDialog):
 		tab.setLayout(layout)
 		tabs.addTab(tab, 'Events')
 
+	@staticmethod
+	def create_field(title, enabled, func, field_input):
+		layout = QVBoxLayout()
+		layout.setContentsMargins(50, 0, 50, 10)
+		layout.addWidget(QLabel('{}:'.format(title)))
+		field_input.textChanged.connect(func)
+		field_input.setEnabled(enabled)
+		layout.addWidget(field_input)
+		return layout
+
 	def setup_account_settings_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 
 		layout = QVBoxLayout()
 
-		email_layout = QVBoxLayout()
-		email_layout.setContentsMargins(50, 0, 50, 10)
-		email_layout.addWidget(QLabel('Email:'))
-		self.email_input.textChanged.connect(self.change_password_inputs_changed)
-		email_layout.addWidget(self.email_input)
-		layout.addLayout(email_layout)
+		layout.addLayout(
+			self.create_field('Email', True, self.change_password_inputs_changed, self.email_input)
+		)
 
-		new_pwd_layout = QVBoxLayout()
-		new_pwd_layout.setContentsMargins(50, 0, 50, 10)
-		new_pwd_layout.addWidget(QLabel('New Password:'))
-		self.new_password_input.textChanged.connect(self.change_password_inputs_changed)
-		self.new_password_input.setEnabled(False)
 		self.new_password_input.setEchoMode(QLineEdit.Password)
-		new_pwd_layout.addWidget(self.new_password_input)
-		layout.addLayout(new_pwd_layout)
+		layout.addLayout(
+			self.create_field('New Password', False, self.change_password_inputs_changed, self.new_password_input)
+		)
 
-		repeat_pwd_layout = QVBoxLayout()
-		repeat_pwd_layout.setContentsMargins(50, 0, 50, 10)
-		repeat_pwd_layout.addWidget(QLabel('Repeat Password:'))
-		self.new_password_repeat_input.textChanged.connect(self.change_password_inputs_changed)
-		self.new_password_repeat_input.setEnabled(False)
 		self.new_password_repeat_input.setEchoMode(QLineEdit.Password)
-		repeat_pwd_layout.addWidget(self.new_password_repeat_input)
-		layout.addLayout(repeat_pwd_layout)
+		layout.addLayout(
+			self.create_field('Repeat Password', False, self.change_password_inputs_changed, self.new_password_repeat_input)
+		)
 
-		self.token_layout.setContentsMargins(50, 0, 50, 10)
-		self.token_layout.setEnabled(False)
-		self.token_layout.addWidget(QLabel('Verification Token:'))
-		self.verification_token_input.setEnabled(False)
-		self.verification_token_input.textChanged.connect(self.change_password_inputs_changed)
-		self.token_layout.addWidget(self.verification_token_input)
-		layout.addLayout(self.token_layout)
+		layout.addLayout(
+			self.create_field('Verification Token', False, self.change_password_inputs_changed, self.verification_token_input)
+		)
 
 		h_layout = QHBoxLayout()
 		self.change_password_btn.setEnabled(False)
@@ -332,7 +332,6 @@ class SettingsDialog(QDialog):
 	def change_password_request_token_success(self):
 		popup.info(self, 'Check your email box for verification token')
 		self.token_is_sent = True
-		self.token_layout.setEnabled(True)
 		self.new_password_input.setEnabled(True)
 		self.new_password_input.setFocus()
 		self.new_password_repeat_input.setEnabled(True)
@@ -354,4 +353,14 @@ class SettingsDialog(QDialog):
 		self.thread_pool.start(worker)
 
 	def popup_error(self, err):
-		popup.error(self, '{}'.format(err[1]))
+		try:
+			raise err[0](err[1])
+		except UserUpdatingError:
+			err_msg = 'Updating user failure: unable to update user account, status {}'.format(err[1])
+		except RequestTokenError:
+			err_msg = 'Reset password failure: unable to request token, status {}'.format(err[1])
+		except ResetPasswordError:
+			err_msg = 'Reset password failure: unable to reset user password, status {}'.format(err[1])
+		except (CloudStorageException, RequestException, Exception):
+			err_msg = str(err[1])
+		popup.error(self, err_msg)

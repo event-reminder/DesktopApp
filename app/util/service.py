@@ -5,11 +5,11 @@ from PyQt5.QtCore import QThread
 
 from pynotifier import Notification
 
-from datetime import date, datetime, timedelta
-
 from app.storage import Storage
 from app.util import logger, log_msg
 from app.settings import Settings, APP_NAME
+
+from datetime import date, datetime, timedelta
 
 
 class ReminderService(QThread):

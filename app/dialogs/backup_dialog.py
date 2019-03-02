@@ -1,9 +1,14 @@
 import os
 from datetime import datetime
 
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QIcon, QFont
+from PyQt5.QtCore import Qt, QThreadPool
+from PyQt5.QtWidgets import (
+	QLineEdit, QListWidget, QWidget, QHBoxLayout, QVBoxLayout, QLabel,
+	QTabWidget, QFileDialog, QScrollArea, QListWidgetItem, QDialog
+)
+
+from requests.exceptions import RequestException
 
 from app.util import Worker
 from app.storage import Storage
@@ -12,6 +17,11 @@ from app.cloud import CloudStorage
 from app.widgets.util import PushButton, popup
 from app.widgets.backup_widget import BackupWidget
 from app.widgets.waiting_spinner import WaitingSpinner
+from app.util.exceptions import (
+	AuthRequiredError, UserRetrievingError, ReadingBackupsError,
+	BackupAlreadyExistsError, BackupDownloadingError, CloudStorageException,
+	BackupDeletingError
+)
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
@@ -190,6 +200,7 @@ class BackupDialog(QDialog):
 		self.upload_backup_button.setToolTip(self.tr('Upload'))
 		self.upload_backup_button.setEnabled(False)
 		center_buttons_layout.addWidget(self.upload_backup_button, alignment=Qt.AlignCenter)
+
 		self.download_backup_button.setToolTip(self.tr('Download'))
 		self.download_backup_button.setEnabled(False)
 		center_buttons_layout.addWidget(self.download_backup_button, alignment=Qt.AlignCenter)
@@ -258,7 +269,6 @@ class BackupDialog(QDialog):
 	def upload_backup_cloud_run(self):
 		user = self.cloud.user()
 		timestamp = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
-		# self.storage.connect()
 		backup_data = self.storage.prepare_backup_data(
 			self.storage.to_array(), timestamp, self.settings.include_settings_backup, user['username']
 		)
@@ -318,4 +328,20 @@ class BackupDialog(QDialog):
 		self.thread_pool.start(worker)
 
 	def popup_error(self, err):
-		popup.error(self, '{}'.format(err[1]))
+		try:
+			raise err[0](err[1])
+		except AuthRequiredError:
+			err_msg = self.tr('Account access failure: authentication is required')
+		except UserRetrievingError:
+			err_msg = '{} {}'.format(self.tr('Reading account failure: unable to retrieve account information, status'), err[1])
+		except ReadingBackupsError:
+			err_msg = '{} {}'.format(self.tr('Reading backups failure: unable to retrieve backups data from the server, status'), err[1])
+		except BackupAlreadyExistsError:
+			err_msg = self.tr('Upload failure: backup already exists')
+		except BackupDownloadingError:
+			err_msg = self.tr('Download failure: unable to download backup')
+		except BackupDeletingError:
+			err_msg = self.tr('Deleting failure: unable to delete backup')
+		except (CloudStorageException, RequestException, Exception):
+			err_msg = str(err[1])
+		popup.error(self, err_msg)

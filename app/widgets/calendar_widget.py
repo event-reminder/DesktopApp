@@ -1,15 +1,15 @@
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-
 from datetime import datetime
+
+from PyQt5.QtCore import Qt, QRect, QDate
+from PyQt5.QtGui import QFont, QColor, QPen
+from PyQt5.QtWidgets import QCalendarWidget, QMenu
 
 from app.storage import Storage
 from app.settings import Settings
 from app.cloud import CloudStorage
 from app.util import logger, log_msg
-from app.util.exceptions import DatabaseException
 from app.widgets.util.popup import info, error
+from app.util.exceptions import DatabaseException
 from app.settings.default import FONT_LARGE, FONT_NORMAL
 from app.dialogs import AboutDialog, BackupDialog, AccountDialog, SettingsDialog, EventsListDialog, CreateEventDialog
 

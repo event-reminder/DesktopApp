@@ -1,6 +1,8 @@
 import re
 import requests
 
+from requests.exceptions import RequestException
+
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt, QThreadPool
 from PyQt5.QtWidgets import QLabel, QWidget, QDialog, QLineEdit, QCheckBox, QTabWidget, QVBoxLayout
@@ -12,6 +14,11 @@ from app.widgets.util import PushButton
 from app.widgets.util.popup import info, error
 from app.util.exceptions import CloudStorageException
 from app.widgets.waiting_spinner import WaitingSpinner
+from app.util.exceptions import (
+	LoginFailedCredentialsError, LoginFailedError, LogoutFailedError,
+	RegisterFailedEmailIsNotProvidedError, RegisterFailedUsernameIsNotProvidedError,
+	RegisterFailedError, AuthRequiredError, UserRetrievingError, RegisterFailedUserAlreadyExistsError
+)
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
@@ -59,27 +66,25 @@ class AccountDialog(QDialog):
 		content.addWidget(self.tabs, alignment=Qt.AlignLeft)
 		self.setLayout(content)
 
+	@staticmethod
+	def create_field(input_field, title=None):
+		layout = QVBoxLayout()
+		layout.setContentsMargins(50, 0, 50, 10)
+		if title is not None:
+			layout.addWidget(QLabel('{}:'.format(title)))
+		layout.addWidget(input_field)
+		return layout
+
 	def build_login_menu(self):
 		layout = QVBoxLayout()
 
-		un_layout = QVBoxLayout()
-		un_layout.setContentsMargins(50, 0, 50, 10)
-		un_layout.addWidget(QLabel('{}:'.format(self.tr('Username'))))
-		un_layout.addWidget(self.username_login_input)
-		layout.addLayout(un_layout)
+		layout.addLayout(self.create_field(self.username_login_input, self.tr('Username')))
 
-		pwd_layout = QVBoxLayout()
-		pwd_layout.setContentsMargins(50, 0, 50, 10)
-		pwd_layout.addWidget(QLabel('{}:'.format(self.tr('Password'))))
 		self.password_login_input.setEchoMode(QLineEdit.Password)
-		pwd_layout.addWidget(self.password_login_input)
-		layout.addLayout(pwd_layout)
+		layout.addLayout(self.create_field(self.password_login_input, self.tr('Password')))
 
-		rl_layout = QVBoxLayout()
-		rl_layout.setContentsMargins(50, 0, 50, 10)
 		self.remember_login_check_box.setChecked(True)
-		rl_layout.addWidget(self.remember_login_check_box)
-		layout.addLayout(rl_layout)
+		layout.addLayout(self.create_field(self.remember_login_check_box))
 
 		btn = PushButton(self.tr('Login'), 70, 30, self.login_click)
 		btn.setFixedWidth(100)
@@ -138,17 +143,9 @@ class AccountDialog(QDialog):
 		tab = QWidget(flags=tabs.windowFlags())
 		layout = QVBoxLayout()
 
-		un_layout = QVBoxLayout()
-		un_layout.setContentsMargins(50, 0, 50, 10)
-		un_layout.addWidget(QLabel('{}:'.format(self.tr('Username'))))
-		un_layout.addWidget(self.username_signup_input)
-		layout.addLayout(un_layout)
+		layout.addLayout(self.create_field(self.username_signup_input, self.tr('Username')))
 
-		e_layout = QVBoxLayout()
-		e_layout.setContentsMargins(50, 0, 50, 10)
-		e_layout.addWidget(QLabel('{}:'.format(self.tr('Email'))))
-		e_layout.addWidget(self.email_signup_input)
-		layout.addLayout(e_layout)
+		layout.addLayout(self.create_field(self.email_signup_input, self.tr('Email')))
 
 		btn = PushButton(self.tr('Register'), 150, 30, self.signup_click)
 		layout.addWidget(btn, alignment=Qt.AlignCenter)
@@ -189,7 +186,7 @@ class AccountDialog(QDialog):
 	def signup_success(self):
 		info(
 			self,
-			'{}.\n{}.\n{}.'.format(
+			'{}.\n{}. {}.'.format(
 				self.tr('Thank you for registration'),
 				self.tr('Check out {} for credentials information').format(self.email_signup_input.text()),
 				self.tr('To activate, simply login to Your account, otherwise it will be deleted in 24 hours after registration')
@@ -235,4 +232,26 @@ class AccountDialog(QDialog):
 		self.thread_pool.start(worker)
 
 	def popup_error(self, err):
-		error(self, str(err[1]))
+		try:
+			raise err[0](err[1])
+		except LoginFailedCredentialsError:
+			err_msg = self.tr('Login failure: unable to log in with provided credentials')
+		except LoginFailedError:
+			err_msg = '{} {}'.format(self.tr('Login failure: unable to log in, status'), err[1])
+		except LogoutFailedError:
+			err_msg = '{} {}'.format(self.tr('Logout failure: unable to log out, status'), err[1])
+		except RegisterFailedUsernameIsNotProvidedError:
+			err_msg = self.tr('Registration failure: username is not provided')
+		except RegisterFailedEmailIsNotProvidedError:
+			err_msg = self.tr('Registration failure: email is not provided')
+		except RegisterFailedUserAlreadyExistsError:
+			err_msg = self.tr('Registration failure: user already exists')
+		except RegisterFailedError:
+			err_msg = self.tr('Registration failure: unable to register an account, status')
+		except AuthRequiredError:
+			err_msg = self.tr('Reading account failure: authentication is required')
+		except UserRetrievingError:
+			err_msg = '{} {}'.format(self.tr('Reading account failure: unable to retrieve account information, status'), err[1])
+		except (CloudStorageException, RequestException, Exception):
+			err_msg = str(err[1])
+		error(self, err_msg)
