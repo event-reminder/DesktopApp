@@ -1,9 +1,9 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QLocale
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtWidgets import QAction, QMainWindow, qApp, QMenu, QSystemTrayIcon
 
 from app.widgets import CalendarWidget
-from app.settings import Settings, APP_NAME
+from app.settings import Settings, APP_NAME, AVAILABLE_LOCALES
 
 
 class MainWindow(QMainWindow):
@@ -60,7 +60,7 @@ class MainWindow(QMainWindow):
 
 	def init_calendar(self):
 		calendar = CalendarWidget(self, width=self.width(), height=self.height())
-		# calendar.setLocale(QLocale(QLocale.English))
+		calendar.setLocale(QLocale(AVAILABLE_LOCALES[self.settings.app_lang]))
 		calendar.setFirstDayOfWeek(Qt.Monday)
 		return calendar
 

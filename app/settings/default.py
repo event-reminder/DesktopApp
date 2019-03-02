@@ -1,5 +1,7 @@
 import os
 
+from PyQt5.QtCore import QLocale
+
 
 APP_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -58,6 +60,11 @@ AVAILABLE_LANGUAGES_IDX = {
 AVAILABLE_LANGUAGES = {
 	'English': 'en_US',
 	'Українська': 'uk_UA'
+}
+
+AVAILABLE_LOCALES = {
+	'en_US': QLocale.English,
+	'uk_UA': QLocale.Ukrainian
 }
 
 LANG = 'en_US'
