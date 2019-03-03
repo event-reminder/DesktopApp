@@ -28,6 +28,9 @@ APP_ORGANIZATION = 'YuriyLisovskiy'
 APP_VERSION = '2019.0.1'
 APP_RELEASE_DATE = 'February 2, 2019'
 
+# TODO: add application description
+APP_DESCRIPTION = 'Some description'
+
 BACKUP_FILE_NAME = '{} Backup'.format(APP_NAME)
 
 SETTINGS_FILE = '{}settings.ini'.format(APP_DATA_PATH)
@@ -50,6 +53,8 @@ APP_LOG_FILE = '{}application.log'.format(APP_DATA_PATH)
 
 APP_DB_PATH = APP_DATA_PATH
 APP_DB_FILE = '{}storage.db'.format(APP_DATA_PATH)
+
+ENTRY_POINT = abs_path('app_main.py')
 
 
 AVAILABLE_LANGUAGES_IDX = {

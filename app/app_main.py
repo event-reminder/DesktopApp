@@ -7,8 +7,13 @@ from app.settings import Settings
 from app.settings.default import LOCALE
 from app import MainWindow, ReminderService
 
+from app.services.linux import setup_service
+
 
 if __name__ == '__main__':
+
+	# setup_service()
+
 	app = QApplication(sys.argv)
 
 	settings = Settings()

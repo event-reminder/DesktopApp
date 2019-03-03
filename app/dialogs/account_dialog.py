@@ -145,6 +145,7 @@ class AccountDialog(QDialog):
 				self.tr('Check your connection and reopen this dialog')
 			), alignment=Qt.AlignCenter)
 		except CloudStorageException as _:
+			self.cloud.remove_token()
 			self.login_menu, tab_name = self.build_login_menu()
 			self.v_layout.addLayout(self.login_menu)
 		tab.setLayout(self.v_layout)
