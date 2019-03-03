@@ -21,7 +21,7 @@ def main():
 
 	ReminderService(window, window.calendar).start()
 
-	if settings.show_calendar_on_startup:
+	if settings.start_in_tray:
 		window.show()
 
 	sys.exit(app.exec_())

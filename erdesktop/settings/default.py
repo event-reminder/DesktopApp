@@ -57,7 +57,7 @@ LINUX_AUTO_START_FILE = '{}/.config/autostart/{}.desktop'.format(
 	expanduser('~'), APP_NAME.replace(' ', '').lower()
 )
 
-PY_PACKAGE_NAME = 'erdesktop'
+PY_PACKAGE_NAME = APP_ROOT.split('/')[-1]
 
 
 AVAILABLE_LANGUAGES_IDX = {
@@ -95,7 +95,9 @@ BADGE_LETTER_COLOR = '#fff'
 
 REMOVE_EVENT_AFTER_TIME_UP = 'true'
 
-SHOW_CALENDAR_ON_STARTUP = 'true'
+START_IN_TRAY = 'false'
+
+RUN_WITH_SYSTEM_START = 'false'
 
 NOTIFICATION_DURATION = 5   # in seconds
 

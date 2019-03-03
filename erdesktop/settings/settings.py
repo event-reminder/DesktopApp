@@ -101,8 +101,12 @@ class Settings:
 		return self.__settings.value('event_user/remove_event_after_time_up', REMOVE_EVENT_AFTER_TIME_UP) == 'true'
 
 	@property
-	def show_calendar_on_startup(self):
-		return self.__settings.value('app_user/show_calendar_on_startup', SHOW_CALENDAR_ON_STARTUP) == 'true'
+	def start_in_tray(self):
+		return self.__settings.value('app_user/start_in_tray', START_IN_TRAY) == 'true'
+
+	@property
+	def run_with_system_start(self):
+		return self.__settings.value('app_user/run_with_system_start', RUN_WITH_SYSTEM_START) == 'true'
 
 	@property
 	def notification_duration(self):
@@ -156,8 +160,11 @@ class Settings:
 	def set_remove_event_after_time_up(self, value: bool):
 		self._set_value('app_user/remove_event_after_time_up', 'true' if value else 'false')
 
-	def set_show_calendar_on_startup(self, value: bool):
-		self._set_value('app_user/show_calendar_on_startup', 'true' if value else 'false')
+	def set_start_in_tray(self, value: bool):
+		self._set_value('app_user/start_in_tray', 'true' if value else 'false')
+
+	def set_run_with_system_start(self, value: bool):
+		self._set_value('app_user/run_with_system_start', 'true' if value else 'false')
 
 	def set_notification_duration(self, value: int):
 		self._set_value('event_user/notification_duration', value)
@@ -174,7 +181,7 @@ class Settings:
 			'is_always_on_top': self.is_always_on_top,
 			'font': self.app_font,
 			'remove_event_after_time_up': self.remove_event_after_time_up,
-			'show_calendar_on_startup': self.show_calendar_on_startup,
+			'start_in_tray': self.start_in_tray,
 			'notification_duration': self.notification_duration,
 			'remind_time_before_event': self.remind_time_before_event,
 			'lang': self.app_lang
@@ -183,7 +190,7 @@ class Settings:
 	def from_dict(self, data):
 		keys = [
 			'is_dark_theme', 'is_always_on_top', 'font',
-			'remove_event_after_time_up', 'show_calendar_on_startup',
+			'remove_event_after_time_up', 'start_in_tray',
 			'notification_duration', 'remind_time_before_event', 'lang'
 		]
 		for key in keys:
@@ -193,7 +200,7 @@ class Settings:
 		self.set_is_always_on_top(data['is_always_on_top'])
 		self.set_font(data['font'])
 		self.set_remove_event_after_time_up(data['remove_event_after_time_up'])
-		self.set_show_calendar_on_startup(data['show_calendar_on_startup'])
+		self.set_show_calendar_on_startup(data['start_in_tray'])
 		self.set_notification_duration(data['notification_duration'])
 		self.set_remind_time_before_event(data['remind_time_before_event'])
 		self.set_lang(data['lang'])

@@ -9,10 +9,11 @@ from requests.exceptions import RequestException
 
 from erdesktop.util import Worker
 from erdesktop.cloud import CloudStorage
+from erdesktop.autostart import autostart
 from erdesktop.widgets.util import PushButton, popup
 from erdesktop.widgets.waiting_spinner import WaitingSpinner
-from erdesktop.util.exceptions import UserUpdatingError, RequestTokenError, ResetPasswordError, CloudStorageException
 from erdesktop.settings import Settings, FONT_LARGE, FONT_SMALL, FONT_NORMAL, AVAILABLE_LANGUAGES, AVAILABLE_LANGUAGES_IDX
+from erdesktop.util.exceptions import UserUpdatingError, RequestTokenError, ResetPasswordError, CloudStorageException, AutoStartIsNotSupportedError
 
 
 # noinspection PyArgumentList,PyUnresolvedReferences
@@ -45,7 +46,7 @@ class SettingsDialog(QDialog):
 
 		self.always_on_top_check_box = QCheckBox()
 		self.font_combo_box = QComboBox()
-		self.show_calendar_on_startup_check_box = QCheckBox()
+		self.start_in_tray_check_box = QCheckBox()
 		self.theme_combo_box = QComboBox()
 
 		self.remove_after_time_up_check_box = QCheckBox()
@@ -66,6 +67,8 @@ class SettingsDialog(QDialog):
 		self.change_password_btn = PushButton(
 			self.tr('Send Confirmation'), btn_width, 30, self.change_password_btn_click
 		)
+
+		self.run_with_system_start_check_box = QCheckBox()
 
 		self.token_is_sent = False
 
@@ -100,7 +103,8 @@ class SettingsDialog(QDialog):
 		elif self.settings.app_font == FONT_LARGE:
 			curr_idx = 2
 		self.font_combo_box.setCurrentIndex(curr_idx)
-		self.show_calendar_on_startup_check_box.setChecked(self.settings.show_calendar_on_startup)
+		self.start_in_tray_check_box.setChecked(self.settings.start_in_tray)
+		self.run_with_system_start_check_box.setChecked(self.settings.run_with_system_start)
 		self.always_on_top_check_box.setChecked(self.settings.is_always_on_top)
 		self.include_settings_backup_check_box.setChecked(self.settings.include_settings_backup)
 		self.remove_after_time_up_check_box.setChecked(self.settings.remove_event_after_time_up)
@@ -134,9 +138,9 @@ class SettingsDialog(QDialog):
 		self.font_combo_box.addItems([self.tr('Small'), self.tr('Normal'), self.tr('Large')])
 		layout.addWidget(self.font_combo_box, 1, 1)
 
-		layout.addWidget(QLabel(self.tr('Show calendar on startup')), 2, 0)
-		self.show_calendar_on_startup_check_box.stateChanged.connect(self.show_calendar_on_startup_changed)
-		layout.addWidget(self.show_calendar_on_startup_check_box, 2, 1)
+		layout.addWidget(QLabel(self.tr('Start in tray')), 2, 0)
+		self.start_in_tray_check_box.stateChanged.connect(self.start_in_tray_changed)
+		layout.addWidget(self.start_in_tray_check_box, 2, 1)
 
 		layout.addWidget(QLabel(self.tr('Always on top (restart required)')), 3, 0)
 		self.always_on_top_check_box.stateChanged.connect(self.always_on_top_changed)
@@ -146,7 +150,11 @@ class SettingsDialog(QDialog):
 		self.include_settings_backup_check_box.stateChanged.connect(self.include_settings_backup_changed)
 		layout.addWidget(self.include_settings_backup_check_box, 4, 1)
 
-		layout.addWidget(QLabel(self.tr('Language (restart required)')), 5, 0)
+		layout.addWidget(QLabel(self.tr('Run with system start')), 5, 0)
+		self.run_with_system_start_check_box.stateChanged.connect(self.run_with_system_start_changed)
+		layout.addWidget(self.run_with_system_start_check_box, 5, 1)
+
+		layout.addWidget(QLabel(self.tr('Language (restart required)')), 6, 0)
 		self.lang_combo_box.addItems(AVAILABLE_LANGUAGES.keys())
 		try:
 			idx = AVAILABLE_LANGUAGES_IDX[self.settings.app_lang]
@@ -154,12 +162,12 @@ class SettingsDialog(QDialog):
 			idx = 0
 		self.lang_combo_box.setCurrentIndex(idx)
 		self.lang_combo_box.currentIndexChanged.connect(self.lang_changed)
-		layout.addWidget(self.lang_combo_box, 5, 1)
+		layout.addWidget(self.lang_combo_box, 6, 1)
 
-		layout.addWidget(QLabel(self.tr('Maximum backups number')), 6, 0)
+		layout.addWidget(QLabel(self.tr('Maximum backups number')), 7, 0)
 		self.backups_number_input.setValidator(QIntValidator())
 		self.backups_number_input.textChanged.connect(self.max_backups_changed)
-		layout.addWidget(self.backups_number_input, 6, 1)
+		layout.addWidget(self.backups_number_input, 7, 1)
 
 		tab.setLayout(layout)
 		tabs.addTab(tab, self.tr('App'))
@@ -252,9 +260,21 @@ class SettingsDialog(QDialog):
 			self.settings.set_font(new_font)
 			self.calendar.reset_font(font)
 
-	def show_calendar_on_startup_changed(self):
+	def start_in_tray_changed(self):
 		if self.ui_is_loaded:
-			self.settings.set_show_calendar_on_startup(self.show_calendar_on_startup_check_box.isChecked())
+			self.settings.set_start_in_tray(self.start_in_tray_check_box.isChecked())
+
+	def run_with_system_start_changed(self):
+		if self.ui_is_loaded:
+			try:
+				val = self.run_with_system_start_check_box.isChecked()
+				if val:
+					autostart.add_to_auto_start()
+				else:
+					autostart.remove_from_auto_start()
+				self.settings.set_run_with_system_start(val)
+			except AutoStartIsNotSupportedError as exc:
+				popup.error(self, self.tr('Auto start setting is not supported on {}').format(exc))
 
 	def theme_changed(self, current):
 		if self.ui_is_loaded:

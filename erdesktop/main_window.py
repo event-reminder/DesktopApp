@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
 
 		self.open_action = QAction('{} {}'.format(self.tr('Open'), APP_NAME), self)
 		self.hide_action = QAction(self.tr('Minimize To Tray'), self)
-		if not self.settings.show_calendar_on_startup:
+		if not self.settings.start_in_tray:
 			self.hide_action.setEnabled(False)
 		self.close_action = QAction('{} {}'.format(self.tr('Quit'), APP_NAME), self)
 

@@ -425,8 +425,16 @@
         <translation>Large</translation>
     </message>
     <message>
-        <source>Show calendar on startup</source>
-        <translation>Show calendar on startup</translation>
+        <source>Start in tray</source>
+        <translation>Start in tray</translation>
+    </message>
+    <message>
+        <source>Run with system start</source>
+        <translation>Run with system start</translation>
+    </message>
+    <message>
+        <source>Auto start setting is not supported on {}</source>
+        <translation>Auto start setting is not supported on {}</translation>
     </message>
     <message>
         <source>Always on top (restart required)</source>
