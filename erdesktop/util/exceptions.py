@@ -73,3 +73,7 @@ class BackupDeletingError(CloudStorageException):
 
 class DatabaseException(Exception):
 	"""Error occurred during accessing the database"""
+
+
+class AutoStartIsNotSupportedError(Exception):
+	"""Unable to perform any operation with application's auto start"""

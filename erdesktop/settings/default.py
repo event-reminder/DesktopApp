@@ -29,8 +29,7 @@ APP_ORGANIZATION = 'YuriyLisovskiy'
 APP_VERSION = '2019.0.1'
 APP_RELEASE_DATE = 'February 2, 2019'
 
-# TODO: add application description
-APP_DESCRIPTION = 'Some description'
+APP_DESCRIPTION = 'Cross-platform desktop application which helps to finish all tasks in time'
 
 BACKUP_FILE_NAME = '{} Backup'.format(APP_NAME)
 
@@ -47,9 +46,6 @@ APP_ICON_LIGHT_MEDIUM = resources('app-icon-light-70x70.png')
 APP_ICON_DARK_ICO = resources('app-icon-light.ico')
 APP_ICON_LIGHT_ICO = resources('app-icon-light.ico')
 
-
-# path to files created by application: db, log, etc.
-
 APP_LOG_FILE = '{}application.log'.format(APP_DATA_PATH)
 
 APP_DB_PATH = APP_DATA_PATH
@@ -60,6 +56,8 @@ ENTRY_POINT = abs_path('app_main.py')
 LINUX_AUTO_START_FILE = '{}/.config/autostart/{}.desktop'.format(
 	expanduser('~'), APP_NAME.replace(' ', '').lower()
 )
+
+PY_PACKAGE_NAME = 'erdesktop'
 
 
 AVAILABLE_LANGUAGES_IDX = {

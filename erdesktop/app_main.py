@@ -7,13 +7,8 @@ from erdesktop.settings import Settings
 from erdesktop.settings.default import LOCALE
 from erdesktop import MainWindow, ReminderService
 
-from erdesktop.services.linux import setup_service
 
-
-if __name__ == '__main__':
-
-	# setup_service()
-
+def main():
 	app = QApplication(sys.argv)
 
 	settings = Settings()
@@ -30,3 +25,7 @@ if __name__ == '__main__':
 		window.show()
 
 	sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+	main()
