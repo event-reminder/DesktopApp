@@ -6,7 +6,7 @@ run:
 	python ./app/app_main.py
 
 clean:
-	rm -rf event-reminder-tmp/
+	rm -rf event-reminder-tmp/ build/ djexp.egg-info/ dist/
 
 test:
 	python -m unittest
@@ -21,9 +21,6 @@ lang-en:
 	lrelease ./locale/en_US.tr -qm ./erdesktop/locale/en_US.qm
 
 lang: lang-uk lang-en
-
-clean:
-	rm -rf build/ djexp.egg-info/ dist/
 
 pre_build:
 	pip3 install --user --upgrade setuptools wheel twine
