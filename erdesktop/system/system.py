@@ -7,3 +7,7 @@ def is_linux():
 
 def is_windows():
 	return 'Windows' in platform.system()
+
+
+def get():
+	return platform.system()

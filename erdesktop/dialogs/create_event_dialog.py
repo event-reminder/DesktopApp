@@ -11,14 +11,13 @@ from PyQt5.QtWidgets import (
 )
 
 
-# noinspection PyArgumentList
 class CreateEventDialog(QDialog):
 
 	def __init__(self, flags, *args, **kwargs):
-		super().__init__(flags=flags, *args)
+		super(CreateEventDialog, self).__init__(flags=flags, *args)
 
 		self.setFixedSize(500, 500)
-		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
+		self.setWindowFlags(Qt.Dialog)
 
 		if 'palette' in kwargs:
 			self.setPalette(kwargs.get('palette'))
@@ -57,6 +56,7 @@ class CreateEventDialog(QDialog):
 		)
 		super(CreateEventDialog, self).showEvent(event)
 
+	# noinspection PyArgumentList
 	def setup_ui(self):
 		content = QVBoxLayout()
 		content.addWidget(QLabel('{}:'.format(self.tr('Title'))), alignment=Qt.AlignLeft)

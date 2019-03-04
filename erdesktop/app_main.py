@@ -4,6 +4,8 @@ from PyQt5.QtCore import QTranslator
 from PyQt5.QtWidgets import QApplication
 
 from erdesktop.settings import Settings
+
+# noinspection PyUnresolvedReferences
 from erdesktop.resources import languages
 from erdesktop import MainWindow, ReminderService
 

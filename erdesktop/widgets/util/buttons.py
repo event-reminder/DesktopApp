@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import QPushButton
 
 
-# noinspection PyUnresolvedReferences
 class PushButton(QPushButton):
 
 	def __init__(self, title, width, height, function, *__args):
@@ -9,4 +8,6 @@ class PushButton(QPushButton):
 		self.setText(title)
 		self.setFixedWidth(width)
 		self.setFixedHeight(height)
+
+		# noinspection PyUnresolvedReferences
 		self.clicked.connect(function)

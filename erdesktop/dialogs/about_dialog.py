@@ -2,15 +2,15 @@ from erdesktop.cloud import CloudStorage
 from erdesktop.util.worker import Worker
 from erdesktop.settings import Settings, APP_ORGANIZATION, APP_NAME, APP_VERSION, APP_RELEASE_DATE
 
-from PyQt5.QtCore import Qt, QSize, QThreadPool
 from PyQt5.QtGui import QFont, QPixmap
+from PyQt5.QtCore import Qt, QSize, QThreadPool
 from PyQt5.QtWidgets import QLabel, QDialog, QVBoxLayout, QHBoxLayout
 
 
 class AboutDialog(QDialog):
 
 	def __init__(self, flags, *args, **kwargs):
-		super().__init__(flags=flags, *args)
+		super(AboutDialog, self).__init__(flags=flags, *args)
 		if 'palette' in kwargs:
 			self.setPalette(kwargs.get('palette'))
 		self.setFixedSize(500, 250)
@@ -45,6 +45,7 @@ class AboutDialog(QDialog):
 			is_dark=not self.settings.is_dark_theme, q_icon=False, icon_size='medium'))
 		)
 		logo_image.setFixedSize(QSize(70, 70))
+
 		# noinspection PyArgumentList
 		title_section.addWidget(logo_image)
 		name_label = QLabel(APP_NAME)

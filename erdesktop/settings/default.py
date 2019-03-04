@@ -3,6 +3,7 @@ from os.path import expanduser
 
 from PyQt5.QtCore import QLocale
 
+# noinspection PyUnresolvedReferences
 from erdesktop.resources import images
 
 

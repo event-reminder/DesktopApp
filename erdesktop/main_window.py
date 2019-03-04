@@ -50,7 +50,6 @@ class MainWindow(QMainWindow):
 		self.save_state()
 		qApp.quit()
 
-	# noinspection PyUnresolvedReferences
 	def init_tray(self, app):
 		actions = {
 			self.open_action: self.show,
@@ -59,6 +58,8 @@ class MainWindow(QMainWindow):
 		}
 		tray_menu = QMenu()
 		for key, value in actions.items():
+
+			# noinspection PyUnresolvedReferences
 			key.triggered.connect(value)
 			tray_menu.addAction(key)
 		tray_icon = QSystemTrayIcon(self.settings.app_icon(), app)
@@ -91,7 +92,6 @@ class MainWindow(QMainWindow):
 		self.setup_file_menu(main_menu)
 		self.setup_help_menu(main_menu)
 
-	# noinspection PyUnresolvedReferences
 	@staticmethod
 	def new_action(target, title, fn, shortcut=None, tip=None, icon=None):
 		action = QAction(title, target)
@@ -101,6 +101,8 @@ class MainWindow(QMainWindow):
 			action.setStatusTip(tip)
 		if icon:
 			action.setIcon(QIcon().fromTheme(icon))
+
+		# noinspection PyUnresolvedReferences
 		action.triggered.connect(fn)
 		return action
 

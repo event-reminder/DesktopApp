@@ -16,11 +16,10 @@ from erdesktop.settings import Settings, FONT_LARGE, FONT_SMALL, FONT_NORMAL, AV
 from erdesktop.util.exceptions import UserUpdatingError, RequestTokenError, ResetPasswordError, CloudStorageException, AutoStartIsNotSupportedError
 
 
-# noinspection PyArgumentList,PyUnresolvedReferences
 class SettingsDialog(QDialog):
 
 	def __init__(self, flags, *args, **kwargs):
-		super().__init__(flags=flags, *args)
+		super(SettingsDialog, self).__init__(flags=flags, *args)
 
 		if 'palette' in kwargs:
 			self.setPalette(kwargs.get('palette'))
@@ -38,7 +37,7 @@ class SettingsDialog(QDialog):
 		else:
 			self.setFixedSize(650, 450)
 		self.setWindowTitle(self.tr('Settings'))
-		self.setWindowFlags(Qt.Tool)
+		self.setWindowFlags(Qt.Dialog)
 
 		self.spinner = WaitingSpinner()
 		self.thread_pool = QThreadPool()
@@ -124,6 +123,7 @@ class SettingsDialog(QDialog):
 		content.addWidget(tab_widget, alignment=Qt.AlignLeft)
 		self.setLayout(content)
 
+	# noinspection PyUnresolvedReferences,PyArgumentList
 	def setup_app_settings_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 		layout = QGridLayout()
@@ -175,6 +175,7 @@ class SettingsDialog(QDialog):
 		tab.setLayout(layout)
 		tabs.addTab(tab, self.tr('App'))
 
+	# noinspection PyUnresolvedReferences,PyArgumentList
 	def setup_events_settings_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 
@@ -204,9 +205,13 @@ class SettingsDialog(QDialog):
 	def create_field(title, enabled, func, field_input):
 		layout = QVBoxLayout()
 		layout.setContentsMargins(50, 0, 50, 10)
+
+		# noinspection PyArgumentList
 		layout.addWidget(QLabel('{}:'.format(title)))
 		field_input.textChanged.connect(func)
 		field_input.setEnabled(enabled)
+
+		# noinspection PyArgumentList
 		layout.addWidget(field_input)
 		return layout
 
@@ -235,6 +240,8 @@ class SettingsDialog(QDialog):
 
 		h_layout = QHBoxLayout()
 		self.change_password_btn.setEnabled(False)
+
+		# noinspection PyArgumentList
 		h_layout.addWidget(self.change_password_btn)
 		btn_width = 150
 		if self.settings.app_lang != 'en_US':
@@ -242,6 +249,8 @@ class SettingsDialog(QDialog):
 		reset_change_password_btn = PushButton(
 			self.tr('Reset Inputs'), btn_width, 30, self.reset_change_password_btn_click
 		)
+
+		# noinspection PyArgumentList
 		h_layout.addWidget(reset_change_password_btn)
 		layout.addLayout(h_layout)
 
@@ -272,9 +281,9 @@ class SettingsDialog(QDialog):
 			try:
 				val = self.run_with_system_start_check_box.isChecked()
 				if val:
-					autostart.add_to_auto_start()
+					autostart.add()
 				else:
-					autostart.remove_from_auto_start()
+					autostart.remove()
 				self.settings.set_run_with_system_start(val)
 			except AutoStartIsNotSupportedError as exc:
 				popup.error(self, self.tr('Auto start setting is not supported on {}').format(exc))

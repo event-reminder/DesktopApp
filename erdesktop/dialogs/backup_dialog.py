@@ -24,17 +24,16 @@ from erdesktop.util.exceptions import (
 )
 
 
-# noinspection PyArgumentList,PyUnresolvedReferences
 class BackupDialog(QDialog):
 
 	def __init__(self, flags, *args, **kwargs):
-		super().__init__(flags=flags, *args)
+		super(BackupDialog, self).__init__(flags=flags, *args)
 
 		if 'palette' in kwargs:
 			self.setPalette(kwargs.get('palette'))
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
-		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
+		self.setWindowFlags(Qt.Dialog)
 
 		self.spinner = WaitingSpinner()
 
@@ -104,12 +103,18 @@ class BackupDialog(QDialog):
 		tab = QWidget(flags=tabs.windowFlags())
 
 		h2_layout = QHBoxLayout()
+
+		# noinspection PyArgumentList
 		h2_layout.addWidget(QLabel('{}:'.format(self.tr('Location'))))
 		h2_layout.setContentsMargins(10, 0, 10, 20)
 		if os.path.exists(self.settings.app_last_backup_path):
 			self.backup_file_input.setText(self.settings.app_last_backup_path)
+
+		# noinspection PyArgumentList
 		h2_layout.addWidget(self.backup_file_input)
 		self.backup_file_button.setIcon(QIcon().fromTheme('folder'))
+
+		# noinspection PyArgumentList
 		h2_layout.addWidget(self.backup_file_button)
 
 		layout = QVBoxLayout()
@@ -127,12 +132,18 @@ class BackupDialog(QDialog):
 		tab = QWidget(flags=tabs.windowFlags())
 
 		h2_layout = QHBoxLayout()
+
+		# noinspection PyArgumentList
 		h2_layout.addWidget(QLabel('{}:'.format(self.tr('Location'))))
 		h2_layout.setContentsMargins(10, 0, 10, 20)
 		if os.path.isfile(self.settings.app_last_restore_path):
 			self.restore_file_input.setText(self.settings.app_last_restore_path)
+
+		# noinspection PyArgumentList
 		h2_layout.addWidget(self.restore_file_input)
 		self.restore_file_button.setIcon(QIcon().fromTheme('document-open'))
+
+		# noinspection PyArgumentList
 		h2_layout.addWidget(self.restore_file_button)
 
 		layout = QVBoxLayout()
@@ -148,6 +159,7 @@ class BackupDialog(QDialog):
 		tabs.addTab(tab, self.tr('Restore'))
 
 	def get_folder_path(self):
+		# noinspection PyArgumentList
 		file_name = QFileDialog().getExistingDirectory(
 			caption=self.tr('Select Directory'),
 			directory=self.backup_file_input.text()
@@ -157,6 +169,8 @@ class BackupDialog(QDialog):
 
 	def get_file_path(self):
 		path = self.restore_file_input.text()
+
+		# noinspection PyArgumentList
 		file_name = QFileDialog().getOpenFileName(
 			caption=self.tr('Open file'),
 			directory=path if os.path.isfile(path) else './',
@@ -168,11 +182,7 @@ class BackupDialog(QDialog):
 	def launch_restore_local(self):
 		path = self.restore_file_input.text()
 		self.settings.set_last_restore_path(path)
-		self.exec_worker(
-			self.storage.restore,
-			self.launch_restore_local_success,
-			*(path,)
-		)
+		self.exec_worker(self.storage.restore, self.launch_restore_local_success, None, *(path,))
 
 	def launch_restore_local_success(self):
 		self.calendar.update()
@@ -182,11 +192,9 @@ class BackupDialog(QDialog):
 	def launch_backup_local(self):
 		path = self.backup_file_input.text()
 		self.settings.set_last_backup_path(path)
-		self.exec_worker(
-			self.storage.backup,
-			self.launch_backup_local_success,
-			*(path, self.settings.include_settings_backup)
-		)
+		self.exec_worker(self.storage.backup, self.launch_backup_local_success, None, *(
+			path, self.settings.include_settings_backup
+		))
 
 	def launch_backup_local_success(self):
 		popup.info(self, self.tr('Backup has been created'))
@@ -217,6 +225,8 @@ class BackupDialog(QDialog):
 		layout.addLayout(buttons_layout)
 
 		scroll_view = QScrollArea()
+
+		# noinspection PyUnresolvedReferences
 		self.backups_cloud_list_widget.itemSelectionChanged.connect(self.selection_changed)
 		scroll_view.setWidget(self.backups_cloud_list_widget)
 		scroll_view.setWidgetResizable(True)
@@ -237,17 +247,11 @@ class BackupDialog(QDialog):
 
 	def refresh_backups_cloud(self):
 		self.backups_cloud_list_widget.clear()
-		worker = Worker(self.refresh_backups_cloud_run)
-		worker.signals.success.connect(self.refresh_backups_cloud_success)
-		worker.signals.error.connect(self.popup_error)
-		self.thread_pool.start(worker)
+		self.exec_worker(self.cloud.backups, None, self.refresh_backups_cloud_success)
 
-	def refresh_backups_cloud_run(self):
-		self.backups_pool = self.cloud.backups()
-
-	def refresh_backups_cloud_success(self):
+	def refresh_backups_cloud_success(self, backups):
 		self.upload_backup_button.setEnabled(True)
-		for backup in self.backups_pool:
+		for backup in backups:
 			self.add_backup_widget(backup)
 
 	def add_backup_widget(self, backup_data):
@@ -265,10 +269,7 @@ class BackupDialog(QDialog):
 		self.backups_cloud_list_widget.setItemWidget(list_widget_item, backup_widget)
 
 	def upload_backup_cloud(self):
-		self.exec_worker(
-			self.upload_backup_cloud_run,
-			self.upload_backup_cloud_success
-		)
+		self.exec_worker(self.upload_backup_cloud_run, self.upload_backup_cloud_success, None)
 
 	def upload_backup_cloud_run(self):
 		user = self.cloud.user()
@@ -285,11 +286,7 @@ class BackupDialog(QDialog):
 	def download_backup_cloud(self):
 		current = self.get_current_selected()
 		if current is not None:
-			self.exec_worker(
-				self.download_backup_cloud_run,
-				self.download_backup_cloud_success,
-				*(current,)
-			)
+			self.exec_worker(self.download_backup_cloud_run, self.download_backup_cloud_success, None, *(current,))
 
 	def download_backup_cloud_run(self, current):
 		self.storage.restore_from_dict(self.cloud.download_backup(current.hash_sum))
@@ -304,11 +301,7 @@ class BackupDialog(QDialog):
 	def delete_backup_cloud(self):
 		current = self.get_current_selected()
 		if current is not None:
-			self.exec_worker(
-				self.cloud.delete_backup,
-				self.delete_backup_cloud_success,
-				*(current.hash_sum,)
-			)
+			self.exec_worker(self.cloud.delete_backup, self.delete_backup_cloud_success, None, *(current.hash_sum,))
 
 	def delete_backup_cloud_success(self):
 		self.refresh_backups_cloud()
@@ -320,11 +313,13 @@ class BackupDialog(QDialog):
 			return self.backups_cloud_list_widget.itemWidget(current)
 		return None
 
-	def exec_worker(self, fn, fn_success=None, *args, **kwargs):
+	def exec_worker(self, fn, fn_success, fn_param_success, *args, **kwargs):
 		self.spinner.start()
 		worker = Worker(fn, *args, **kwargs)
 		if fn_success is not None:
 			worker.signals.success.connect(fn_success)
+		if fn_param_success is not None:
+			worker.signals.param_success.connect(fn_param_success)
 		worker.signals.error.connect(self.popup_error)
 		worker.signals.finished.connect(self.spinner.stop)
 		self.thread_pool.start(worker)

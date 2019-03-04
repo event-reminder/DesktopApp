@@ -21,11 +21,10 @@ from erdesktop.util.exceptions import (
 )
 
 
-# noinspection PyArgumentList,PyUnresolvedReferences
 class AccountDialog(QDialog):
 
 	def __init__(self, flags, *args, **kwargs):
-		super().__init__(flags=flags, *args)
+		super(AccountDialog, self).__init__(flags=flags, *args)
 
 		if 'palette' in kwargs:
 			self.setPalette(kwargs.get('palette'))
@@ -38,7 +37,7 @@ class AccountDialog(QDialog):
 
 		self.setFixedSize(550, 280)
 		self.setWindowTitle(self.tr('Account'))
-		self.setWindowFlags(Qt.Tool)
+		self.setWindowFlags(Qt.Dialog)
 
 		self.settings = Settings()
 		self.spinner = WaitingSpinner()
@@ -82,7 +81,11 @@ class AccountDialog(QDialog):
 		layout = QVBoxLayout()
 		layout.setContentsMargins(50, 0, 50, 10)
 		if title is not None:
+
+			# noinspection PyArgumentList
 			layout.addWidget(QLabel('{}:'.format(title)))
+
+		# noinspection PyArgumentList
 		layout.addWidget(input_field)
 		return layout
 
@@ -129,7 +132,6 @@ class AccountDialog(QDialog):
 	def setup_login_ui(self, tabs):
 		tab = QWidget(flags=tabs.windowFlags())
 		tab_name = self.tr('Login')
-		# noinspection PyBroadException
 		try:
 			self.account_info_menu, tab_name = self.build_account_info_menu()
 			self.v_layout.addLayout(self.account_info_menu)

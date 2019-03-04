@@ -8,14 +8,14 @@ from erdesktop.widgets.event_list_widget import EventListWidget
 class EventsListDialog(QDialog):
 
 	def __init__(self, flags, *args, **kwargs):
-		super().__init__(flags=flags, *args)
+		super(EventsListDialog, self).__init__(flags=flags, *args)
 
 		if 'palette' in kwargs:
 			self.setPalette(kwargs.get('palette'))
 		if 'font' in kwargs:
 			self.setFont(kwargs.get('font'))
 		self.setFixedSize(500, 400)
-		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
+		self.setWindowFlags(Qt.Dialog)
 
 		self.calendar = kwargs.get('calendar', None)
 		if self.calendar is None:
@@ -45,6 +45,8 @@ class EventsListDialog(QDialog):
 		scroll_view.setWidget(self.list_widget)
 		scroll_view.setWidgetResizable(True)
 		scroll_view.setFixedHeight(300)
+
+		# noinspection PyArgumentList
 		content.addWidget(scroll_view)
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)

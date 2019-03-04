@@ -14,7 +14,6 @@ class WorkerSignals(QObject):
 	error = pyqtSignal(tuple)
 
 
-# noinspection PyArgumentList,PyBroadException
 class Worker(QRunnable):
 
 	def __init__(self, fn, *args, **kwargs):
@@ -25,11 +24,14 @@ class Worker(QRunnable):
 		self.signals = WorkerSignals()
 		self.err_format = '{}'
 
+	# noinspection PyArgumentList
 	@pyqtSlot()
 	def run(self):
+
+		# noinspection PyBroadException
 		try:
 			result = self.fn(*self.args, **self.kwargs)
-		except Exception as _:
+		except Exception:
 			if DEBUG:
 				traceback.print_exc()
 			exc_type, value = sys.exc_info()[:2]

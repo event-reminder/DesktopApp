@@ -1,27 +1,20 @@
-import platform
-
+from erdesktop.system import system
 from erdesktop.system.autostart import linux, windows
 from erdesktop.util.exceptions import AutoStartIsNotSupportedError
 
-LINUX = 'Linux'
-WINDOWS = 'Windows'
 
-
-def add_to_auto_start():
-	system = platform.system()
-	if LINUX in system:
-		linux.add_to_auto_start()
-	elif WINDOWS in system:
-		windows.add_to_auto_start()
+def _run(_linux, _windows):
+	if system.is_linux():
+		_linux()
+	elif system.is_windows():
+		_windows()
 	else:
-		raise AutoStartIsNotSupportedError(system)
+		raise AutoStartIsNotSupportedError(system.get())
 
 
-def remove_from_auto_start():
-	system = platform.system()
-	if LINUX in system:
-		linux.remove_from_auto_start()
-	elif WINDOWS in system:
-		windows.remove_from_auto_start()
-	else:
-		AutoStartIsNotSupportedError(system)
+def add():
+	_run(linux.add_to_auto_start, windows.add_to_auto_start)
+
+
+def remove():
+	_run(linux.remove_from_auto_start, windows.remove_from_auto_start)

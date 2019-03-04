@@ -50,6 +50,7 @@ class Settings:
 	def app_last_restore_path(self):
 		return self.__settings.value('app/last_restore_path', '')
 
+	# noinspection PyMethodMayBeStatic
 	def app_icon(self, is_ico=False, q_icon=True, is_dark=False, icon_size='default'):
 		icon = ''
 		if is_dark and is_ico:
