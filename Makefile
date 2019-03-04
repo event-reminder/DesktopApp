@@ -6,7 +6,7 @@ run:
 	python ./app/app_main.py
 
 clean:
-	rm -rf event-reminder-tmp/ build/ djexp.egg-info/ dist/
+	rm -rf build/ erdesktop.egg-info/ dist/
 
 test:
 	python -m unittest
