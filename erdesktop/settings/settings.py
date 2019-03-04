@@ -1,7 +1,6 @@
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize, QPoint, QSettings
 
-from erdesktop.system import system
 from erdesktop.settings.default import *
 from erdesktop.settings.theme import dark_theme_palette, light_theme_palette
 

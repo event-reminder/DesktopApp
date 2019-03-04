@@ -6,11 +6,7 @@ import os
 
 from setuptools import setup, find_packages
 
-from erdesktop.settings.default import (
-	APP_VERSION,
-	PY_PACKAGE_NAME,
-	APP_DESCRIPTION
-)
+from erdesktop.settings.default import APP_VERSION, PY_PACKAGE_NAME, APP_DESCRIPTION
 
 URL = 'https://github.com/YuriyLisovskiy/EventReminder'
 EMAIL = 'yuralisovskiy98@gmail.com'
@@ -40,11 +36,11 @@ setup(
 	author_email=EMAIL,
 	python_requires=REQUIRES_PYTHON,
 	url=URL,
-	package_data={
-		'erdesktop': ['locale/*qm', 'resources/*.png', 'resources/*.ico']
-	},
+	# package_data={
+	# 	'erdesktop': ['locale/*qm', 'resources/*.png', 'resources/*.ico']
+	# },
 	exclude_package_data={
-		'erdesktop': ['tmp/']
+		PY_PACKAGE_NAME: ['tmp/']
 	},
 	packages=find_packages(exclude=('tests',)),
 	install_requires=REQUIRED,

@@ -3,6 +3,8 @@ from os.path import expanduser
 
 from PyQt5.QtCore import QLocale
 
+from erdesktop.resources import images
+
 
 APP_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -11,8 +13,8 @@ def abs_path(init_path):
 	return '{}/{}'.format(APP_ROOT, init_path.lstrip('/'))
 
 
-def resources(init_path):
-	return abs_path('resources/{}'.format(init_path))
+def img_path(init_path):
+	return ':/img/images/{}'.format(init_path)
 
 
 APP_DATA_PATH = abs_path('tmp/')
@@ -37,14 +39,14 @@ SETTINGS_FILE = '{}settings.ini'.format(APP_DATA_PATH)
 
 LOCALE = abs_path('locale')
 
-APP_ICON_DARK = resources('app-icon-dark.png')
-APP_ICON_DARK_MEDIUM = resources('app-icon-dark-70x70.png')
+APP_ICON_DARK = img_path('png/app-icon-dark.png')
+APP_ICON_DARK_MEDIUM = img_path('png/app-icon-dark-70x70.png')
 
-APP_ICON_LIGHT = resources('app-icon-light.png')
-APP_ICON_LIGHT_MEDIUM = resources('app-icon-light-70x70.png')
+APP_ICON_LIGHT = img_path('png/app-icon-light.png')
+APP_ICON_LIGHT_MEDIUM = img_path('png/app-icon-light-70x70.png')
 
-APP_ICON_DARK_ICO = resources('app-icon-light.ico')
-APP_ICON_LIGHT_ICO = resources('app-icon-light.ico')
+APP_ICON_DARK_ICO = img_path('ico/app-icon-light.ico')
+APP_ICON_LIGHT_ICO = img_path('ico/app-icon-light.ico')
 
 APP_LOG_FILE = '{}application.log'.format(APP_DATA_PATH)
 

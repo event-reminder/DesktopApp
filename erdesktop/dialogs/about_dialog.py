@@ -1,7 +1,8 @@
 from erdesktop.cloud import CloudStorage
+from erdesktop.util.worker import Worker
 from erdesktop.settings import Settings, APP_ORGANIZATION, APP_NAME, APP_VERSION, APP_RELEASE_DATE
 
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt, QSize, QThreadPool
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtWidgets import QLabel, QDialog, QVBoxLayout, QHBoxLayout
 
@@ -21,6 +22,9 @@ class AboutDialog(QDialog):
 			raise RuntimeError('AboutDialog: calendar is not set')
 
 		self.settings = Settings()
+		self.user = None
+		self.thread_pool = QThreadPool()
+		self.data_section = QVBoxLayout()
 		self.setup_ui()
 
 	def showEvent(self, event):
@@ -50,30 +54,33 @@ class AboutDialog(QDialog):
 		bold_font = QFont('SansSerif', 11)
 		bold_font.setBold(True)
 
-		data_section = QVBoxLayout()
-		data_section.setSpacing(0)
+		self.data_section.setSpacing(0)
 		version_label = QLabel('{} {}'.format(APP_NAME, APP_VERSION))
 		version_label.setFont(bold_font)
-		data_section.addWidget(version_label, alignment=Qt.AlignTop)
-		data_section.addWidget(
+		self.data_section.addWidget(version_label, alignment=Qt.AlignTop)
+		self.data_section.addWidget(
 			QLabel('Released on {}'.format(APP_RELEASE_DATE)),
 			alignment=Qt.AlignTop
 		)
 
-		try:
-			user = CloudStorage().user()
-			data_section.addWidget(
-				QLabel('Copy of this software is distributed to {}.'.format(user.get('username'))),
-				alignment=Qt.AlignTop
-			)
-		except Exception as exc:
-			print(exc)
+		worker = Worker(self.get_user)
+		worker.signals.success.connect(self.get_user_success)
+		self.thread_pool.start(worker)
 
 		content.addLayout(title_section)
-		content.addLayout(data_section)
+		content.addLayout(self.data_section)
 		content.addWidget(
 			QLabel('Copyright (c) 2019 {}'.format(APP_ORGANIZATION)),
 			alignment=Qt.AlignBottom
 		)
 
 		self.setLayout(content)
+
+	def get_user(self):
+		self.user = CloudStorage().user()
+
+	def get_user_success(self):
+		self.data_section.addWidget(
+			QLabel('Copy of this software is distributed to {}.'.format(self.user.get('username'))),
+			alignment=Qt.AlignTop
+		)

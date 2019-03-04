@@ -9,6 +9,7 @@ from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QRunnable
 
 class WorkerSignals(QObject):
 	success = pyqtSignal()
+	param_success = pyqtSignal(object)
 	finished = pyqtSignal()
 	error = pyqtSignal(tuple)
 
@@ -27,7 +28,7 @@ class Worker(QRunnable):
 	@pyqtSlot()
 	def run(self):
 		try:
-			self.fn(*self.args, **self.kwargs)
+			result = self.fn(*self.args, **self.kwargs)
 		except Exception as _:
 			if DEBUG:
 				traceback.print_exc()
@@ -36,5 +37,6 @@ class Worker(QRunnable):
 			self.signals.error.emit((exc_type, self.err_format.format(value), traceback.format_exc()))
 		else:
 			self.signals.success.emit()
+			self.signals.param_success.emit(result)
 		finally:
 			self.signals.finished.emit()

@@ -1,0 +1,7 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource prefix="lang">
+    <file alias="uk_UA.qm">../locale/out/uk_UA.qm</file>
+    <file alias="en_US.qm">../locale/out/en_US.qm</file>
+  </qresource>
+</RCC>

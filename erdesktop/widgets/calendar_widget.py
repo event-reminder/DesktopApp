@@ -38,7 +38,8 @@ class CalendarWidget(QCalendarWidget):
 			'font': font,
 			'calendar': self,
 			'flags': self.parent.windowFlags(),
-			'palette': self.settings.app_theme
+			'palette': self.settings.app_theme,
+			'parent': self
 		}
 
 		self.event_creation_dialog = CreateEventDialog(storage=self.storage, **params)
@@ -162,17 +163,22 @@ class CalendarWidget(QCalendarWidget):
 		self.backup_dialog.exec_()
 
 	def open_account_info(self):
-		AccountDialog(
+		dialog = AccountDialog(
 			flags=self.parent.windowFlags(),
 			palette=self.settings.app_theme,
 			calendar=self,
+			parent=self,
 			cloud_storage=self.cloud_storage,
 			font=QFont('SansSerif', self.settings.app_font)
-		).exec_()
+		)
+		dialog.setAttribute(Qt.WA_DeleteOnClose, True)
+		dialog.exec_()
 
 	def open_about(self):
-		AboutDialog(
+		dialog = AboutDialog(
 			flags=self.parent.windowFlags(),
 			calendar=self,
 			palette=self.settings.app_theme
-		).exec_()
+		)
+		dialog.setAttribute(Qt.WA_DeleteOnClose, True)
+		dialog.exec_()

@@ -38,7 +38,7 @@ class AccountDialog(QDialog):
 
 		self.setFixedSize(550, 280)
 		self.setWindowTitle(self.tr('Account'))
-		self.setWindowFlags(Qt.Popup | Qt.Dialog | Qt.WindowCloseButtonHint)
+		self.setWindowFlags(Qt.Tool)
 
 		self.settings = Settings()
 		self.spinner = WaitingSpinner()

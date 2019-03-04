@@ -38,7 +38,7 @@ class SettingsDialog(QDialog):
 		else:
 			self.setFixedSize(650, 450)
 		self.setWindowTitle(self.tr('Settings'))
-		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
+		self.setWindowFlags(Qt.Tool)
 
 		self.spinner = WaitingSpinner()
 		self.thread_pool = QThreadPool()
@@ -86,14 +86,17 @@ class SettingsDialog(QDialog):
 			self.calendar.window().frameGeometry().topLeft() +
 			self.calendar.window().rect().center() - self.rect().center()
 		)
-		max_backups = self.settings.app_max_backups
-		try:
-			user = self.cloud.user()
-			max_backups = user['max_backups']
-		except Exception as exc:
-			print(exc)
-		self.backups_number_input.setText(str(max_backups))
+		self.backups_number_input.setText(str(self.settings.app_max_backups))
+		worker = Worker(self.load_max_backups)
+		worker.signals.param_success.connect(self.load_max_backups_success)
+		self.thread_pool.start(worker)
 		super(SettingsDialog, self).showEvent(event)
+
+	def load_max_backups(self):
+		return self.cloud.user()['max_backups']
+
+	def load_max_backups_success(self, result):
+		self.backups_number_input.setText(str(result))
 
 	def refresh_settings_values(self):
 		self.theme_combo_box.setCurrentIndex(1 if self.settings.is_dark_theme else 0)
@@ -345,6 +348,7 @@ class SettingsDialog(QDialog):
 				self.exec_worker(
 					self.cloud.reset_password,
 					self.change_password_success,
+					None,
 					*(
 						self.email_input.text(),
 						self.new_password_input.text(),
@@ -356,6 +360,7 @@ class SettingsDialog(QDialog):
 			self.exec_worker(
 				self.cloud.request_token,
 				self.change_password_request_token_success,
+				None,
 				*(self.email_input.text(),)
 			)
 
@@ -374,10 +379,13 @@ class SettingsDialog(QDialog):
 		self.cloud.remove_token()
 		popup.info(self, self.tr('New password has been set'))
 
-	def exec_worker(self, fn, fn_success, *args, **kwargs):
+	def exec_worker(self, fn, fn_success, fn_param_success, *args, **kwargs):
 		self.spinner.start()
 		worker = Worker(fn, *args, **kwargs)
-		worker.signals.success.connect(fn_success)
+		if fn_success is not None:
+			worker.signals.success.connect(fn_success)
+		if fn_param_success is not None:
+			worker.signals.param_success.connect(fn_param_success)
 		worker.signals.error.connect(self.popup_error)
 		worker.signals.finished.connect(self.spinner.stop)
 		self.thread_pool.start(worker)
