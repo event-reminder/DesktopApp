@@ -28,7 +28,7 @@ clean:
 pre_build:
 	pip3 install --user --upgrade setuptools wheel twine
 
-build: pre_build
+build:
 	python setup.py sdist bdist_wheel
 
 install: pre_build
@@ -37,5 +37,5 @@ install: pre_build
 deploy: build
 	twine upload dist/*
 
-test-deploy: build
+test_deploy: build
 	twine upload --repository-url https://test.pypi.org/legacy/ dist/*

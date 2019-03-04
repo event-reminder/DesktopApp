@@ -49,7 +49,6 @@ setup(
 		'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
 		'Programming Language :: Python :: 3.6',
 		'Operating System :: POSIX :: Linux',
-		'Operating System :: Microsoft :: Windows :: Windows 7'
-		'Operating System :: Microsoft :: Windows :: Windows 10'
+		'Operating System :: Microsoft :: Windows'
 	]
 )
