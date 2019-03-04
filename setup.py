@@ -40,6 +40,12 @@ setup(
 	author_email=EMAIL,
 	python_requires=REQUIRES_PYTHON,
 	url=URL,
+	package_data={
+		'erdesktop': ['locale/*qm', 'resources/*.png', 'resources/*.ico']
+	},
+	exclude_package_data={
+		'erdesktop': ['tmp/']
+	},
 	packages=find_packages(exclude=('tests',)),
 	install_requires=REQUIRED,
 	include_package_data=True,
