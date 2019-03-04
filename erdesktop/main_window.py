@@ -34,7 +34,8 @@ class MainWindow(QMainWindow):
 		self.tray_icon = self.init_tray(kwargs.get('app'))
 		self.tray_icon.show()
 
-		self.setPalette(self.settings.app_theme)
+		# self.setPalette(self.settings.app_theme)
+
 
 	def closeEvent(self, event):
 		event.ignore()

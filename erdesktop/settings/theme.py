@@ -24,7 +24,7 @@ def dark_theme_palette():
 
 	palette.setColor(QPalette.BrightText, Qt.red)
 	palette.setColor(QPalette.Link, QColor(42, 130, 218))
-	palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+	palette.setColor(QPalette.Highlight, QColor(45, 45, 45))
 	palette.setColor(QPalette.HighlightedText, Qt.white)
 	return palette
 
