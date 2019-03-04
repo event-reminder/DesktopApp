@@ -10,7 +10,8 @@ $ source venv/bin/activate
 
 # Install requirements and run the server
 $ pip install -r requirements.txt
-$ make run
+$ make resources
+$ python ./erdesktop/app_main.py
 ```
 
 #### Author:
