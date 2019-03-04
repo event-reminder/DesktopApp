@@ -6,8 +6,6 @@ import os
 
 from setuptools import setup, find_packages
 
-import py2exe
-
 from erdesktop.settings.default import (
 	APP_VERSION,
 	PY_PACKAGE_NAME,
@@ -19,7 +17,7 @@ EMAIL = 'yuralisovskiy98@gmail.com'
 AUTHOR = 'Yuriy Lisovskiy'
 REQUIRES_PYTHON = '>=3.6.0'
 
-REQUIRED = open('requirements.txt', 'r').read()
+REQUIRED = open('requirements.txt', 'r').read().split('\n')
 
 try:
 	with io.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'README.md')) as f:
@@ -28,13 +26,14 @@ except FileNotFoundError:
 	long_description = APP_DESCRIPTION
 
 setup(
-	console=['erdesktop/app_start.py'],
 	name=PY_PACKAGE_NAME,
 	version=APP_VERSION,
 	description=APP_DESCRIPTION,
-	# entry_points={
-	# 	'console_scripts': ['{} = {}.{}:main'.format(__app_name__, __app_name__, __app_name__)]
-	# },
+	entry_points={
+		'console_scripts': ['{} = {}.{}:main'.format(
+			PY_PACKAGE_NAME, PY_PACKAGE_NAME, 'app_main'
+		)]
+	},
 	long_description=long_description,
 	long_description_content_type='text/markdown',
 	author=AUTHOR,

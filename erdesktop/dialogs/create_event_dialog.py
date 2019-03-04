@@ -17,7 +17,7 @@ class CreateEventDialog(QDialog):
 	def __init__(self, flags, *args, **kwargs):
 		super().__init__(flags=flags, *args)
 
-		self.setFixedSize(500, 400)
+		self.setFixedSize(500, 500)
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
 
 		if 'palette' in kwargs:

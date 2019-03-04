@@ -11,6 +11,8 @@ from erdesktop import MainWindow, ReminderService
 def main():
 	app = QApplication(sys.argv)
 
+	app.setStyle('Fusion')
+
 	settings = Settings()
 
 	translator = QTranslator()
@@ -21,7 +23,7 @@ def main():
 
 	ReminderService(window, window.calendar).start()
 
-	if settings.start_in_tray:
+	if not settings.start_in_tray:
 		window.show()
 
 	sys.exit(app.exec_())

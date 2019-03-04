@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QAction, QMainWindow, qApp, QMenu, QSystemTrayIcon
 
 from erdesktop.widgets import CalendarWidget
 from erdesktop.settings import Settings, APP_NAME, AVAILABLE_LOCALES
+from erdesktop.system import system
 
 
 class MainWindow(QMainWindow):
@@ -15,7 +16,10 @@ class MainWindow(QMainWindow):
 		self.window().setWindowTitle(APP_NAME)
 		self.resize(self.settings.app_size)
 		self.move(self.settings.app_pos)
-		self.setWindowIcon(self.settings.app_icon(icon_size='medium'))
+		self.setWindowIcon(self.settings.app_icon(
+			icon_size='medium',
+			is_dark=system.is_windows()
+		))
 		self.calendar = self.init_calendar()
 		self.setCentralWidget(self.calendar)
 		self.setup_navigation_menu()
@@ -23,7 +27,7 @@ class MainWindow(QMainWindow):
 
 		self.open_action = QAction('{} {}'.format(self.tr('Open'), APP_NAME), self)
 		self.hide_action = QAction(self.tr('Minimize To Tray'), self)
-		if not self.settings.start_in_tray:
+		if self.settings.start_in_tray:
 			self.hide_action.setEnabled(False)
 		self.close_action = QAction('{} {}'.format(self.tr('Quit'), APP_NAME), self)
 

@@ -9,7 +9,7 @@ from requests.exceptions import RequestException
 
 from erdesktop.util import Worker
 from erdesktop.cloud import CloudStorage
-from erdesktop.autostart import autostart
+from erdesktop.system.autostart import autostart
 from erdesktop.widgets.util import PushButton, popup
 from erdesktop.widgets.waiting_spinner import WaitingSpinner
 from erdesktop.settings import Settings, FONT_LARGE, FONT_SMALL, FONT_NORMAL, AVAILABLE_LANGUAGES, AVAILABLE_LANGUAGES_IDX
@@ -34,9 +34,9 @@ class SettingsDialog(QDialog):
 		self.settings = Settings()
 
 		if self.settings.app_lang == 'en_US':
-			self.setFixedSize(500, 400)
+			self.setFixedSize(600, 450)
 		else:
-			self.setFixedSize(650, 400)
+			self.setFixedSize(650, 450)
 		self.setWindowTitle(self.tr('Settings'))
 		self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
 

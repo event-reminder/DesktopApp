@@ -1,6 +1,6 @@
 import platform
 
-from erdesktop.autostart import linux, windows
+from erdesktop.system.autostart import linux, windows
 from erdesktop.util.exceptions import AutoStartIsNotSupportedError
 
 LINUX = 'Linux'

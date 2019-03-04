@@ -134,7 +134,7 @@ class AccountDialog(QDialog):
 			self.account_info_menu, tab_name = self.build_account_info_menu()
 			self.v_layout.addLayout(self.account_info_menu)
 		except requests.exceptions.ConnectionError:
-			self.v_layout.setContentsMargins(0, 80, 0, 80)
+			self.v_layout.setContentsMargins(0, 50, 0, 50)
 			self.v_layout.addWidget(QLabel(self.tr('Connection error')), alignment=Qt.AlignCenter)
 			self.v_layout.addWidget(
 				QLabel(self.tr(

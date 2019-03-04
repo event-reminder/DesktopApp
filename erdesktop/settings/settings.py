@@ -1,6 +1,7 @@
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize, QPoint, QSettings
 
+from erdesktop.system import system
 from erdesktop.settings.default import *
 from erdesktop.settings.theme import dark_theme_palette, light_theme_palette
 
@@ -54,11 +55,11 @@ class Settings:
 		icon = ''
 		if is_dark and is_ico:
 			icon = APP_ICON_DARK_ICO
-		if is_dark and not is_ico:
+		elif is_dark and not is_ico:
 			icon = APP_ICON_DARK_MEDIUM if icon_size == 'medium' else APP_ICON_DARK
-		if not is_dark and is_ico:
+		elif not is_dark and is_ico:
 			icon = APP_ICON_LIGHT_ICO
-		if not is_dark and not is_ico:
+		elif not is_dark and not is_ico:
 			icon = APP_ICON_LIGHT_MEDIUM if icon_size == 'medium' else APP_ICON_LIGHT
 		if q_icon:
 			return QIcon(icon)
@@ -200,7 +201,7 @@ class Settings:
 		self.set_is_always_on_top(data['is_always_on_top'])
 		self.set_font(data['font'])
 		self.set_remove_event_after_time_up(data['remove_event_after_time_up'])
-		self.set_show_calendar_on_startup(data['start_in_tray'])
+		self.set_start_in_tray(data['start_in_tray'])
 		self.set_notification_duration(data['notification_duration'])
 		self.set_remind_time_before_event(data['remind_time_before_event'])
 		self.set_lang(data['lang'])
