@@ -425,8 +425,16 @@
         <translation>Великий</translation>
     </message>
     <message>
-        <source>Show calendar on startup</source>
-        <translation>Показувати календар при запуску</translation>
+        <source>Start in tray</source>
+        <translation>Запускати в трей</translation>
+    </message>
+	<message>
+        <source>Run with system start</source>
+        <translation>Запускати разом із системою</translation>
+    </message>
+	<message>
+        <source>Auto start setting is not supported on {}</source>
+        <translation>Налаштування автозапуску не підтримується на {}</translation>
     </message>
     <message>
         <source>Always on top (restart required)</source>
@@ -486,7 +494,7 @@
     </message>
     <message>
         <source>Reset Password</source>
-        <translation>Встановити пароль</translation>
+        <translation>Змінити пароль</translation>
     </message>
     <message>
         <source>Password confirmation failed</source>
