@@ -71,6 +71,10 @@ class CalendarWidget(QCalendarWidget):
 			error(self, '{}: {}'.format(self.tr('Error occurred'), exc))
 		super(CalendarWidget, self).update(*__args)
 
+	def showEvent(self, event):
+
+		super(CalendarWidget, self).showEvent(event)
+
 	def closeEvent(self, event):
 		self.storage.disconnect()
 		super(CalendarWidget, self).closeEvent(event)
