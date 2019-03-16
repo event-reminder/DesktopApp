@@ -1,10 +1,12 @@
-from PyQt5.QtCore import Qt, QLocale
+from datetime import datetime
+
 from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtCore import Qt, QLocale, QDate, QDateTime
 from PyQt5.QtWidgets import QAction, QMainWindow, qApp, QMenu, QSystemTrayIcon
 
+from erdesktop.system import system
 from erdesktop.widgets import CalendarWidget
 from erdesktop.settings import Settings, APP_NAME, AVAILABLE_LOCALES
-from erdesktop.system import system
 
 
 class MainWindow(QMainWindow):
@@ -70,6 +72,7 @@ class MainWindow(QMainWindow):
 		calendar = CalendarWidget(self, width=self.width(), height=self.height())
 		calendar.setLocale(QLocale(AVAILABLE_LOCALES[self.settings.app_lang]))
 		calendar.setFirstDayOfWeek(Qt.Monday)
+		calendar.setSelectedDate(datetime.now())
 		return calendar
 
 	def hide(self):
