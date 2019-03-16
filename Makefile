@@ -6,10 +6,12 @@ clean:
 	rm -rf build/ erdesktop.egg-info/ dist/
 
 test:
-	python -m unittest
+	coverage run -m unittest
+	coverage html
 
 test-verbose:
-	python -m unittest -v
+	coverage run -m unittest -v
+	coverage html
 
 pre_build:
 	pip3 install --user --upgrade setuptools wheel twine

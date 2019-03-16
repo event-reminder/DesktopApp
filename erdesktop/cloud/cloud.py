@@ -5,15 +5,8 @@ import requests
 from erdesktop.cloud import routes
 from erdesktop.cloud import status
 from erdesktop.settings import APP_DATA_PATH
+from erdesktop.util import exceptions as exc
 from erdesktop.util.decorators import failure_wrapper
-from erdesktop.util.exceptions import (
-	LoginFailedError, LoginFailedCredentialsError, LogoutFailedError,
-	RegisterFailedUsernameIsNotProvidedError, RegisterFailedEmailIsNotProvidedError,
-	RegisterFailedError, AuthRequiredError, UserRetrievingError, UserUpdatingError,
-	RequestTokenError, ResetPasswordError, ReadingBackupsError, BackupUploadingError,
-	BackupAlreadyExistsError, BackupDownloadingError, BackupDeletingError,
-	RegisterFailedUserAlreadyExistsError
-)
 
 
 class CloudStorage:
@@ -53,9 +46,9 @@ class CloudStorage:
 			'password': password
 		})
 		if response.status_code == status.HTTP_400_BAD_REQUEST:
-			raise LoginFailedCredentialsError()
+			raise exc.LoginFailedCredentialsError()
 		elif response.status_code != status.HTTP_200_OK:
-			raise LoginFailedError(str(response.status_code))
+			raise exc.LoginFailedError(str(response.status_code))
 		token = response.json()['key']
 		self.client.headers.update({
 			'Authorization': 'Token {}'.format(token)
@@ -69,7 +62,7 @@ class CloudStorage:
 	def logout(self):
 		response = self.client.post(routes.AUTH_LOGOUT)
 		if response.status_code != status.HTTP_200_OK:
-			raise LogoutFailedError(response.status_code)
+			raise exc.LogoutFailedError(response.status_code)
 		self.remove_token()
 
 	@failure_wrapper(method_desc='Registration')
@@ -86,12 +79,12 @@ class CloudStorage:
 			json_response = response.json()
 			if 'non_field_errors' in json_response:
 				if 'username' in json_response['non_field_errors']:
-					raise RegisterFailedUsernameIsNotProvidedError()
+					raise exc.RegisterFailedUsernameIsNotProvidedError()
 				elif 'email' in json_response['non_field_errors']:
-					raise RegisterFailedEmailIsNotProvidedError()
-			raise RegisterFailedUserAlreadyExistsError(response.status_code)
+					raise exc.RegisterFailedEmailIsNotProvidedError()
+			raise exc.RegisterFailedUserAlreadyExistsError(response.status_code)
 		elif response.status_code != status.HTTP_201_CREATED:
-			raise RegisterFailedError(response.status_code)
+			raise exc.RegisterFailedError(response.status_code)
 		if token is not None:
 			self.client.headers.update({
 				'Authorization': token
@@ -101,9 +94,9 @@ class CloudStorage:
 	def user(self):
 		response = self.client.get(routes.ACCOUNT_DETAILS)
 		if response.status_code == status.HTTP_401_UNAUTHORIZED:
-			raise AuthRequiredError()
+			raise exc.AuthRequiredError()
 		if response.status_code != status.HTTP_200_OK:
-			raise UserRetrievingError(response.status_code)
+			raise exc.UserRetrievingError(response.status_code)
 		return response.json()
 
 	@failure_wrapper(method_desc='Updating account')
@@ -113,14 +106,14 @@ class CloudStorage:
 			context['max_backups'] = max_backups
 		response = self.client.post(routes.ACCOUNT_EDIT, json=context)
 		if response.status_code != status.HTTP_201_CREATED:
-			raise UserUpdatingError(response.status_code)
+			raise exc.UserUpdatingError(response.status_code)
 		return response.json()
 
 	@failure_wrapper(method_desc='Token request')
 	def request_token(self, email):
 		response = self.client.post(routes.ACCOUNT_SEND_TOKEN, json={'email': email})
 		if response.status_code != status.HTTP_201_CREATED:
-			raise RequestTokenError(response.status_code)
+			raise exc.RequestTokenError(response.status_code)
 		return response.json()
 
 	@failure_wrapper(method_desc='Password reset')
@@ -132,41 +125,41 @@ class CloudStorage:
 			'confirmation_token': token
 		})
 		if response.status_code != status.HTTP_201_CREATED:
-			raise ResetPasswordError(response.status_code)
+			raise exc.ResetPasswordError(response.status_code)
 		return response.json()
 
 	@failure_wrapper(method_desc='Reading backups')
 	def backups(self):
 		response = self.client.get(routes.BACKUPS)
 		if response.status_code == status.HTTP_401_UNAUTHORIZED:
-			raise AuthRequiredError()
+			raise exc.AuthRequiredError()
 		elif response.status_code != status.HTTP_200_OK:
-			raise ReadingBackupsError(response.status_code)
+			raise exc.ReadingBackupsError(response.status_code)
 		return response.json()
 
 	@failure_wrapper(method_desc='Backup uploading')
 	def upload_backup(self, backup):
 		response = self.client.post(routes.BACKUP_CREATE, data=backup)
 		if response.status_code == status.HTTP_401_UNAUTHORIZED:
-			raise AuthRequiredError()
+			raise exc.AuthRequiredError()
 		if response.status_code == status.HTTP_400_BAD_REQUEST:
-			raise BackupAlreadyExistsError()
+			raise exc.BackupAlreadyExistsError()
 		elif response.status_code != status.HTTP_201_CREATED:
-			raise BackupUploadingError(response.status_code)
+			raise exc.BackupUploadingError(response.status_code)
 
 	@failure_wrapper(method_desc='Backup downloading')
 	def download_backup(self, backup_hash):
 		response = self.client.get('{}{}'.format(routes.BACKUP_DETAILS, backup_hash))
 		if response.status_code == status.HTTP_401_UNAUTHORIZED:
-			raise AuthRequiredError()
+			raise exc.AuthRequiredError()
 		elif response.status_code != status.HTTP_200_OK:
-			raise BackupDownloadingError(response.status_code)
+			raise exc.BackupDownloadingError(response.status_code)
 		return response.json()
 
 	@failure_wrapper(method_desc='Backup deleting')
 	def delete_backup(self, backup_hash):
 		response = self.client.post('{}{}'.format(routes.BACKUP_DELETE, backup_hash))
 		if response.status_code == status.HTTP_400_BAD_REQUEST:
-			raise AuthRequiredError()
+			raise exc.AuthRequiredError()
 		elif response.status_code != status.HTTP_201_CREATED:
-			raise BackupDeletingError(response.status_code)
+			raise exc.BackupDeletingError(response.status_code)

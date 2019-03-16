@@ -1,0 +1,13 @@
+# .coveragerc to control coverage.py
+
+[run]
+
+source =
+	erdesktop
+
+omit =
+	*__init__.py*
+	*resources/*
+
+[html]
+	directory = coverage

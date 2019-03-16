@@ -1,15 +1,15 @@
-import os
 import json
 import pickle
 import base64
+import peewee
 from hashlib import sha512
 from datetime import datetime
 
 from erdesktop.settings import Settings
 from erdesktop.storage.models import EventModel
+from erdesktop.settings import BACKUP_FILE_NAME
 from erdesktop.util.exceptions import DatabaseException
 from erdesktop.storage.instance import DATABASE_INSTANCE
-from erdesktop.settings import APP_DB_PATH, BACKUP_FILE_NAME
 
 
 class Storage:
@@ -41,11 +41,13 @@ class Storage:
 			and settings if the last one is included in backup.
 	"""
 
-	def __init__(self, try_to_reconnect=False):
-		if not os.path.exists(APP_DB_PATH):
-			os.makedirs(APP_DB_PATH)
+	def __init__(self, try_to_reconnect=False, backup_file=BACKUP_FILE_NAME):
+		# if not os.path.exists(db_path):
+		# 	os.makedirs(db_path)
 
 		self.__instance = DATABASE_INSTANCE
+
+		self.__backup_file_name = backup_file
 
 		if len(self.__instance.get_tables()) < 1:
 			self.__instance.create_tables([EventModel])
@@ -76,14 +78,16 @@ class Storage:
 			self.connect()
 		if not self.is_connected:
 			raise DatabaseException('Creation failure: connect to the database first')
-		EventModel.create(**{
+		event = EventModel.create(**{
 			'title': title,
 			'time': e_time,
 			'date': e_date,
 			'description': description,
 			'repeat_weekly': repeat_weekly,
 			'is_past': is_past
-		}).save()
+		})
+		event.save()
+		return event
 
 	def update_event(self, pk, title=None, e_date=None, e_time=None, description=None, is_past=None, repeat_weekly=None):
 		if self.try_to_reconnect:
@@ -136,7 +140,10 @@ class Storage:
 
 	@staticmethod
 	def get_event_by_id(pk):
-		return EventModel.get_by_id(pk)
+		try:
+			return EventModel.get_by_id(pk)
+		except peewee.DoesNotExist:
+			return None
 
 	@staticmethod
 	def from_array(arr):
@@ -179,7 +186,7 @@ class Storage:
 
 	def backup(self, path: str, include_settings):
 		timestamp = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
-		with open('{}/{} {}.bak'.format(path.rstrip('/'), BACKUP_FILE_NAME, timestamp), 'wb') as file:
+		with open('{}/{} {}.bak'.format(path.rstrip('/'), self.__backup_file_name, timestamp), 'wb') as file:
 			file.write(pickle.dumps(self.prepare_backup_data(self.to_array(), timestamp, include_settings)))
 
 	def restore(self, file_path: str):
