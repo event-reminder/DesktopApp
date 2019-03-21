@@ -23,6 +23,8 @@ from erdesktop.util.exceptions import (
 	BackupDeletingError
 )
 
+import qtawesome as qta
+
 
 class BackupDialog(QDialog):
 
@@ -56,17 +58,17 @@ class BackupDialog(QDialog):
 		self.backup_file_input = QLineEdit()
 		self.restore_file_input = QLineEdit()
 
-		self.backup_file_button = PushButton('+', 40, 30, self.get_folder_path)
-		self.restore_file_button = PushButton('+', 40, 30, self.get_file_path)
+		self.backup_file_button = PushButton('', 40, 30, self.get_folder_path)
+		self.restore_file_button = PushButton('', 40, 30, self.get_file_path)
 
 		self.launch_restore_button = PushButton(self.tr('Start'), 120, 35, self.launch_restore_local)
 		self.launch_backup_button = PushButton(self.tr('Start'), 120, 35, self.launch_backup_local)
 
 		self.backups_cloud_list_widget = QListWidget()
 
-		self.upload_backup_button = PushButton(self.tr('Upload'), 120, 35, self.upload_backup_cloud)
-		self.download_backup_button = PushButton(self.tr('Download'), 120, 35, self.download_backup_cloud)
-		self.delete_backup_button = PushButton(self.tr('Delete'), 120, 35, self.delete_backup_cloud)
+		self.upload_backup_button = PushButton(self.tr(' Upload'), 120, 35, self.upload_backup_cloud)
+		self.download_backup_button = PushButton(self.tr(' Download'), 120, 35, self.download_backup_cloud)
+		self.delete_backup_button = PushButton(self.tr(' Delete'), 120, 35, self.delete_backup_cloud)
 
 		self.setup_ui()
 
@@ -78,6 +80,15 @@ class BackupDialog(QDialog):
 			self.calendar.window().rect().center() - self.rect().center()
 		)
 		self.refresh_backups_cloud()
+
+		btn_color = 'white' if self.settings.is_dark_theme else 'black'
+		self.backup_file_button.setIcon(qta.icon('mdi.folder-open', color=btn_color, scale_factor=1.5))
+		self.restore_file_button.setIcon(qta.icon('mdi.file-plus', color=btn_color, scale_factor=1.5))
+
+		self.upload_backup_button.setIcon(qta.icon('mdi.cloud-upload', color=btn_color, scale_factor=1.2))
+		self.download_backup_button.setIcon(qta.icon('mdi.cloud-download', color=btn_color, scale_factor=1.2))
+		self.delete_backup_button.setIcon(qta.icon('mdi.delete', color=btn_color, scale_factor=1.2))
+
 		super(BackupDialog, self).showEvent(event)
 
 	def setup_ui(self):
@@ -112,7 +123,6 @@ class BackupDialog(QDialog):
 
 		# noinspection PyArgumentList
 		h2_layout.addWidget(self.backup_file_input)
-		self.backup_file_button.setIcon(QIcon().fromTheme('folder'))
 
 		# noinspection PyArgumentList
 		h2_layout.addWidget(self.backup_file_button)
@@ -141,7 +151,6 @@ class BackupDialog(QDialog):
 
 		# noinspection PyArgumentList
 		h2_layout.addWidget(self.restore_file_input)
-		self.restore_file_button.setIcon(QIcon().fromTheme('document-open'))
 
 		# noinspection PyArgumentList
 		h2_layout.addWidget(self.restore_file_button)

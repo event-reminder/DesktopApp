@@ -1,7 +1,9 @@
 from datetime import datetime
 
-from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import Qt, QLocale, QDate, QDateTime
+import qtawesome as qta
+
+from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt, QLocale
 from PyQt5.QtWidgets import QAction, QMainWindow, qApp, QMenu, QSystemTrayIcon
 
 from erdesktop.system import system
@@ -103,7 +105,7 @@ class MainWindow(QMainWindow):
 		if tip:
 			action.setStatusTip(tip)
 		if icon:
-			action.setIcon(QIcon().fromTheme(icon))
+			action.setIcon(icon)
 
 		# noinspection PyUnresolvedReferences
 		action.triggered.connect(fn)
@@ -125,7 +127,7 @@ class MainWindow(QMainWindow):
 				'{}...'.format(self.tr('Se{}ttings').format('&')),
 				self.calendar.open_settings,
 				'Ctrl+Alt+S',
-				icon='emblem-system'
+				icon=qta.icon('mdi.settings')
 			)
 		)
 		file_menu.addAction(
@@ -133,14 +135,17 @@ class MainWindow(QMainWindow):
 				self, '{}...'.format(self.tr('Backup and Restore')),
 				self.calendar.open_backup_and_restore,
 				'Ctrl+Alt+B',
+				icon=qta.icon('mdi.backup-restore')
 			)
 		)
 
 	def setup_help_menu(self, main_menu):
 		help_menu = main_menu.addMenu('&{}'.format(self.tr('Help')))
-		help_menu.addAction(
-			self.new_action(self, '&{}...'.format(self.tr('Account')), self.calendar.open_account_info)
-		)
-		help_menu.addAction(
-			self.new_action(self, '&{}'.format(self.tr('About')), self.calendar.open_about, icon='dialog-information')
-		)
+		help_menu.addAction(self.new_action(
+			self, '&{}...'.format(self.tr('Account')),
+			self.calendar.open_account_info,
+			icon=qta.icon('mdi.account-circle')
+		))
+		help_menu.addAction(self.new_action(
+			self, '&{}'.format(self.tr('About')), self.calendar.open_about, icon=qta.icon('mdi.information-outline')
+		))
