@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-from PyQt5.QtGui import QIcon, QFont
+from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt, QThreadPool
 from PyQt5.QtWidgets import (
 	QLineEdit, QListWidget, QWidget, QHBoxLayout, QVBoxLayout, QLabel,

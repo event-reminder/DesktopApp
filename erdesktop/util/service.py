@@ -3,13 +3,12 @@ import platform
 
 from PyQt5.QtCore import QThread
 
-from pynotifier import Notification
+from datetime import date, datetime, timedelta
 
 from erdesktop.storage import Storage
 from erdesktop.util import logger, log_msg
 from erdesktop.settings import Settings, APP_NAME
-
-from datetime import date, datetime, timedelta
+from erdesktop.util.notification import Notification
 
 
 class ReminderService(QThread):

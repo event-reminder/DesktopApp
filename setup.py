@@ -3,6 +3,7 @@
 
 import io
 import os
+import platform
 
 from setuptools import setup, find_packages
 
@@ -14,6 +15,9 @@ AUTHOR = 'Yuriy Lisovskiy'
 REQUIRES_PYTHON = '>=3.6.0'
 
 REQUIRED = open('requirements.txt', 'r').read().split('\n')
+
+if 'Windows' in platform.system():
+	REQUIRED += open('windows_requirements.txt', 'r').read().split('\n')
 
 try:
 	with io.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'README.md')) as f:
