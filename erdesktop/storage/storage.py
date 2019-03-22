@@ -1,15 +1,17 @@
 import json
 import pickle
 import base64
+import sqlite3
+
 import peewee
 from hashlib import sha512
 from datetime import datetime
 
-from erdesktop.settings import Settings
+from erdesktop.storage.sql import *
+from erdesktop.settings import Settings, APP_DB_FILE
 from erdesktop.storage.models import EventModel
 from erdesktop.settings import BACKUP_FILE_NAME
 from erdesktop.util.exceptions import DatabaseException
-from erdesktop.storage.instance import DATABASE_INSTANCE
 
 
 class Storage:
@@ -41,16 +43,20 @@ class Storage:
 			and settings if the last one is included in backup.
 	"""
 
-	def __init__(self, try_to_reconnect=False, backup_file=BACKUP_FILE_NAME):
+	def __init__(self, db_file=APP_DB_FILE, try_to_reconnect=False, backup_file=BACKUP_FILE_NAME):
 		# if not os.path.exists(db_path):
 		# 	os.makedirs(db_path)
 
-		self.__instance = DATABASE_INSTANCE
+		self.__db = None
+		self.__cursor = None
+		self.__db_file = db_file
+
+	#	self.__instance = DATABASE_INSTANCE
 
 		self.__backup_file_name = backup_file
 
-		if len(self.__instance.get_tables()) < 1:
-			self.__instance.create_tables([EventModel])
+	#	if len(self.__instance.get_tables()) < 1:
+	#		self.__instance.create_tables([EventModel])
 
 		self.try_to_reconnect = try_to_reconnect
 
@@ -58,17 +64,23 @@ class Storage:
 
 	@property
 	def is_connected(self):
-		return self.__instance.is_closed() is False
+		try:
+			open(APP_DB_FILE, 'r').close()
+			return False
+		except IOError:
+			pass
+		return True
 
 	def connect(self):
 		if not self.is_connected:
-			self.__instance.connect()
-		return self.is_connected
+			self.__db = sqlite3.connect(self.__db_file)
+			self.__cursor = self.__db.cursor()
+		return True
 
 	def disconnect(self):
 		if self.is_connected:
-			self.__instance.close()
-		return not self.is_connected
+			self.__db.close()
+		return True
 
 	def event_exists(self, pk):
 		return self.get_event_by_id(pk) is not None
@@ -76,24 +88,25 @@ class Storage:
 	def create_event(self, title, e_date, e_time, description, repeat_weekly, is_past=False):
 		if self.try_to_reconnect:
 			self.connect()
-		if not self.is_connected:
-			raise DatabaseException('Creation failure: connect to the database first')
-		event = EventModel.create(**{
-			'title': title,
-			'time': e_time,
-			'date': e_date,
-			'description': description,
-			'repeat_weekly': repeat_weekly,
-			'is_past': is_past
-		})
-		event.save()
+	#	if not self.is_connected:
+	#		raise DatabaseException('Creation failure: connect to the database first')
+		event = EventModel((
+			None,
+			title,
+			e_date,
+			e_time,
+			description,
+			is_past,
+			repeat_weekly
+		))
+		event.id = EventModel.insert(self.__cursor, event)
 		return event
 
 	def update_event(self, pk, title=None, e_date=None, e_time=None, description=None, is_past=None, repeat_weekly=None):
 		if self.try_to_reconnect:
 			self.connect()
-		if not self.is_connected:
-			raise DatabaseException('Updating failure: connect to the database first')
+	#	if not self.is_connected:
+	#		raise DatabaseException('Updating failure: connect to the database first')
 		event = self.get_event_by_id(pk)
 		if event:
 			if title:
@@ -108,47 +121,32 @@ class Storage:
 				event.is_past = is_past
 			if repeat_weekly:
 				event.repeat_weekly = repeat_weekly
-			event.save()
+			EventModel.update(self.__cursor, event)
 		return event
 
 	def delete_event(self, pk):
 		if self.try_to_reconnect:
 			self.connect()
-		if not self.is_connected:
-			raise DatabaseException('Deleting failure: connect to the database first')
-		event = self.get_event_by_id(pk)
-		if event:
-			event.delete_instance(recursive=True)
+	#	if not self.is_connected:
+	#		raise DatabaseException('Deleting failure: connect to the database first')
+		EventModel.delete(self.__cursor, pk)
 
 	def get_events(self, e_date=None, e_time=None):
-		if not self.is_connected:
-			raise DatabaseException('Retrieving failure: connect to the database first')
-		if e_date is not None and e_time is not None:
-			result = EventModel.select().where((EventModel.time == e_time) & (EventModel.date == e_date))
-		elif e_date is not None:
-			result = EventModel.select().where(EventModel.date == e_date)
-		elif e_time is not None:
-			result = EventModel.select().where(EventModel.time == e_time)
-		else:
-			result = EventModel.select()
-		return [item for item in result]
+	#	if not self.is_connected:
+	#		raise DatabaseException('Retrieving failure: connect to the database first')
+		return EventModel.select(e_date, e_time)
 
 	def to_array(self):
 		self.connect()
 		events = self.get_events()
 		return [x.to_dict() for x in events]
 
-	@staticmethod
-	def get_event_by_id(pk):
-		try:
-			return EventModel.get_by_id(pk)
-		except peewee.DoesNotExist:
-			return None
+	def get_event_by_id(self, pk):
+		return EventModel.get(self.__cursor, pk)
 
-	@staticmethod
-	def from_array(arr):
+	def from_array(self, arr):
 		for item in arr:
-			EventModel.from_dict(item)
+			EventModel.insert(self.__cursor, EventModel.from_dict(item))
 
 	@staticmethod
 	def prepare_backup_data(db, timestamp, include_settings, username=None):
@@ -179,7 +177,7 @@ class Storage:
 		backup = json.loads(pickle.loads(backup_decoded))
 		if 'db' not in backup:
 			raise DatabaseException(err_template.format('invalid backup data'))
-		EventModel.delete().execute()
+		self.__cursor.execute(QUERY_DELETE_ALL_EVENTS)
 		self.from_array(backup['db'])
 		if 'settings' in backup:
 			Settings().from_dict(backup['settings'])
