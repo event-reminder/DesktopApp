@@ -11,10 +11,10 @@ from PyQt5.QtWidgets import (
 )
 
 
-class CreateEventDialog(QDialog):
+class EventDetailsDialog(QDialog):
 
 	def __init__(self, flags, *args, **kwargs):
-		super(CreateEventDialog, self).__init__(flags=flags, *args)
+		super(EventDetailsDialog, self).__init__(flags=flags, *args)
 
 		self.setFixedSize(500, 500)
 		self.setWindowFlags(Qt.Dialog)
@@ -45,6 +45,8 @@ class CreateEventDialog(QDialog):
 		self.event_id = None
 		self.del_btn = None
 
+		self.is_editing = False
+
 		self.setup_ui()
 
 		self.layout().addWidget(self.spinner)
@@ -54,7 +56,7 @@ class CreateEventDialog(QDialog):
 			self.calendar.window().frameGeometry().topLeft() +
 			self.calendar.window().rect().center() - self.rect().center()
 		)
-		super(CreateEventDialog, self).showEvent(event)
+		super(EventDetailsDialog, self).showEvent(event)
 
 	# noinspection PyArgumentList
 	def setup_ui(self):
@@ -82,6 +84,7 @@ class CreateEventDialog(QDialog):
 
 	def reset_inputs(self, date=None, event_data=None):
 		self.del_btn.setEnabled(False)
+		self.is_editing = False
 		if date is not None:
 			self.event_id = None
 			self.date_input.setDate(QDate(date))
@@ -95,9 +98,10 @@ class CreateEventDialog(QDialog):
 			self.title_input.setText(event_data.title)
 			self.description_input.setText(event_data.description)
 			self.date_input.setDate(event_data.date)
-			self.time_input.setTime(QTime.fromString(event_data.time, '%H:%M:00'))
+			self.time_input.setTime(QTime(event_data.time))
 			self.repeat_weekly_input.setChecked(event_data.repeat_weekly)
 			self.del_btn.setEnabled(True)
+			self.is_editing = True
 
 	def delete_event_click(self):
 		if self.storage.event_exists(self.event_id):
@@ -148,11 +152,7 @@ class CreateEventDialog(QDialog):
 			if self.event_id is not None:
 				data['pk'] = self.event_id
 				fn = self.storage.update_event
-			self.exec_worker(fn, self.save_event_success, err_format, **data)
-
-	def save_event_success(self):
-		popup.info(self, self.tr('Saved successfully'))
-		self.close_and_update()
+			self.exec_worker(fn, None, err_format, **data)
 
 	def close_and_update(self):
 		self.close()

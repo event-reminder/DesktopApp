@@ -27,10 +27,6 @@ class Settings:
 			self.__settings.sync()
 
 	@property
-	def is_first_launch(self):
-		return self.__settings.value('app/first_launch', 'true') == 'true'
-
-	@property
 	def app_root(self):
 		return self.__settings.value('app/root', APP_ROOT)
 
