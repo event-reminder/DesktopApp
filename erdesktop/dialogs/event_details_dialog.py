@@ -152,7 +152,10 @@ class EventDetailsDialog(QDialog):
 			if self.event_id is not None:
 				data['pk'] = self.event_id
 				fn = self.storage.update_event
-			self.exec_worker(fn, None, err_format, **data)
+			self.exec_worker(fn, self.save_event_success, err_format, **data)
+
+	def save_event_success(self):
+		self.calendar.update()
 
 	def close_and_update(self):
 		self.close()

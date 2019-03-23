@@ -29,7 +29,7 @@ APP_POS_Y = 100
 
 APP_NAME = 'Event Reminder'
 APP_ORGANIZATION = 'YuriyLisovskiy'
-APP_VERSION = '2019.0.2-alpha'
+APP_VERSION = '2019.0.2-alpha-1'
 APP_RELEASE_DATE = 'February 2, 2019'
 
 APP_DESCRIPTION = 'Cross-platform desktop application which helps to finish all tasks in time'
