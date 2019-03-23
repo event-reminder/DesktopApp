@@ -1,8 +1,8 @@
 import os
 import sqlite3
 from datetime import datetime
+from unittest import TestCase
 from datetime import timedelta
-from unittest import TestCase, skip
 
 from erdesktop.storage.models import EventModel
 from erdesktop.storage.sql import QUERY_CREATE_EVENT_TABLE
@@ -193,6 +193,9 @@ class TestStorage(TestCase):
 		self.assertIsNotNone(self.cursor.execute('SELECT * FROM Events WHERE id = ?;', (1,)).fetchone())
 		EventModel.delete(self.cursor, self.cursor.lastrowid)
 		self.assertIsNone(self.cursor.execute('SELECT * FROM Events WHERE id = ?;', (1,)).fetchone())
+
+	def test_delete_not_existing(self):
+		self.assertFalse(EventModel.delete(self.cursor, 99999))
 
 	def test_select_all(self):
 		now = datetime.now()

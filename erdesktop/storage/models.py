@@ -1,7 +1,12 @@
 from datetime import datetime
 
-from erdesktop.storage.sql import QUERY_INSERT_EVENT, QUERY_UPDATE_EVENT, QUERY_DELETE_EVENT_BY_ID, \
-	QUERY_SELECT_EVENT_BY_ID, QUERY_SELECT_EVENTS_BY, QUERY_CREATE_EVENT_TABLE
+from erdesktop.storage.sql import (
+	QUERY_INSERT_EVENT,
+	QUERY_UPDATE_EVENT,
+	QUERY_SELECT_EVENTS_BY,
+	QUERY_DELETE_EVENT_BY_ID,
+	QUERY_CREATE_EVENT_TABLE
+)
 
 
 class EventModel:
@@ -78,23 +83,35 @@ class EventModel:
 
 	@staticmethod
 	def insert(cursor, model):
-		cursor.execute(
-			QUERY_INSERT_EVENT,
-			(model.title, model.date, model.time, model.description, model.is_past, model.repeat_weekly)
-		)
+		cursor.execute(QUERY_INSERT_EVENT, (
+			model.title,
+			model.date.strftime(EventModel.DATE_FORMAT),
+			model.time.strftime(EventModel.TIME_FORMAT),
+			model.description,
+			model.is_past,
+			model.repeat_weekly
+		))
 		return cursor.lastrowid
 
 	@staticmethod
 	def update(cursor, model):
-		cursor.execute(
-			QUERY_UPDATE_EVENT,
-			(model.title, model.date, model.time, model.description, model.is_past, model.repeat_weekly, model.id)
-		)
+		cursor.execute(QUERY_UPDATE_EVENT, (
+			model.title,
+			model.date.strftime(EventModel.DATE_FORMAT),
+			model.time.strftime(EventModel.TIME_FORMAT),
+			model.description,
+			model.is_past,
+			model.repeat_weekly,
+			model.id
+		))
 		return model.id
 
 	@staticmethod
 	def delete(cursor, pk):
-		cursor.execute(QUERY_DELETE_EVENT_BY_ID, (pk,))
+		if EventModel.get(cursor, pk) is not None:
+			cursor.execute(QUERY_DELETE_EVENT_BY_ID, (pk,))
+			return True
+		return False
 
 	@staticmethod
 	def select(cursor, date=None, time=None):

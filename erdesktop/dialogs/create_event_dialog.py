@@ -95,7 +95,7 @@ class CreateEventDialog(QDialog):
 			self.title_input.setText(event_data.title)
 			self.description_input.setText(event_data.description)
 			self.date_input.setDate(event_data.date)
-			self.time_input.setTime(QTime.fromString(event_data.time, '%H:%M:00'))
+			self.time_input.setTime(QTime(event_data.time))
 			self.repeat_weekly_input.setChecked(event_data.repeat_weekly)
 			self.del_btn.setEnabled(True)
 
