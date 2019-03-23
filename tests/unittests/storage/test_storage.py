@@ -11,18 +11,18 @@ from erdesktop.storage.storage import Storage
 from erdesktop.util.exceptions import DatabaseException
 
 
+@skip
 class TestStorage(TestCase):
 
 	def setUp(self):
-		self.storage = Storage(db_file=APP_DB_PATH + 'test.db', backup_file='./test.bak')
-		self.db = sqlite3.connect(APP_DB_PATH + 'test.db')
+		self.storage = Storage(db_file='./test.db', backup_file='./test.bak')
+		self.db = sqlite3.connect('./test.db')
 		EventModel.create_table(self.db.cursor())
 
 	def doCleanups(self):
 		self.db.close()
-		if os.path.exists(APP_DB_PATH + 'test.db'):
-			pass
-			# os.remove(APP_DB_FILE + 'test.db')
+		if os.path.exists('./test.db'):
+			os.remove('./test.db')
 		if os.path.exists('./test.bak'):
 			os.remove('./test.bak')
 
