@@ -11,7 +11,7 @@ from erdesktop.util import logger, log_msg
 from erdesktop.widgets.util import info, error
 from erdesktop.util.exceptions import DatabaseException
 from erdesktop.settings import FONT_LARGE, FONT_NORMAL
-from erdesktop.dialogs import AboutDialog, BackupDialog, AccountDialog, SettingsDialog, EventsListDialog, CreateEventDialog
+from erdesktop.dialogs import AboutDialog, BackupDialog, AccountDialog, SettingsDialog, EventsListDialog, EventDetailsDialog
 
 
 class CalendarWidget(QCalendarWidget):
@@ -42,7 +42,7 @@ class CalendarWidget(QCalendarWidget):
 			'parent': self
 		}
 
-		self.event_creation_dialog = CreateEventDialog(storage=self.storage, **params)
+		self.event_creation_dialog = EventDetailsDialog(storage=self.storage, **params)
 		self.event_retrieving_dialog = EventsListDialog(**params)
 		self.settings_dialog = SettingsDialog(cloud_storage=self.cloud_storage, **params)
 		self.backup_dialog = BackupDialog(storage=self.storage, cloud_storage=self.cloud_storage, **params)
