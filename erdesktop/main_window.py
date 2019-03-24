@@ -66,7 +66,7 @@ class MainWindow(QMainWindow):
 			# noinspection PyUnresolvedReferences
 			key.triggered.connect(value)
 			tray_menu.addAction(key)
-		tray_icon = QSystemTrayIcon(self.settings.app_icon(), app)
+		tray_icon = QSystemTrayIcon(self.settings.app_icon(is_dark=system.is_windows()), app)
 		tray_icon.setContextMenu(tray_menu)
 		return tray_icon
 
