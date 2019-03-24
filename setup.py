@@ -7,10 +7,8 @@ import platform
 
 from setuptools import setup, find_packages
 
-from erdesktop.settings.default import APP_VERSION, PY_PACKAGE_NAME, APP_DESCRIPTION, APP_DATA_PATH
+from erdesktop import APP_VERSION, PY_PACKAGE_NAME, APP_DESCRIPTION
 
-if not os.path.exists(APP_DATA_PATH):
-	os.mkdir(APP_DATA_PATH)
 
 URL = 'https://github.com/YuriyLisovskiy/EventReminder'
 EMAIL = 'yuralisovskiy98@gmail.com'

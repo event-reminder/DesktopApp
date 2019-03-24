@@ -7,7 +7,8 @@ from erdesktop.settings import Settings
 
 # noinspection PyUnresolvedReferences
 from erdesktop.resources import languages
-from erdesktop import MainWindow, ReminderService
+from erdesktop.main_window import MainWindow
+from erdesktop.util.service import ReminderService
 
 
 def main():

@@ -1,13 +1,10 @@
-import os
 from os.path import expanduser
 
 from PyQt5.QtCore import QLocale
 
 # noinspection PyUnresolvedReferences
 from erdesktop.resources import images
-
-
-APP_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+from erdesktop import APP_ROOT, APP_NAME
 
 
 def abs_path(init_path):
@@ -26,13 +23,6 @@ APP_HEIGHT = 768
 
 APP_POS_X = 200
 APP_POS_Y = 100
-
-APP_NAME = 'Event Reminder'
-APP_ORGANIZATION = 'YuriyLisovskiy'
-APP_VERSION = '2019.0.2-alpha-1'
-APP_RELEASE_DATE = 'February 2, 2019'
-
-APP_DESCRIPTION = 'Cross-platform desktop application which helps to finish all tasks in time'
 
 BACKUP_FILE_NAME = '{} Backup'.format(APP_NAME)
 
@@ -59,8 +49,6 @@ ENTRY_POINT = abs_path('app_main.py')
 LINUX_AUTO_START_FILE = '{}/.config/autostart/{}.desktop'.format(
 	expanduser('~'), APP_NAME.replace(' ', '').lower()
 )
-
-PY_PACKAGE_NAME = APP_ROOT.split('/')[-1]
 
 
 AVAILABLE_LANGUAGES_IDX = {

@@ -1,7 +1,11 @@
+import os
 import logging
 from inspect import getframeinfo, stack
 
-from erdesktop.settings import APP_NAME, APP_LOG_FILE
+from erdesktop.settings import APP_NAME, APP_LOG_FILE, APP_DATA_PATH
+
+if not os.path.exists(APP_DATA_PATH):
+	os.makedirs(APP_DATA_PATH)
 
 
 logger = logging.getLogger(APP_NAME)

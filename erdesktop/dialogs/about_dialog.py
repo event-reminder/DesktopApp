@@ -1,6 +1,7 @@
+from erdesktop.settings import Settings
 from erdesktop.cloud import CloudStorage
 from erdesktop.util.worker import Worker
-from erdesktop.settings import Settings, APP_ORGANIZATION, APP_NAME, APP_VERSION, APP_RELEASE_DATE
+from erdesktop import APP_ORGANIZATION, APP_NAME, APP_VERSION, APP_RELEASE_DATE
 
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt, QSize, QThreadPool
