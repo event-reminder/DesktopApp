@@ -4,7 +4,7 @@ import os
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
-APP_VERSION = '2019.0.3-alpha-1'
+APP_VERSION = '2019.0.2-beta-1'
 
 PY_PACKAGE_NAME = APP_ROOT.split('/')[-1]
 
