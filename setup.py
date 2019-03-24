@@ -20,6 +20,8 @@ REQUIRED = open('requirements.txt', 'r').read().split('\n')
 if 'Windows' in platform.system():
 	REQUIRED += open('windows_requirements.txt', 'r').read().split('\n')
 
+print(REQUIRED)
+
 try:
 	with io.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'README.md')) as f:
 		long_description = '\n' + f.read()

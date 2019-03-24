@@ -1,4 +1,4 @@
-from erdesktop.system import system, windows, linux
+from erdesktop.system import system, linux, windows
 from erdesktop.util.exceptions import ShortcutIconIsNotSupportedError
 
 
@@ -8,4 +8,4 @@ def create():
 	elif system.is_windows():
 		windows.create_shortcut()
 	else:
-		raise ShortcutIconIsNotSupportedError(system.get())
+		raise ShortcutIconIsNotSupportedError(system.name())

@@ -116,7 +116,7 @@ class MainWindow(QMainWindow):
 			shortcut_icon.create()
 			info(self, self.tr('Shortcut icon has been created'))
 		except ShortcutIconIsNotSupportedError:
-			error(self, self.tr('Shortcut icon is not supported on {} by application').format(system.get()))
+			error(self, self.tr('Shortcut icon is not supported on {} by application').format(system.name()))
 		except Exception as exc:
 			logger.error(log_msg('Unable to create shortcut icon: {}'.format(exc)))
 			error(self, self.tr('Unable to create shortcut icon'))

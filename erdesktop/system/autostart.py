@@ -8,7 +8,7 @@ def _run(_linux, _windows):
 	elif system.is_windows():
 		_windows()
 	else:
-		raise AutoStartIsNotSupportedError(system.get())
+		raise AutoStartIsNotSupportedError(system.name())
 
 
 def add():

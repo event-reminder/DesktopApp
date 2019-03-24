@@ -1,13 +1,13 @@
 import platform
 
 
+def name():
+	return platform.system()
+
+
 def is_linux():
-	return 'Linux' in platform.system()
+	return 'Linux' in name()
 
 
 def is_windows():
-	return 'Windows' in platform.system()
-
-
-def get():
-	return platform.system()
+	return 'Windows' in name()

@@ -28,7 +28,6 @@ deploy: build
 test_deploy: build
 	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
-
 lang:
 	mkdir -p ./locale/out
 	lrelease ./locale/uk_UA.tr -qm ./locale/out/uk_UA.qm
@@ -38,9 +37,4 @@ lang_resources: lang
 	pyrcc5 -o ./erdesktop/resources/languages.py ./resources/languages.qrc
 	rm -rf ./locale/out/
 
-
-img_resources:
-	pyrcc5 -o ./erdesktop/resources/images.py ./resources/images.qrc
-
-
-resources: lang_resources img_resources
+resources: lang_resources
