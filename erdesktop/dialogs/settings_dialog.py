@@ -8,8 +8,8 @@ from PyQt5.QtWidgets import (
 from requests.exceptions import RequestException
 
 from erdesktop.util import Worker
+from erdesktop.system import autostart
 from erdesktop.cloud import CloudStorage
-from erdesktop.system.autostart import autostart
 from erdesktop.widgets.util import PushButton, popup
 from erdesktop.widgets.waiting_spinner import WaitingSpinner
 from erdesktop.settings import Settings, FONT_LARGE, FONT_SMALL, FONT_NORMAL, AVAILABLE_LANGUAGES, AVAILABLE_LANGUAGES_IDX

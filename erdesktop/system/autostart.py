@@ -1,5 +1,4 @@
-from erdesktop.system import system
-from erdesktop.system.autostart import linux, windows
+from erdesktop.system import system, windows, linux
 from erdesktop.util.exceptions import AutoStartIsNotSupportedError
 
 

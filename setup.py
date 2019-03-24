@@ -41,9 +41,6 @@ setup(
 	author_email=EMAIL,
 	python_requires=REQUIRES_PYTHON,
 	url=URL,
-	# package_data={
-	# 	'erdesktop': ['locale/*qm', 'resources/*.png', 'resources/*.ico']
-	# },
 	exclude_package_data={
 		PY_PACKAGE_NAME: ['tmp/']
 	},
