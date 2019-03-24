@@ -20,6 +20,9 @@ REQUIRED = open('requirements.txt', 'r').read().split('\n')
 if 'Windows' in platform.system():
 	REQUIRED += open('windows_requirements.txt', 'r').read().split('\n')
 
+while '' in REQUIRED:
+	REQUIRED.remove('')
+
 print(REQUIRED)
 
 try:
