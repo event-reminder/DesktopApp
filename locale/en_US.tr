@@ -43,6 +43,22 @@
         <source>About</source>
         <translation>About</translation>
     </message>
+    <message>
+        <source>Shortcut icon is not supported on {} by application</source>
+        <translation>Shortcut icon is not supported on {} by application</translation>
+    </message>
+    <message>
+        <source>Unable to create shortcut icon</source>
+        <translation>Unable to create shortcut icon</translation>
+    </message>
+    <message>
+        <source>Create shortcut icon...</source>
+        <translation>Create shortcut icon...</translation>
+    </message>
+    <message>
+        <source>Shortcut icon has been created</source>
+        <translation>Shortcut icon has been created</translation>
+    </message>
 </context>
 <context>
     <name>AccountDialog</name>

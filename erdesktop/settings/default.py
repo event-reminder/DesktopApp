@@ -31,9 +31,11 @@ SETTINGS_FILE = '{}settings.ini'.format(APP_DATA_PATH)
 LOCALE = abs_path('locale')
 
 APP_ICON_DARK = img_path('png/app-icon-dark.png')
+APP_ICON_DARK_ABS = abs_path('resources/images/app-icon-dark.png')
 APP_ICON_DARK_MEDIUM = img_path('png/app-icon-dark-70x70.png')
 
 APP_ICON_LIGHT = img_path('png/app-icon-light.png')
+APP_ICON_LIGHT_ABS = abs_path('resources/images/app-icon-light.png')
 APP_ICON_LIGHT_MEDIUM = img_path('png/app-icon-light-70x70.png')
 
 APP_ICON_DARK_ICO = img_path('ico/app-icon-light.ico')
@@ -47,6 +49,10 @@ APP_DB_FILE = '{}storage.db'.format(APP_DATA_PATH)
 ENTRY_POINT = abs_path('app_main.py')
 
 LINUX_AUTO_START_FILE = '{}/.config/autostart/{}.desktop'.format(
+	expanduser('~'), APP_NAME.replace(' ', '').lower()
+)
+
+LINUX_DESKTOP_ENTRY_FILE = '{}/.local/share/applications/{}.desktop'.format(
 	expanduser('~'), APP_NAME.replace(' ', '').lower()
 )
 

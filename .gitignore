@@ -112,3 +112,4 @@ tmp/
 erdesktop/resources/*
 
 !erdesktop/resources/__init__.py
+!erdesktop/resources/images/

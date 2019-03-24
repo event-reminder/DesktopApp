@@ -77,3 +77,7 @@ class DatabaseException(Exception):
 
 class AutoStartIsNotSupportedError(Exception):
 	"""Unable to perform any operation with application's auto start"""
+
+
+class ShortcutIconIsNotSupportedError(Exception):
+	"""Unable to create shortcut icon in current system"""

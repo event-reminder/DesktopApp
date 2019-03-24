@@ -43,6 +43,22 @@
         <source>About</source>
         <translation>Інформація</translation>
     </message>
+    <message>
+        <source>Shortcut icon is not supported on {} by application</source>
+        <translation>Створення ярлика не підтримується на {} додатком</translation>
+    </message>
+    <message>
+        <source>Unable to create shortcut icon</source>
+        <translation>Не вдалося створити ярлик</translation>
+    </message>
+    <message>
+        <source>Create shortcut icon...</source>
+        <translation>Створити ярлик...</translation>
+    </message>
+    <message>
+        <source>Shortcut icon has been created</source>
+        <translation>Ярлик додано</translation>
+    </message>
 </context>
 <context>
     <name>AccountDialog</name>

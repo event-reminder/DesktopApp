@@ -6,8 +6,11 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt, QLocale
 from PyQt5.QtWidgets import QAction, QMainWindow, qApp, QMenu, QSystemTrayIcon
 
-from erdesktop.system import system
 from erdesktop.widgets import CalendarWidget
+from erdesktop.system import system, shortcut_icon
+from erdesktop.widgets.util import error, info
+from erdesktop.util import logger, log_msg
+from erdesktop.util.exceptions import ShortcutIconIsNotSupportedError
 from erdesktop.settings import Settings, APP_NAME, AVAILABLE_LOCALES
 
 
@@ -111,6 +114,16 @@ class MainWindow(QMainWindow):
 		action.triggered.connect(fn)
 		return action
 
+	def create_shortcut(self):
+		try:
+			shortcut_icon.create()
+			info(self, self.tr('Shortcut icon has been created'))
+		except ShortcutIconIsNotSupportedError:
+			error(self, self.tr('Shortcut icon is not supported on {} by application').format(system.get()))
+		except Exception as exc:
+			logger.error(log_msg('Unable to create shortcut icon: {}'.format(exc)))
+			error(self, self.tr('Unable to create shortcut icon'))
+
 	def setup_file_menu(self, main_menu):
 		file_menu = main_menu.addMenu('&{}'.format(self.tr('File')))
 		file_menu.addAction(
@@ -130,6 +143,12 @@ class MainWindow(QMainWindow):
 				icon=qta.icon('mdi.settings')
 			)
 		)
+		file_menu.addAction(self.new_action(
+			self,
+			'&{}'.format(self.tr('Create shortcut icon...')),
+			self.create_shortcut,
+			icon=qta.icon('mdi.desktop-mac')
+		))
 		file_menu.addAction(
 			self.new_action(
 				self, '{}...'.format(self.tr('Backup and Restore')),

@@ -27,10 +27,6 @@ class Settings:
 			self.__settings.sync()
 
 	@property
-	def app_root(self):
-		return self.__settings.value('app/root', APP_ROOT)
-
-	@property
 	def app_size(self):
 		return self.__settings.value('app/size', QSize(APP_WIDTH, APP_HEIGHT))
 
@@ -120,12 +116,6 @@ class Settings:
 	def _set_value(self, key, value):
 		self.__settings.setValue(key, value)
 		self._commit()
-
-	def set_first_launch(self, value: bool):
-		self._set_value('app/first_launch', 'true' if value else 'false')
-
-	def set_root(self, root: str):
-		self._set_value('app/root', root)
 
 	def set_size(self, size: QSize):
 		self._set_value('app/size', size)

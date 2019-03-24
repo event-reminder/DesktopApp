@@ -4,8 +4,8 @@ from datetime import datetime
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt, QThreadPool
 from PyQt5.QtWidgets import (
-	QLineEdit, QListWidget, QWidget, QHBoxLayout, QVBoxLayout, QLabel,
-	QTabWidget, QFileDialog, QScrollArea, QListWidgetItem, QDialog
+	QTabWidget, QFileDialog, QScrollArea, QListWidgetItem, QDialog,
+	QLineEdit, QListWidget, QWidget, QHBoxLayout, QVBoxLayout, QLabel
 )
 
 from requests.exceptions import RequestException
@@ -18,9 +18,8 @@ from erdesktop.widgets import BackupWidget
 from erdesktop.widgets.util import PushButton, popup
 from erdesktop.widgets.waiting_spinner import WaitingSpinner
 from erdesktop.util.exceptions import (
-	AuthRequiredError, UserRetrievingError, ReadingBackupsError,
 	BackupAlreadyExistsError, BackupDownloadingError, CloudStorageException,
-	BackupDeletingError
+	AuthRequiredError, UserRetrievingError, ReadingBackupsError, BackupDeletingError
 )
 
 import qtawesome as qta
@@ -66,9 +65,14 @@ class BackupDialog(QDialog):
 
 		self.backups_cloud_list_widget = QListWidget()
 
-		self.upload_backup_button = PushButton(self.tr(' Upload'), 120, 35, self.upload_backup_cloud)
-		self.download_backup_button = PushButton(self.tr(' Download'), 120, 35, self.download_backup_cloud)
-		self.delete_backup_button = PushButton(self.tr(' Delete'), 120, 35, self.delete_backup_cloud)
+		self.upload_backup_button = PushButton(' {}'.format(self.tr('Upload')), 120, 35, self.upload_backup_cloud)
+		self.download_backup_button = PushButton(
+			' {}'.format(self.tr('Download')),
+			150 if self.settings.app_lang == 'uk_UA' else 120,
+			35,
+			self.download_backup_cloud
+		)
+		self.delete_backup_button = PushButton(' {}'.format(self.tr('Delete')), 120, 35, self.delete_backup_cloud)
 
 		self.setup_ui()
 
@@ -339,9 +343,13 @@ class BackupDialog(QDialog):
 		except AuthRequiredError:
 			err_msg = self.tr('Account access failure: authentication is required')
 		except UserRetrievingError:
-			err_msg = '{} {}'.format(self.tr('Reading account failure: unable to retrieve account information, status'), err[1])
+			err_msg = '{} {}'.format(
+				self.tr('Reading account failure: unable to retrieve account information, status'), err[1]
+			)
 		except ReadingBackupsError:
-			err_msg = '{} {}'.format(self.tr('Reading backups failure: unable to retrieve backups data from the server, status'), err[1])
+			err_msg = '{} {}'.format(
+				self.tr('Reading backups failure: unable to retrieve backups data from the server, status'), err[1]
+			)
 		except BackupAlreadyExistsError:
 			err_msg = self.tr('Upload failure: backup already exists')
 		except BackupDownloadingError:
