@@ -1,8 +1,8 @@
 ## Event Reminder
 
-##### Cross-platform desktop application which helps to finish all tasks in time.
+##### Desktop application which helps to finish all tasks in time.
 
-To start with this project (development only), run the following:
+To start with this project (development), run the following:
 ```bash
 # create a virtual environment if required
 $ virtualenv -p python3 venv
@@ -10,6 +10,10 @@ $ source venv/bin/activate
 
 # Install requirements and run the server
 $ pip install -r requirements.txt
+
+# if running on Windows machine:
+$ pip install -r windows_requirements.txt
+
 $ make resources
 $ python ./erdesktop/app_main.py
 ```

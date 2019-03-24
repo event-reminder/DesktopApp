@@ -31,7 +31,7 @@ class EventDetailsDialog(QDialog):
 		self.calendar = kwargs.get('calendar', None)
 
 		if self.calendar is None:
-			raise RuntimeError('CreateEventDialog: calendar is not set')
+			raise RuntimeError('EventDetailsDialog: calendar is not set')
 
 		self.storage = kwargs.get('storage', Storage(try_to_reconnect=True))
 		self.storage.try_to_reconnect = True

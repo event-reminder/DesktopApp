@@ -184,7 +184,7 @@
     </message>
 </context>
 <context>
-    <name>CreateEventDialog</name>
+    <name>EventDetailsDialog</name>
     <message>
         <source>New Event</source>
         <translation>Нова подія</translation>
