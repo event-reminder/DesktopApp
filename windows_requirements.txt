@@ -1,1 +1,2 @@
 win10toast>=0.9
+pywin32==224

@@ -23,10 +23,7 @@ class MainWindow(QMainWindow):
 		self.window().setWindowTitle(APP_NAME)
 		self.resize(self.settings.app_size)
 		self.move(self.settings.app_pos)
-		self.setWindowIcon(self.settings.app_icon(
-			icon_size='medium',
-			is_dark=system.is_windows()
-		))
+		self.setWindowIcon(self.settings.app_icon())
 		self.calendar = self.init_calendar()
 		self.setCentralWidget(self.calendar)
 		self.setup_navigation_menu()
@@ -69,7 +66,7 @@ class MainWindow(QMainWindow):
 			# noinspection PyUnresolvedReferences
 			key.triggered.connect(value)
 			tray_menu.addAction(key)
-		tray_icon = QSystemTrayIcon(self.settings.app_icon(is_dark=system.is_windows()), app)
+		tray_icon = QSystemTrayIcon(self.settings.app_icon(), app)
 		tray_icon.setContextMenu(tray_menu)
 		return tray_icon
 

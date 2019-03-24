@@ -43,16 +43,16 @@ class Settings:
 		return self.__settings.value('app/last_restore_path', '')
 
 	# noinspection PyMethodMayBeStatic
-	def app_icon(self, is_ico=False, q_icon=True, is_dark=False, icon_size='default'):
+	def app_icon(self, is_ico=False, q_icon=True, small=False):
 		icon = ''
-		if is_dark and is_ico:
-			icon = APP_ICON_DARK_ICO
-		elif is_dark and not is_ico:
-			icon = APP_ICON_DARK_MEDIUM if icon_size == 'medium' else APP_ICON_DARK
-		elif not is_dark and is_ico:
-			icon = APP_ICON_LIGHT_ICO
-		elif not is_dark and not is_ico:
-			icon = APP_ICON_LIGHT_MEDIUM if icon_size == 'medium' else APP_ICON_LIGHT
+		if small and is_ico:
+			icon = APP_ICON_SMALL_ICO
+		elif small and not is_ico:
+			icon = APP_ICON_SMALL
+		elif not small and is_ico:
+			icon = APP_ICON_DEFAULT_ICO
+		elif not small and not is_ico:
+			icon = APP_ICON_DEFAULT
 		if q_icon:
 			return QIcon(icon)
 		return icon

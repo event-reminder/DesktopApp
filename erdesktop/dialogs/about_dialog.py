@@ -42,9 +42,7 @@ class AboutDialog(QDialog):
 		title_section.setContentsMargins(0, 0, 0, 30)
 		title_section.setSpacing(20)
 		logo_image = QLabel()
-		logo_image.setPixmap(QPixmap(self.settings.app_icon(
-			is_dark=not self.settings.is_dark_theme, q_icon=False, icon_size='medium'))
-		)
+		logo_image.setPixmap(QPixmap(self.settings.app_icon(q_icon=False, small=True)))
 		logo_image.setFixedSize(QSize(70, 70))
 
 		# noinspection PyArgumentList
