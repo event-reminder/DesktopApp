@@ -1,20 +1,20 @@
 import os
 import sys
-import platform
 from win32com.client import Dispatch
 
 from erdesktop import APP_NAME
 from erdesktop.settings.default import abs_path
-from erdesktop.settings import APP_ICON_DEFAULT_ICO
-from erdesktop.util.exceptions import AutoStartIsNotSupportedError
+from erdesktop.settings import APP_ICON_DEFAULT_ICO, WINDOWS_AUTO_START_FILE
 
 
 def add_to_auto_start():
-	raise AutoStartIsNotSupportedError(platform.system())
+	with open(WINDOWS_AUTO_START_FILE, 'w') as bat_file:
+		bat_file.write('{} {}'.format(sys.executable, abs_path('app_main.py')))
 
 
 def remove_from_auto_start():
-	raise AutoStartIsNotSupportedError(platform.system())
+	if os.path.exists(WINDOWS_AUTO_START_FILE):
+		os.remove(WINDOWS_AUTO_START_FILE)
 
 
 def create_shortcut():
