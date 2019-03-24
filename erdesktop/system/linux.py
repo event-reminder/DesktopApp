@@ -1,10 +1,9 @@
 import os
 import sys
 
-from erdesktop.system import system
 from erdesktop.settings.default import abs_path
 from erdesktop import APP_DESCRIPTION, APP_VERSION, APP_NAME
-from erdesktop.settings import APP_ICON_LIGHT_ABS, APP_ICON_DARK_ABS, LINUX_AUTO_START_FILE, LINUX_DESKTOP_ENTRY_FILE
+from erdesktop.settings import APP_ICON_DEFAULT, LINUX_AUTO_START_FILE, LINUX_DESKTOP_ENTRY_FILE
 
 DESKTOP_ENTRY_SCRIPT = """[Desktop Entry]
 Version={}
@@ -21,7 +20,7 @@ Categories=Calendar;Reminder;Events;PyQt5;
 	APP_NAME,
 	APP_DESCRIPTION,
 	'{} {}'.format(sys.executable, abs_path('app_main.py')),
-	APP_ICON_LIGHT_ABS if system.is_linux() else APP_ICON_DARK_ABS,
+	APP_ICON_DEFAULT,
 	APP_NAME.replace(' ', '')
 )
 

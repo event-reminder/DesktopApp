@@ -5,6 +5,7 @@ from PyQt5.QtCore import QThread
 
 from datetime import date, datetime, timedelta
 
+from erdesktop.system import system
 from erdesktop.storage import Storage
 from erdesktop.util import logger, log_msg
 from erdesktop.settings import Settings, APP_NAME
@@ -62,7 +63,7 @@ class ReminderService(QThread):
 	def __send_notification(self, event):
 		Notification(
 			title=APP_NAME,
-			icon_path=self.__settings.app_icon('Linux' not in platform.system(), q_icon=False, icon_size='medium'),
+			icon_path=self.__settings.app_icon(not system.is_linux(), q_icon=False, small=True),
 			description='{}\n\n{}'.format(event.title, event.description),
 			duration=self.__settings.notification_duration,
 			urgency=Notification.URGENCY_CRITICAL
