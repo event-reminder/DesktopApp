@@ -1,16 +1,17 @@
 try:
 	import os
 	import sys
-
-	# noinspection PyUnresolvedReferences
-	from win32com.client import Dispatch
+	import winshell
 
 	from erdesktop import APP_NAME
 	from erdesktop.settings.default import abs_path
-	from erdesktop.settings import APP_ICON_DEFAULT_ICO, WINDOWS_AUTO_START_FILE
+	from erdesktop.settings import APP_ICON_DEFAULT_ICO
 
+	WINDOWS_AUTO_START_FILE = '{}\\{}'.format(winshell.startup(), '{}.bat'.format(APP_NAME.replace(' ', '').lower()))
 
 	def add_to_auto_start():
+		print(WINDOWS_AUTO_START_FILE)
+
 		with open(WINDOWS_AUTO_START_FILE, 'w') as bat_file:
 			bat_file.write('{} {}'.format(sys.executable, abs_path('app_main.py')))
 
@@ -21,15 +22,16 @@ try:
 
 
 	def create_shortcut():
-		shell = Dispatch('WScript.Shell')
-		shortcut = shell.CreateShortCut(
-			'{}/{}.lnk'.format(os.path.normpath(os.path.expanduser('~/Desktop')), APP_NAME)
+		print(winshell.desktop())
+
+		winshell.CreateShortcut(
+			Path='{}/{}.lnk'.format(winshell.desktop(), APP_NAME),
+			Target='{}'.format(sys.executable),
+			Arguments='{}'.format(abs_path('app_main.py')),
+			Icon=(APP_ICON_DEFAULT_ICO, 0),
+			Description=APP_NAME
 		)
-		shortcut.Targetpath = '{}'.format(sys.executable)
-		shortcut.Arguments = '{}'.format(abs_path('app_main.py'))
-		shortcut.WorkingDirectory = abs_path('')
-		shortcut.IconLocation = APP_ICON_DEFAULT_ICO
-		shortcut.save()
+
 except ImportError as exc:
 	def add_to_auto_start():
 		pass

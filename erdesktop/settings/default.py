@@ -1,4 +1,3 @@
-import getpass
 from os.path import expanduser
 
 from PyQt5.QtCore import QLocale
@@ -40,10 +39,6 @@ ENTRY_POINT = abs_path('app_main.py')
 
 LINUX_AUTO_START_FILE = '{}/.config/autostart/{}.desktop'.format(
 	expanduser('~'), APP_NAME.replace(' ', '').lower()
-)
-
-WINDOWS_AUTO_START_FILE = 'C:\\Users\\{}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{}'.format(
-	getpass.getuser(), '{}.bat'.format(APP_NAME.replace(' ', '').lower())
 )
 
 LINUX_DESKTOP_ENTRY_FILE = '{}/.local/share/applications/{}.desktop'.format(

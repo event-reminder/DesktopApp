@@ -34,6 +34,8 @@ REQUIRED = open('requirements.txt', 'r').read().split('\n')
 while '' in REQUIRED:
 	REQUIRED.remove('')
 
+REQUIRED.remove('python-coveralls==2.9.1')
+
 try:
 	with io.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'README.md')) as f:
 		long_description = '\n' + f.read()
