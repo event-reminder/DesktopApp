@@ -7,25 +7,23 @@ try:
 	from erdesktop.settings.default import abs_path
 	from erdesktop.settings import APP_ICON_DEFAULT_ICO
 
-	WINDOWS_AUTO_START_FILE = '{}\\{}'.format(winshell.startup(), '{}.bat'.format(APP_NAME.replace(' ', '').lower()))
+	AUTO_START_ICON_PATH = '{}/{}.lnk'.format(winshell.startup(), APP_NAME)
 
 	def add_to_auto_start():
-		print(WINDOWS_AUTO_START_FILE)
-
-		with open(WINDOWS_AUTO_START_FILE, 'w') as bat_file:
-			bat_file.write('{} {}'.format(sys.executable, abs_path('app_main.py')))
+		_create_shortcut_icon(AUTO_START_ICON_PATH)
 
 
 	def remove_from_auto_start():
-		if os.path.exists(WINDOWS_AUTO_START_FILE):
-			os.remove(WINDOWS_AUTO_START_FILE)
+		if os.path.exists(AUTO_START_ICON_PATH):
+			os.remove(AUTO_START_ICON_PATH)
 
 
 	def create_shortcut():
-		print(winshell.desktop())
+		_create_shortcut_icon('{}/{}.lnk'.format(winshell.desktop(), APP_NAME))
 
+	def _create_shortcut_icon(path):
 		winshell.CreateShortcut(
-			Path='{}/{}.lnk'.format(winshell.desktop(), APP_NAME),
+			Path=path,
 			Target='{}'.format(sys.executable),
 			Arguments='{}'.format(abs_path('app_main.py')),
 			Icon=(APP_ICON_DEFAULT_ICO, 0),
