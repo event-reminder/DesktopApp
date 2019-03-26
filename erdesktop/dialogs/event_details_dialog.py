@@ -147,6 +147,7 @@ class EventDetailsDialog(QDialog):
 
 	def close_and_update(self):
 		self.close()
+		self.calendar.load_events(self.calendar.selectedDate())
 		self.calendar.update()
 
 	def exec_worker(self, fn, fn_success, err_format, *args, **kwargs):

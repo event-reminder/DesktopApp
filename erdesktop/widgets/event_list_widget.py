@@ -17,6 +17,11 @@ class EventListWidget(QListWidget):
 			raise RuntimeError('EventListWidget: parent is not set')
 
 		self.setSelectionMode(QAbstractItemView.ExtendedSelection)
+		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.verticalScrollBar().setPageStep(1)
+		self.verticalScrollBar().setRange(0, 100)
+
+		self.set_empty()
 
 	@property
 	def selected_item(self):
@@ -38,6 +43,7 @@ class EventListWidget(QListWidget):
 		if data is not None:
 			for data_item in data:
 				self.append_event_item(data_item)
+		self.setCurrentRow(0)
 
 	def set_empty(self):
 		self.clear()

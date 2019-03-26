@@ -69,7 +69,6 @@ class CalendarWidget(QCalendarWidget):
 		return [event.date for event in events]
 
 	def update(self, *__args):
-		# self.load_events(self.selectedDate())
 		try:
 			self.marked_dates = self.events_to_dates(self.storage.get_events())
 		except DatabaseException:
@@ -149,10 +148,14 @@ class CalendarWidget(QCalendarWidget):
 	def perform_deleting(self, title, description, fn, *args, **kwargs):
 		if popup.question(self, self.tr(title), '{}?'.format(self.tr(description))) == QMessageBox.Yes:
 			worker = Worker(fn, *args, **kwargs)
-			worker.signals.success.connect(self.update)
+			worker.signals.success.connect(self.perform_deleting_success)
 			worker.err_format = '{}'
 			worker.signals.error.connect(self.popup_error)
 			self.thread_pool.start(worker)
+
+	def perform_deleting_success(self):
+		self.load_events(self.selectedDate())
+		self.update()
 
 	def delete_event_click(self):
 		if len(self.events_list.selected_ids()) > 1:
