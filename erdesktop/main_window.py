@@ -4,14 +4,15 @@ import qtawesome as qta
 
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt, QLocale
-from PyQt5.QtWidgets import QAction, QMainWindow, qApp, QMenu, QSystemTrayIcon
+from PyQt5.QtWidgets import QAction, QMainWindow, qApp, QMenu, QSystemTrayIcon, QHBoxLayout, QScrollArea, QListWidget, \
+	QLabel, QListWidgetItem, QWidget, QVBoxLayout
 
 from erdesktop.widgets import CalendarWidget
 from erdesktop.system import system, shortcut_icon
 from erdesktop.widgets.util import error, info
 from erdesktop.util import logger, log_msg
 from erdesktop.util.exceptions import ShortcutIconIsNotSupportedError
-from erdesktop.settings import Settings, APP_NAME, AVAILABLE_LOCALES
+from erdesktop.settings import Settings, APP_NAME, AVAILABLE_LOCALES, APP_MIN_WIDTH, APP_MIN_HEIGHT
 
 
 class MainWindow(QMainWindow):
@@ -24,8 +25,20 @@ class MainWindow(QMainWindow):
 		self.resize(self.settings.app_size)
 		self.move(self.settings.app_pos)
 		self.setWindowIcon(self.settings.app_icon())
+		self.setMinimumWidth(APP_MIN_WIDTH)
+		self.setMinimumHeight(APP_MIN_HEIGHT)
+
+		self.soon_events_list = self.init_soon_events_list()
+
 		self.calendar = self.init_calendar()
-		self.setCentralWidget(self.calendar)
+		self.calendar.setContentsMargins(0, 23, 0, 0)
+
+		hbl = QHBoxLayout()
+		hbl.addWidget(self.calendar, alignment=Qt.AlignLeft)
+		hbl.addWidget(self.soon_events_list, alignment=Qt.AlignRight)
+
+		self.setCentralWidget(hbl.widget())
+
 		self.setup_navigation_menu()
 		self.setFont(QFont('SansSerif', self.settings.app_font))
 
@@ -71,11 +84,37 @@ class MainWindow(QMainWindow):
 		return tray_icon
 
 	def init_calendar(self):
-		calendar = CalendarWidget(self, width=self.width(), height=self.height())
+		calendar = CalendarWidget(self, width=self.width() - self.soon_events_list.width(), height=self.height())
 		calendar.setLocale(QLocale(AVAILABLE_LOCALES[self.settings.app_lang]))
 		calendar.setFirstDayOfWeek(Qt.Monday)
 		calendar.setSelectedDate(datetime.now())
 		return calendar
+
+	def init_soon_events_list(self):
+		layout = QVBoxLayout()
+
+		lbl = QLabel('No events')
+
+		# noinspection PyArgumentList
+		layout.addWidget(lbl)
+
+		item = QWidget(flags=self.windowFlags())
+		item.setLayout(layout)
+		item.setFixedWidth(300)
+
+		list_widget = QListWidget()
+		list_widget.setFixedWidth(300)
+
+		list_item = QListWidgetItem(list_widget)
+		list_item.setSizeHint(item.sizeHint())
+		list_widget.setItemWidget(list_item, item)
+
+		scroll_view = QScrollArea()
+		scroll_view.setWidget(list_widget)
+		scroll_view.setWidgetResizable(True)
+		scroll_view.setMaximumWidth(300)
+
+		return scroll_view
 
 	def hide(self):
 		self.hide_action.setEnabled(False)

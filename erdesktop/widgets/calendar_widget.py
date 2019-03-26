@@ -133,7 +133,7 @@ class CalendarWidget(QCalendarWidget):
 		painter.drawText(text_rect.center(), '{} event{}'.format(num, 's' if num > 1 else ''))
 
 	def resize_handler(self):
-		self.resize(self.parent.width(), self.parent.height() - 20)
+		self.resize(self.parent.width() - self.parent.soon_events_list.width(), self.parent.height())
 
 	def open_events(self, date):
 		py_date = date.toPyDate()
