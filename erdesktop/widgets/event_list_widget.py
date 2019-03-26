@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QLabel, QSizePolicy
+from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QLabel, QSizePolicy, QAbstractItemView
 
 from erdesktop.widgets.event_widget import EventWidget
 
@@ -16,13 +16,16 @@ class EventListWidget(QListWidget):
 		if self.parent is None:
 			raise RuntimeError('EventListWidget: parent is not set')
 
-		self.selected_item = None
+		self.setSelectionMode(QAbstractItemView.ExtendedSelection)
 
-		# noinspection PyUnresolvedReferences
-		self.itemClicked.connect(self.item_clicked)
+	@property
+	def selected_item(self):
+		if len(self.selectedItems()) > 0:
+			return self.itemWidget(self.selectedItems()[0]).event_data
+		return None
 
-	def item_clicked(self, item):
-		self.selected_item = self.itemWidget(item).event_data
+	def selected_ids(self):
+		return [self.itemWidget(x).event_data.id for x in self.selectedItems()]
 
 	def append_event_item(self, event_item):
 		item = EventWidget(self, event_item)
@@ -38,7 +41,7 @@ class EventListWidget(QListWidget):
 
 	def set_empty(self):
 		self.clear()
-		lbl = QLabel('No events')
+		lbl = QLabel(self.tr('No events'))
 		lbl.setAlignment(Qt.AlignCenter)
 		lbl.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 		lbl.setStyleSheet('color: gray;')

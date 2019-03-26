@@ -38,7 +38,12 @@ class MainWindow(QMainWindow):
 
 		self.calendar = self.init_calendar()
 
-		self.btn_edit = PushButton(self.tr('Edit'), 90, 30, self.calendar.edit_event_click)
+		self.btn_edit = PushButton(
+			self.tr('Edit'),
+			120 if self.settings.app_lang == 'uk_UA' else 90,
+			30,
+			self.calendar.edit_event_click
+		)
 		self.btn_delete = PushButton(self.tr('Delete'), 90, 30, self.calendar.delete_event_click)
 		events_widget = self.init_events_widget()
 
@@ -139,8 +144,11 @@ class MainWindow(QMainWindow):
 		return widget
 
 	def events_list_selection_changed(self):
-		if self.events_list.selected_item:
-			self.btn_edit.setEnabled(True)
+		if self.events_list.selected_item is not None:
+			if len(self.events_list.selected_ids()) == 1:
+				self.btn_edit.setEnabled(True)
+			else:
+				self.btn_edit.setEnabled(False)
 			self.btn_delete.setEnabled(True)
 		else:
 			self.btn_edit.setEnabled(False)

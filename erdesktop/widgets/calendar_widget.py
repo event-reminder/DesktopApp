@@ -34,8 +34,6 @@ class CalendarWidget(QCalendarWidget):
 
 		self.storage = Storage()
 
-		self.load_events(self.selectedDate())
-
 		self.thread_pool = QThreadPool()
 
 		self.settings = Settings()
@@ -71,6 +69,7 @@ class CalendarWidget(QCalendarWidget):
 		return [event.date for event in events]
 
 	def update(self, *__args):
+		# self.load_events(self.selectedDate())
 		try:
 			self.marked_dates = self.events_to_dates(self.storage.get_events())
 		except DatabaseException:
@@ -142,28 +141,40 @@ class CalendarWidget(QCalendarWidget):
 		painter.drawText(text_rect.center(), '{} event{}'.format(num, 's' if num > 1 else ''))
 
 	def edit_event_click(self):
-		self.event_details_dialog.reset_inputs(event_data=self.events_list.selected_item)
+		self.event_details_dialog.reset_inputs(
+			event_data=self.events_list.selected_item
+		)
 		self.event_details_dialog.exec_()
 
-	def delete_event_click(self):
-		if self.storage.event_exists(self.events_list.selected_item.id):
-			ret_action = popup.question(
-				self,
-				self.tr('Deleting an event'),
-				'{}?'.format(self.tr('Do you really want to delete the event'))
-			)
-			if ret_action == QMessageBox.Yes:
-				worker = Worker(self.storage.delete_event, *(self.events_list.selected_item.id,))
-				worker.signals.success.connect(self.update)
-				worker.err_format = '{}'
-				worker.signals.error.connect(self.popup_error)
-				self.thread_pool.start(worker)
-		else:
-			popup.info(self.parent, '{}!'.format(self.tr('Event is already removed')))
+	def perform_deleting(self, title, description, fn, *args, **kwargs):
+		if popup.question(self, self.tr(title), '{}?'.format(self.tr(description))) == QMessageBox.Yes:
+			worker = Worker(fn, *args, **kwargs)
+			worker.signals.success.connect(self.update)
+			worker.err_format = '{}'
+			worker.signals.error.connect(self.popup_error)
+			self.thread_pool.start(worker)
 
-	# def delete_event(self, event_id):
-	# 	self.storage.connect()
-	# 	self.storage.delete_event(event_id)
+	def delete_event_click(self):
+		if len(self.events_list.selected_ids()) > 1:
+			self.perform_deleting(
+				self.tr('Deleting set of events'),
+				self.tr('Do you really want to delete events'),
+				self.delete_events,
+				*(self.events_list.selected_ids(),)
+			)
+		else:
+			if self.storage.event_exists(self.events_list.selected_item.id):
+				self.perform_deleting(
+					self.tr('Deleting an event'),
+					'{}?'.format(self.tr('Do you really want to delete the event')),
+					self.storage.delete_event,
+					*(self.events_list.selected_item.id,)
+				)
+
+	def delete_events(self, events_ids):
+		for pk in events_ids:
+			if self.storage.event_exists(pk):
+				self.storage.delete_event(pk)
 
 	def load_events(self, date):
 		py_date = date.toPyDate()
@@ -215,3 +226,6 @@ class CalendarWidget(QCalendarWidget):
 		)
 		dialog.setAttribute(Qt.WA_DeleteOnClose, True)
 		dialog.exec_()
+
+	def popup_error(self, err):
+		popup.error(self, '{}'.format(err[1]))
