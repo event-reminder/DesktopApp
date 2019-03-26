@@ -75,7 +75,7 @@ class EventDetailsDialog(QDialog):
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
 		buttons.addWidget(PushButton(self.tr('Save'), 90, 30, self.save_event_click), 0, Qt.AlignRight)
-		self.del_btn = PushButton(self.tr('Delete'), 90, 30, self.delete_event_click)
+		self.del_btn = PushButton(self.tr('Delete'), 90, 30, self.calendar.delete_event_click)
 		buttons.addWidget(self.del_btn)
 		buttons.addWidget(PushButton(self.tr('Cancel'), 90, 30, self.close), 0, Qt.AlignRight)
 		content.addLayout(buttons)
@@ -102,27 +102,6 @@ class EventDetailsDialog(QDialog):
 			self.repeat_weekly_input.setChecked(event_data.repeat_weekly)
 			self.del_btn.setEnabled(True)
 			self.is_editing = True
-
-	def delete_event_click(self):
-		if self.storage.event_exists(self.event_id):
-			ret_action = popup.question(
-				self,
-				self.tr('Deleting an event'),
-				'{}?'.format(self.tr('Do you really want to delete the event'))
-			)
-			if ret_action == QMessageBox.Yes:
-				self.exec_worker(
-					self.delete_event,
-					self.close_and_update,
-					'{}',
-					*(self.event_id,)
-				)
-		else:
-			popup.info(self.parent, '{}!'.format(self.tr('Event is already removed')))
-
-	def delete_event(self, event_id):
-		self.storage.connect()
-		self.storage.delete_event(event_id)
 
 	def validate_inputs(self):
 		if len(self.title_input.text()) < 1:
@@ -152,10 +131,7 @@ class EventDetailsDialog(QDialog):
 			if self.event_id is not None:
 				data['pk'] = self.event_id
 				fn = self.storage.update_event
-			self.exec_worker(fn, self.save_event_success, err_format, **data)
-
-	def save_event_success(self):
-		self.calendar.update()
+			self.exec_worker(fn, self.close_and_update, err_format, **data)
 
 	def close_and_update(self):
 		self.close()

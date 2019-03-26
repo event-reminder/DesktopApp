@@ -2,5 +2,4 @@ from erdesktop.dialogs.about_dialog import AboutDialog
 from erdesktop.dialogs.backup_dialog import BackupDialog
 from erdesktop.dialogs.account_dialog import AccountDialog
 from erdesktop.dialogs.settings_dialog import SettingsDialog
-from erdesktop.dialogs.event_list_dialog import EventsListDialog
 from erdesktop.dialogs.event_details_dialog import EventDetailsDialog
