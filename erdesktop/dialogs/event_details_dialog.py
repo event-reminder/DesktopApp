@@ -2,12 +2,12 @@ from datetime import datetime, timedelta
 
 from erdesktop.util import Worker
 from erdesktop.storage import Storage
-from erdesktop.widgets.util import PushButton, popup
+from erdesktop.widgets.util import PushButton, popup, QMessageBox
 from erdesktop.widgets.waiting_spinner import WaitingSpinner
 
 from PyQt5.QtCore import Qt, QDate, QTime, QThreadPool
 from PyQt5.QtWidgets import (
-	QLabel, QDialog, QLineEdit, QDateEdit, QTimeEdit, QTextEdit, QCheckBox, QVBoxLayout, QHBoxLayout, QMessageBox
+	QLabel, QDialog, QLineEdit, QDateEdit, QTimeEdit, QTextEdit, QCheckBox, QVBoxLayout, QHBoxLayout
 )
 
 
@@ -75,7 +75,7 @@ class EventDetailsDialog(QDialog):
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
 		buttons.addWidget(PushButton(self.tr('Save'), 90, 30, self.save_event_click), 0, Qt.AlignRight)
-		self.del_btn = PushButton(self.tr('Delete'), 90, 30, self.delete_event_click)
+		self.del_btn = PushButton(self.tr('Delete'), 90, 30, self.delete_event)
 		buttons.addWidget(self.del_btn)
 		buttons.addWidget(PushButton(self.tr('Cancel'), 90, 30, self.close), 0, Qt.AlignRight)
 		content.addLayout(buttons)
@@ -102,27 +102,6 @@ class EventDetailsDialog(QDialog):
 			self.repeat_weekly_input.setChecked(event_data.repeat_weekly)
 			self.del_btn.setEnabled(True)
 			self.is_editing = True
-
-	def delete_event_click(self):
-		if self.storage.event_exists(self.event_id):
-			ret_action = popup.question(
-				self,
-				self.tr('Deleting an event'),
-				'{}?'.format(self.tr('Do you really want to delete the event'))
-			)
-			if ret_action == QMessageBox.Yes:
-				self.exec_worker(
-					self.delete_event,
-					self.close_and_update,
-					'{}',
-					*(self.event_id,)
-				)
-		else:
-			popup.info(self.parent, '{}!'.format(self.tr('Event is already removed')))
-
-	def delete_event(self, event_id):
-		self.storage.connect()
-		self.storage.delete_event(event_id)
 
 	def validate_inputs(self):
 		if len(self.title_input.text()) < 1:
@@ -152,13 +131,23 @@ class EventDetailsDialog(QDialog):
 			if self.event_id is not None:
 				data['pk'] = self.event_id
 				fn = self.storage.update_event
-			self.exec_worker(fn, self.save_event_success, err_format, **data)
+			self.exec_worker(fn, self.close_and_update, err_format, **data)
 
-	def save_event_success(self):
-		self.calendar.update()
+	def delete_event(self):
+		if popup.question(
+				self,
+				self.tr('Deleting an event'),
+				'{}?'.format(self.tr('Do you really want to delete the event'))
+		) == QMessageBox.Yes:
+			worker = Worker(self.storage.delete_event, *(self.event_id,))
+			worker.signals.success.connect(self.close_and_update)
+			worker.err_format = '{}'
+			worker.signals.error.connect(self.popup_error)
+			self.thread_pool.start(worker)
 
 	def close_and_update(self):
 		self.close()
+		self.calendar.load_events(self.calendar.selectedDate())
 		self.calendar.update()
 
 	def exec_worker(self, fn, fn_success, err_format, *args, **kwargs):

@@ -4,14 +4,16 @@ import qtawesome as qta
 
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt, QLocale
-from PyQt5.QtWidgets import QAction, QMainWindow, qApp, QMenu, QSystemTrayIcon
+from PyQt5.QtWidgets import QAction, QMainWindow, qApp, QMenu, QSystemTrayIcon, QHBoxLayout, QScrollArea, QListWidget, \
+	QLabel, QListWidgetItem, QWidget, QVBoxLayout, QSizePolicy
 
 from erdesktop.widgets import CalendarWidget
 from erdesktop.system import system, shortcut_icon
-from erdesktop.widgets.util import error, info
+from erdesktop.widgets.event_list_widget import EventListWidget
+from erdesktop.widgets.util import error, info, PushButton
 from erdesktop.util import logger, log_msg
 from erdesktop.util.exceptions import ShortcutIconIsNotSupportedError
-from erdesktop.settings import Settings, APP_NAME, AVAILABLE_LOCALES
+from erdesktop.settings import Settings, APP_NAME, AVAILABLE_LOCALES, APP_MIN_WIDTH, APP_MIN_HEIGHT
 
 
 class MainWindow(QMainWindow):
@@ -24,8 +26,38 @@ class MainWindow(QMainWindow):
 		self.resize(self.settings.app_size)
 		self.move(self.settings.app_pos)
 		self.setWindowIcon(self.settings.app_icon())
+		self.setMinimumWidth(APP_MIN_WIDTH)
+		self.setMinimumHeight(APP_MIN_HEIGHT)
+
+		self.events_list = EventListWidget(**{
+			'parent': self,
+		})
+
+		# noinspection PyUnresolvedReferences
+		self.events_list.itemSelectionChanged.connect(self.events_list_selection_changed)
+
 		self.calendar = self.init_calendar()
-		self.setCentralWidget(self.calendar)
+
+		self.btn_edit = PushButton(
+			self.tr('Edit'),
+			120 if self.settings.app_lang == 'uk_UA' else 90,
+			30,
+			self.calendar.edit_event_click
+		)
+		self.btn_delete = PushButton(self.tr('Delete'), 90, 30, self.calendar.delete_event_click)
+		events_widget = self.init_events_widget()
+
+		main_layout = QHBoxLayout()
+
+		# noinspection PyArgumentList
+		main_layout.addWidget(self.calendar)
+		main_layout.addWidget(events_widget, alignment=Qt.AlignRight)
+
+		central_widget = QWidget(flags=self.windowFlags())
+		central_widget.setLayout(main_layout)
+
+		self.setCentralWidget(central_widget)
+
 		self.setup_navigation_menu()
 		self.setFont(QFont('SansSerif', self.settings.app_font))
 
@@ -71,11 +103,56 @@ class MainWindow(QMainWindow):
 		return tray_icon
 
 	def init_calendar(self):
-		calendar = CalendarWidget(self, width=self.width(), height=self.height())
+		calendar = CalendarWidget(
+			self,
+			width=self.width() - 400,
+			height=self.height(),
+			events_list=self.events_list
+		)
 		calendar.setLocale(QLocale(AVAILABLE_LOCALES[self.settings.app_lang]))
 		calendar.setFirstDayOfWeek(Qt.Monday)
 		calendar.setSelectedDate(datetime.now())
 		return calendar
+
+	def init_events_widget(self):
+		scroll_view = QScrollArea()
+		scroll_view.setWidget(self.events_list)
+		scroll_view.setWidgetResizable(True)
+		scroll_view.setFixedWidth(400)
+
+		layout = QVBoxLayout()
+
+		# noinspection PyArgumentList
+		layout.addWidget(scroll_view)
+
+		buttons = QHBoxLayout()
+		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
+
+		btn_new_event = PushButton(self.tr('New'), 90, 30, self.calendar.open_details_event)
+		buttons.addWidget(btn_new_event, 0, Qt.AlignLeft)
+
+		self.btn_edit.setEnabled(False)
+		buttons.addWidget(self.btn_edit, 0, Qt.AlignCenter)
+
+		self.btn_delete.setEnabled(False)
+		buttons.addWidget(self.btn_delete, 0, Qt.AlignRight)
+
+		layout.addLayout(buttons)
+
+		widget = QWidget(flags=self.windowFlags())
+		widget.setLayout(layout)
+		return widget
+
+	def events_list_selection_changed(self):
+		if self.events_list.selected_item is not None:
+			if len(self.events_list.selected_ids()) == 1:
+				self.btn_edit.setEnabled(True)
+			else:
+				self.btn_edit.setEnabled(False)
+			self.btn_delete.setEnabled(True)
+		else:
+			self.btn_edit.setEnabled(False)
+			self.btn_delete.setEnabled(False)
 
 	def hide(self):
 		self.hide_action.setEnabled(False)
@@ -86,11 +163,6 @@ class MainWindow(QMainWindow):
 		self.hide_action.setEnabled(True)
 		self.open_action.setEnabled(False)
 		super(MainWindow, self).show()
-
-	def resizeEvent(self, event):
-		self.calendar.resize_handler()
-		QMainWindow.resizeEvent(self, event)
-		super(MainWindow, self).resizeEvent(event)
 
 	def setup_navigation_menu(self):
 		main_menu = self.menuBar()
@@ -127,7 +199,7 @@ class MainWindow(QMainWindow):
 			self.new_action(
 				self,
 				'{}...'.format(self.tr('New Event')),
-				self.calendar.open_create_event,
+				self.calendar.open_details_event,
 				'Ctrl+N'
 			)
 		)

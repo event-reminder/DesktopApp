@@ -59,6 +59,18 @@
         <source>Shortcut icon has been created</source>
         <translation>Ярлик додано</translation>
     </message>
+    <message>
+        <source>New</source>
+        <translation>Додати</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>Редагувати</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Видалити</translation>
+    </message>
 </context>
 <context>
     <name>AccountDialog</name>
@@ -400,6 +412,13 @@
     <message>
         <source>Retrieving failure: connect to the database first</source>
         <translation>Помилка отримання даних: підключіться спочатку до бази даних</translation>
+    </message>
+</context>
+<context>
+    <name>EventListWidget</name>
+    <message>
+        <source>No events</source>
+        <translation>Події відсутні</translation>
     </message>
 </context>
 <context>

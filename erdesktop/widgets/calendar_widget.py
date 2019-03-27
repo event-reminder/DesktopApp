@@ -1,17 +1,17 @@
 from datetime import datetime
 
-from PyQt5.QtCore import Qt, QRect, QDate
 from PyQt5.QtGui import QFont, QColor, QPen
-from PyQt5.QtWidgets import QCalendarWidget, QMenu
+from PyQt5.QtCore import Qt, QRect, QDate, QThreadPool
+from PyQt5.QtWidgets import QCalendarWidget, QMenu, QMessageBox
 
 from erdesktop.storage import Storage
 from erdesktop.settings import Settings
 from erdesktop.cloud import CloudStorage
-from erdesktop.util import logger, log_msg
-from erdesktop.widgets.util import info, error
-from erdesktop.util.exceptions import DatabaseException
+from erdesktop.util import logger, log_msg, Worker
+from erdesktop.widgets.util import info, error, popup
 from erdesktop.settings import FONT_LARGE, FONT_NORMAL
-from erdesktop.dialogs import AboutDialog, BackupDialog, AccountDialog, SettingsDialog, EventsListDialog, EventDetailsDialog
+from erdesktop.util.exceptions import DatabaseException
+from erdesktop.dialogs import AboutDialog, BackupDialog, AccountDialog, SettingsDialog, EventDetailsDialog
 
 
 class CalendarWidget(QCalendarWidget):
@@ -24,14 +24,23 @@ class CalendarWidget(QCalendarWidget):
 		self.setGridVisible(True)
 
 		# noinspection PyUnresolvedReferences
-		self.clicked[QDate].connect(self.open_events)
+		self.clicked[QDate].connect(self.load_events)
+
+		self.setContentsMargins(0, 0, 0, 0)
+
+		self.events_list = kwargs.get('events_list', None)
+		if self.events_list is None:
+			raise RuntimeError('CalendarWidget: events list is not set')
+
+		self.storage = Storage()
+
+		self.thread_pool = QThreadPool()
 
 		self.settings = Settings()
 		font = QFont('SansSerif', self.settings.app_font)
 		self.setFont(font)
 		self.setPalette(self.settings.app_theme)
 
-		self.storage = Storage()
 		self.cloud_storage = CloudStorage()
 
 		params = {
@@ -42,14 +51,12 @@ class CalendarWidget(QCalendarWidget):
 			'parent': self
 		}
 
-		self.event_creation_dialog = EventDetailsDialog(storage=self.storage, **params)
-		self.event_retrieving_dialog = EventsListDialog(**params)
+		self.event_details_dialog = EventDetailsDialog(storage=self.storage, **params)
 		self.settings_dialog = SettingsDialog(cloud_storage=self.cloud_storage, **params)
 		self.backup_dialog = BackupDialog(storage=self.storage, cloud_storage=self.cloud_storage, **params)
 
 		self.dialogs = [
-			self.event_retrieving_dialog,
-			self.event_creation_dialog,
+			self.event_details_dialog,
 			self.settings_dialog,
 			self.backup_dialog
 		]
@@ -82,7 +89,7 @@ class CalendarWidget(QCalendarWidget):
 			create_action = menu.addAction(self.tr('Create new event'))
 			action = menu.exec_(self.mapToGlobal(event.pos()))
 			if action == create_action:
-				self.open_create_event()
+				self.open_details_event()
 		super(CalendarWidget, self).contextMenuEvent(event)
 
 	def paintCell(self, painter, rect, date, **kwargs):
@@ -132,27 +139,67 @@ class CalendarWidget(QCalendarWidget):
 		painter.setPen(QPen(QColor(255, 255, 255)))
 		painter.drawText(text_rect.center(), '{} event{}'.format(num, 's' if num > 1 else ''))
 
-	def resize_handler(self):
-		self.resize(self.parent.width(), self.parent.height() - 20)
+	def edit_event_click(self):
+		self.event_details_dialog.reset_inputs(
+			event_data=self.events_list.selected_item
+		)
+		self.event_details_dialog.exec_()
 
-	def open_events(self, date):
+	def perform_deleting(self, title, description, fn, *args, **kwargs):
+		if popup.question(self, self.tr(title), '{}?'.format(self.tr(description))) == QMessageBox.Yes:
+			worker = Worker(fn, *args, **kwargs)
+			worker.signals.success.connect(self.perform_deleting_success)
+			worker.err_format = '{}'
+			worker.signals.error.connect(self.popup_error)
+			self.thread_pool.start(worker)
+
+	def perform_deleting_success(self):
+		self.load_events(self.selectedDate())
+		self.update()
+
+	def delete_event_click(self):
+		if len(self.events_list.selected_ids()) > 1:
+			self.perform_deleting(
+				self.tr('Deleting set of events'),
+				self.tr('Do you really want to delete events'),
+				self.delete_events,
+				*(self.events_list.selected_ids(),)
+			)
+		else:
+			if self.storage.event_exists(self.events_list.selected_item.id):
+				self.perform_deleting(
+					self.tr('Deleting an event'),
+					'{}?'.format(self.tr('Do you really want to delete the event')),
+					self.storage.delete_event,
+					*(self.events_list.selected_item.id,)
+				)
+
+	def delete_events(self, events_ids):
+		for pk in events_ids:
+			if self.storage.event_exists(pk):
+				self.storage.delete_event(pk)
+
+	def load_events(self, date):
 		py_date = date.toPyDate()
 		if datetime.now().date() <= py_date:
 			try:
 				events = self.storage.get_events(py_date)
 				if len(events) > 0:
-					self.event_retrieving_dialog.set_data(events, py_date)
-					self.event_retrieving_dialog.exec_()
-					return True
+					self.events_list.set_data(events)
+				else:
+					self.events_list.set_empty()
+				return True
 			except DatabaseException as exc:
 				logger.error(log_msg('database error: {}'.format(exc), 7))
 				error(self, '{}\n{}'.format(self.tr('Database error'), exc))
+		else:
+			self.events_list.set_empty()
 
-	def open_create_event(self):
+	def open_details_event(self):
 		date = self.selectedDate().toPyDate()
 		if datetime.now().date() <= date:
-			self.event_creation_dialog.reset_inputs(date=date)
-			self.event_creation_dialog.exec_()
+			self.event_details_dialog.reset_inputs(date=date)
+			self.event_details_dialog.exec_()
 		else:
 			info(self, self.tr('Can not set reminder to the past'))
 
@@ -182,3 +229,6 @@ class CalendarWidget(QCalendarWidget):
 		)
 		dialog.setAttribute(Qt.WA_DeleteOnClose, True)
 		dialog.exec_()
+
+	def popup_error(self, err):
+		popup.error(self, '{}'.format(err[1]))
