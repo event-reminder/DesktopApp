@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout, QFrame
+from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout
 
 
 class EventWidget(QWidget):
@@ -31,16 +31,9 @@ class EventWidget(QWidget):
 			description_label.setText(self.event_data.description)
 
 			# noinspection PyArgumentList
-			layout.addWidget(self.QHLine(self.windowFlags()))
+			layout.addWidget(QLabel(''))
 
 			# noinspection PyArgumentList
 			layout.addWidget(description_label)
 
 		self.setLayout(layout)
-
-	class QHLine(QFrame):
-
-		def __init__(self, flags, parent=None, *args, **kwargs):
-			super(EventWidget.QHLine, self).__init__(parent, flags, *args, **kwargs)
-			self.setFrameShape(QFrame.HLine)
-			self.setFrameShadow(QFrame.Sunken)
