@@ -413,6 +413,18 @@
         <source>Retrieving failure: connect to the database first</source>
         <translation>Помилка отримання даних: підключіться спочатку до бази даних</translation>
     </message>
+    <message>
+        <source>event</source>
+        <translation>подія</translation>
+    </message>
+	<message>
+        <source>events*</source>
+        <translation>події</translation>
+    </message>
+    <message>
+        <source>events</source>
+        <translation>подій</translation>
+    </message>
 </context>
 <context>
     <name>EventListWidget</name>

@@ -38,6 +38,7 @@ class MainWindow(QMainWindow):
 
 		self.calendar = self.init_calendar()
 
+		self.btn_new_event = PushButton(self.tr('New'), 90, 30, self.calendar.open_details_event)
 		self.btn_edit = PushButton(
 			self.tr('Edit'),
 			120 if self.settings.app_lang == 'uk_UA' else 90,
@@ -58,6 +59,9 @@ class MainWindow(QMainWindow):
 
 		self.setCentralWidget(central_widget)
 
+		# noinspection PyUnresolvedReferences
+		self.calendar.selectionChanged.connect(self.date_selection_changed)
+
 		self.setup_navigation_menu()
 		self.setFont(QFont('SansSerif', self.settings.app_font))
 
@@ -75,6 +79,12 @@ class MainWindow(QMainWindow):
 	def closeEvent(self, event):
 		event.ignore()
 		self.hide()
+
+	def date_selection_changed(self):
+		if self.calendar.selectedDate().toPyDate() < datetime.today().date():
+			self.btn_new_event.setEnabled(False)
+		else:
+			self.btn_new_event.setEnabled(True)
 
 	def save_state(self):
 		self.settings.autocommit(False)
@@ -128,8 +138,7 @@ class MainWindow(QMainWindow):
 		buttons = QHBoxLayout()
 		buttons.setAlignment(Qt.AlignRight | Qt.AlignBottom)
 
-		btn_new_event = PushButton(self.tr('New'), 90, 30, self.calendar.open_details_event)
-		buttons.addWidget(btn_new_event, 0, Qt.AlignLeft)
+		buttons.addWidget(self.btn_new_event, 0, Qt.AlignLeft)
 
 		self.btn_edit.setEnabled(False)
 		buttons.addWidget(self.btn_edit, 0, Qt.AlignCenter)

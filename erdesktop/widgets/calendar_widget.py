@@ -62,15 +62,22 @@ class CalendarWidget(QCalendarWidget):
 		]
 
 		self.marked_dates = []
+		self.past_events = []
 		self.update()
 
 	@staticmethod
 	def events_to_dates(events):
-		return [event.date for event in events]
+		events_dates = []
+		past_events = []
+		for event in events:
+			events_dates.append(event.date)
+			if event.is_past:
+				past_events.append(event.date)
+		return events_dates, past_events
 
 	def update(self, *__args):
 		try:
-			self.marked_dates = self.events_to_dates(self.storage.get_events())
+			self.marked_dates, self.past_events = self.events_to_dates(self.storage.get_events())
 		except DatabaseException:
 			info(self, self.tr('Unable to find related database, it will be created automatically'))
 		except Exception as exc:
@@ -95,7 +102,9 @@ class CalendarWidget(QCalendarWidget):
 	def paintCell(self, painter, rect, date, **kwargs):
 		QCalendarWidget.paintCell(self, painter, rect, date)
 		if date.toPyDate() in self.marked_dates:
-			self.paint_date(date, painter, rect, self.marked_dates.count(date.toPyDate()))
+			self.paint_date(
+				date, painter, rect, self.marked_dates.count(date.toPyDate()), date.toPyDate() in self.past_events
+			)
 
 	def reset_font(self, font):
 		self.setFont(font)
@@ -120,14 +129,17 @@ class CalendarWidget(QCalendarWidget):
 			minimum += (9 if font_size != FONT_LARGE else 15)
 		return minimum + (55 if num > 1 else 50)
 
-	def paint_date(self, date, painter, rect, num):
+	def paint_date(self, date, painter, rect, num, is_past):
 		font_not_large = self.settings.app_font != FONT_LARGE
 		ellipse_rect = QRect(
 			rect.x() + 3, rect.y() + 3, self.get_badge_width(num, self.settings.app_font), 20 if font_not_large else 25
 		)
 		text_rect = QRect(ellipse_rect.x() - 3.1, ellipse_rect.y() + (7 if font_not_large else 10), 20, 20)
 		if self.monthShown() == date.month():
-			painter.setBrush(QColor(self.settings.badge_color))
+			if is_past:
+				painter.setBrush(QColor(0, 0, 0))
+			else:
+				painter.setBrush(QColor(self.settings.badge_color))
 		else:
 			painter.setBrush(QColor(196, 196, 196))
 		painter.setPen(Qt.NoPen)
@@ -137,7 +149,11 @@ class CalendarWidget(QCalendarWidget):
 		else:
 			painter.setBrush(QColor(255, 255, 255))
 		painter.setPen(QPen(QColor(255, 255, 255)))
-		painter.drawText(text_rect.center(), '{} event{}'.format(num, 's' if num > 1 else ''))
+		if 1 < num < 5:
+			text = self.tr('events*')
+		else:
+			text = self.tr('event{}'.format('s' if num > 1 else ''))
+		painter.drawText(text_rect.center(), '{} {}'.format(num, text))
 
 	def edit_event_click(self):
 		self.event_details_dialog.reset_inputs(
@@ -181,19 +197,16 @@ class CalendarWidget(QCalendarWidget):
 
 	def load_events(self, date):
 		py_date = date.toPyDate()
-		if datetime.now().date() <= py_date:
-			try:
-				events = self.storage.get_events(py_date)
-				if len(events) > 0:
-					self.events_list.set_data(events)
-				else:
-					self.events_list.set_empty()
-				return True
-			except DatabaseException as exc:
-				logger.error(log_msg('database error: {}'.format(exc), 7))
-				error(self, '{}\n{}'.format(self.tr('Database error'), exc))
-		else:
-			self.events_list.set_empty()
+		try:
+			events = self.storage.get_events(py_date)
+			if len(events) > 0:
+				self.events_list.set_data(events)
+			else:
+				self.events_list.set_empty()
+			return True
+		except DatabaseException as exc:
+			logger.error(log_msg('database error: {}'.format(exc), 7))
+			error(self, '{}\n{}'.format(self.tr('Database error'), exc))
 
 	def open_details_event(self):
 		date = self.selectedDate().toPyDate()

@@ -103,8 +103,11 @@ class Storage:
 				event.date = e_date
 			if description is not None:
 				event.description = description
-			if is_past is not None:
-				event.is_past = is_past
+			if event.date >= datetime.today().date():
+				event.is_past = False
+			else:
+				if is_past is not None:
+					event.is_past = is_past
 			if repeat_weekly is not None:
 				event.repeat_weekly = repeat_weekly
 			EventModel.update(self.__cursor, event)
