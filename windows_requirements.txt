@@ -1,0 +1,2 @@
+win10toast>=0.9
+winshell==0.6

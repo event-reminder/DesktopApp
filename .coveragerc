@@ -1,0 +1,18 @@
+# .coveragerc to control coverage.py
+
+[run]
+
+source =
+	erdesktop
+
+omit =
+	*__init__.py*
+	*resources/*
+	*cloud/routes.py*
+	*cloud/status.py*
+	*settings/default.py*
+	*storage/sql.py*
+	*util/exceptions.py*
+
+[html]
+	directory = coverage
