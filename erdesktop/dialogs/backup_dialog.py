@@ -251,7 +251,7 @@ class BackupDialog(QDialog):
 		tabs.addTab(tab, self.tr('Cloud'))
 
 	def selection_changed(self):
-		if self.backups_cloud_list_widget.currentItem() is not None:
+		if len(self.backups_cloud_list_widget.selectedItems()) > 0:
 			self.delete_backup_button.setEnabled(True)
 			self.download_backup_button.setEnabled(True)
 		else:

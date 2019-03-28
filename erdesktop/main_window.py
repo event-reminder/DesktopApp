@@ -1,17 +1,18 @@
-from datetime import datetime
-
 import qtawesome as qta
 
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt, QLocale
-from PyQt5.QtWidgets import QAction, QMainWindow, qApp, QMenu, QSystemTrayIcon, QHBoxLayout, QScrollArea, QListWidget, \
-	QLabel, QListWidgetItem, QWidget, QVBoxLayout, QSizePolicy
+from datetime import datetime
 
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import (
+	QAction, QMainWindow, qApp, QMenu, QSystemTrayIcon, QHBoxLayout, QScrollArea, QWidget, QVBoxLayout
+)
+from PyQt5.QtCore import Qt, QLocale
+
+from erdesktop.util import logger, log_msg
 from erdesktop.widgets import CalendarWidget
 from erdesktop.system import system, shortcut_icon
-from erdesktop.widgets.event_list_widget import EventListWidget
 from erdesktop.widgets.util import error, info, PushButton
-from erdesktop.util import logger, log_msg
+from erdesktop.widgets.event_list_widget import EventListWidget
 from erdesktop.util.exceptions import ShortcutIconIsNotSupportedError
 from erdesktop.settings import Settings, APP_NAME, AVAILABLE_LOCALES, APP_MIN_WIDTH, APP_MIN_HEIGHT
 
