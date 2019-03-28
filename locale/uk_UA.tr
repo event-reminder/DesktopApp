@@ -355,8 +355,8 @@
         <translation>Резервну копію успішно завантажено до хмарного сховища</translation>
     </message>
     <message>
-        <source>Backup was successfully downloaded. Restart application to set all restored settings.</source>
-        <translation>Резервну копію успішно завантажено із хмарного сховища. Перезапустіть додаток, щоб встановити всі відновлені параметри.</translation>
+        <source>Backup was successfully downloaded. Restart application to enable all restored settings.</source>
+        <translation>Резервну копію успішно завантажено із хмарного сховища. Перезапустіть додаток, щоб активувати всі відновлені параметри.</translation>
     </message>
     <message>
         <source>Backup was deleted successfully</source>

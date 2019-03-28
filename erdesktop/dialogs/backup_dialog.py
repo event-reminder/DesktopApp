@@ -309,7 +309,7 @@ class BackupDialog(QDialog):
 		self.calendar.reset_font(QFont('SansSerif', self.settings.app_font))
 		self.calendar.update()
 		self.calendar.settings_dialog.refresh_settings_values()
-		popup.info(self, self.tr('Backup was successfully downloaded. Restart application to set all restored settings.'))
+		popup.info(self, self.tr('Backup was successfully downloaded. Restart application to enable all restored settings.'))
 
 	def delete_backup_cloud(self):
 		current = self.get_current_selected()
@@ -321,9 +321,9 @@ class BackupDialog(QDialog):
 		popup.info(self, self.tr('Backup was deleted successfully'))
 
 	def get_current_selected(self):
-		current = self.backups_cloud_list_widget.currentItem()
-		if current is not None:
-			return self.backups_cloud_list_widget.itemWidget(current)
+		selected_items = self.backups_cloud_list_widget.selectedItems()
+		if len(selected_items) > 0:
+			return self.backups_cloud_list_widget.itemWidget(selected_items[0])
 		return None
 
 	def exec_worker(self, fn, fn_success, fn_param_success, *args, **kwargs):

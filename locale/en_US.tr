@@ -340,8 +340,8 @@
         <translation>Backup was successfully uploaded to the cloud</translation>
     </message>
     <message>
-        <source>Backup was successfully downloaded. Restart application to set all restored settings.</source>
-        <translation>Backup was successfully downloaded. Restart application to set all restored settings.</translation>
+        <source>Backup was successfully downloaded. Restart application to enable all restored settings.</source>
+        <translation>Backup was successfully downloaded. Restart application to enable all restored settings.</translation>
     </message>
     <message>
         <source>Backup was deleted successfully</source>
