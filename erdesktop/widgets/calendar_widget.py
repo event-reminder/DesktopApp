@@ -63,6 +63,7 @@ class CalendarWidget(QCalendarWidget):
 
 		self.marked_dates = []
 		self.past_events = []
+
 		self.update()
 
 	@staticmethod
@@ -74,6 +75,10 @@ class CalendarWidget(QCalendarWidget):
 			if event.is_past:
 				past_events.append(event.date)
 		return events_dates, past_events
+
+	def showEvent(self, event):
+		super().showEvent(event)
+		self.load_events(self.selectedDate())
 
 	def update(self, *__args):
 		try:
@@ -149,10 +154,13 @@ class CalendarWidget(QCalendarWidget):
 		else:
 			painter.setBrush(QColor(255, 255, 255))
 		painter.setPen(QPen(QColor(255, 255, 255)))
-		if 1 < int(repr(num)[-1]) < 5:
+		num_repr = repr(num)
+		if len(num_repr) > 1 and int(num_repr[-2]) == 1:
+			text = self.tr('events')
+		elif 1 < int(num_repr[-1]) < 5:
 			text = self.tr('events*')
 		else:
-			text = self.tr('event{}'.format('s' if int(repr(num)[-1]) > 1 else ''))
+			text = self.tr('event{}'.format('s' if int(num_repr[-1]) > 1 or num % 2 == 0 else ''))
 		painter.drawText(text_rect.center(), '{} {}'.format(num, text))
 
 	def edit_event_click(self):
