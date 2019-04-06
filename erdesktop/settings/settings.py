@@ -82,14 +82,6 @@ class Settings:
 		return int(self.__settings.value('app_user/max_backups', MAX_BACKUPS))
 
 	@property
-	def badge_color(self):
-		return self.__settings.value('app/badge_color', BADGE_COLOR)
-
-	@property
-	def badge_letter_color(self):
-		return self.__settings.value('app/badge_letter_color', BADGE_LETTER_COLOR)
-
-	@property
 	def remove_event_after_time_up(self):
 		return self.__settings.value('event_user/remove_event_after_time_up', REMOVE_EVENT_AFTER_TIME_UP) == 'true'
 
@@ -108,6 +100,10 @@ class Settings:
 	@property
 	def remind_time_before_event(self):
 		return int(self.__settings.value('event_user/remind_time_before_event', REMIND_TIME))
+
+	@property
+	def remind_time_unit(self):
+		return int(self.__settings.value('event_user/remind_time_unit', REMIND_UNIT))
 
 	@property
 	def include_settings_backup(self):
@@ -159,6 +155,9 @@ class Settings:
 	def set_remind_time_before_event(self, value: int):
 		self._set_value('event_user/remind_time_before_event', value)
 
+	def set_remind_time_unit(self, value: int):
+		self._set_value('event_user/remind_time_unit', value)
+
 	def set_include_settings_backup(self, value: bool):
 		self._set_value('app_user/include_settings_backup', 'true' if value else 'false')
 
@@ -171,24 +170,28 @@ class Settings:
 			'start_in_tray': self.start_in_tray,
 			'notification_duration': self.notification_duration,
 			'remind_time_before_event': self.remind_time_before_event,
-			'lang': self.app_lang
+			'remind_time_unit': self.remind_time_unit,
+			'auto_start': self.run_with_system_start,
+			'lang': self.app_lang,
+			'backup_settings': self.include_settings_backup,
+			'max_backups': self.app_max_backups,
 		}
 
 	def from_dict(self, data):
-		keys = [
-			'is_dark_theme', 'is_always_on_top', 'font',
-			'remove_event_after_time_up', 'start_in_tray',
-			'notification_duration', 'remind_time_before_event', 'lang'
-		]
-		for key in keys:
-			if key not in data:
-				raise KeyError('Settings failure: backup is invalid.')
-		self.set_theme(data['is_dark_theme'])
-		self.set_is_always_on_top(data['is_always_on_top'])
-		self.set_font(data['font'])
-		self.set_remove_event_after_time_up(data['remove_event_after_time_up'])
-		self.set_start_in_tray(data['start_in_tray'])
-		self.set_notification_duration(data['notification_duration'])
-		self.set_remind_time_before_event(data['remind_time_before_event'])
-		self.set_lang(data['lang'])
+		# required_keys = [
+		#   'lang', 'auto_start', 'backup_settings', 'remove_event_after_time_up',
+		# 	'remind_time_before_event', 'remind_time_unit', 'is_dark_theme', 'max_backups'
+		# ]
+		self.set_theme(data.get('is_dark_theme', APP_IS_DARK_THEME))
+		self.set_is_always_on_top(data.get('is_always_on_top', ALWAYS_ON_TOP))
+		self.set_font(data.get('font', FONT))
+		self.set_remove_event_after_time_up(data.get('remove_event_after_time_up', REMOVE_EVENT_AFTER_TIME_UP))
+		self.set_start_in_tray(data.get('start_in_tray', START_IN_TRAY))
+		self.set_notification_duration(data.get('notification_duration', NOTIFICATION_DURATION))
+		self.set_remind_time_before_event(data.get('remind_time_before_event', REMIND_TIME))
+		self.set_remind_time_unit(data.get('remind_time_unit', REMIND_UNIT))
+		self.set_run_with_system_start(data.get('auto_start', RUN_WITH_SYSTEM_START))
+		self.set_lang(data.get('lang', LANG))
+		self.set_include_settings_backup(data.get('backup_settings', INCLUDE_SETTINGS_BACKUP))
+		self.set_max_backups(data.get('max_backups', MAX_BACKUPS))
 		self.commit()

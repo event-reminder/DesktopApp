@@ -88,8 +88,18 @@ START_IN_TRAY = 'false'
 
 RUN_WITH_SYSTEM_START = 'false'
 
-NOTIFICATION_DURATION = 5   # in seconds
+# in seconds
+NOTIFICATION_DURATION = 5
 
-REMIND_TIME = 1             # in minutes
+# in minutes
+REMIND_TIME = 1
+
+UNIT_MINUTES = 'Minutes'
+UNIT_HOURS = 'Hours'
+UNIT_DAYS = 'Days'
+UNIT_WEEKS = 'Weeks'
+
+# 0 - Minutes, 1 - Hours, 2 - Days, 3 - Weeks
+REMIND_UNIT = 0
 
 INCLUDE_SETTINGS_BACKUP = 'true'

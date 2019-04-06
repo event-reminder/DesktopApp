@@ -11,6 +11,7 @@ from erdesktop.util import logger, log_msg, Worker
 from erdesktop.widgets.util import info, error, popup
 from erdesktop.settings import FONT_LARGE, FONT_NORMAL
 from erdesktop.util.exceptions import DatabaseException
+from erdesktop.settings.default import BADGE_COLOR, BADGE_LETTER_COLOR
 from erdesktop.dialogs import AboutDialog, BackupDialog, AccountDialog, SettingsDialog, EventDetailsDialog
 
 
@@ -144,13 +145,13 @@ class CalendarWidget(QCalendarWidget):
 			if is_past:
 				painter.setBrush(QColor(0, 0, 0))
 			else:
-				painter.setBrush(QColor(self.settings.badge_color))
+				painter.setBrush(QColor(BADGE_COLOR))
 		else:
 			painter.setBrush(QColor(196, 196, 196))
 		painter.setPen(Qt.NoPen)
 		painter.drawRect(ellipse_rect)
 		if self.monthShown() == date.month():
-			painter.setBrush(QColor(self.settings.badge_letter_color))
+			painter.setBrush(QColor(BADGE_LETTER_COLOR))
 		else:
 			painter.setBrush(QColor(255, 255, 255))
 		painter.setPen(QPen(QColor(255, 255, 255)))
