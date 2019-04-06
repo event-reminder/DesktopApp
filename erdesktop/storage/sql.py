@@ -1,13 +1,14 @@
 # noinspection SqlDialectInspection,SqlNoDataSourceInspection
 QUERY_CREATE_EVENT_TABLE = """
 CREATE TABLE IF NOT EXISTS Events (
-  id            INTEGER      NOT NULL PRIMARY KEY,
-  title         VARCHAR(500) NOT NULL,
-  date          DATE     NOT NULL,
-  time          TIME     NOT NULL,
-  description   TEXT         NOT NULL,
-  is_past       INTEGER      NOT NULL,
-  repeat_weekly INTEGER      NOT NULL
+  id                INTEGER      NOT NULL PRIMARY KEY,
+  title             VARCHAR(500) NOT NULL,
+  date              DATE         NOT NULL,
+  time              TIME         NOT NULL,
+  description       TEXT         NOT NULL,
+  is_past           INTEGER      NOT NULL,
+  repeat_weekly     INTEGER      NOT NULL,
+  remind_divisor    INTEGER      DEFAULT 1
 );
 """
 
@@ -29,7 +30,7 @@ INSERT INTO Events(title, date, time, description, is_past, repeat_weekly)
 
 # noinspection SqlDialectInspection,SqlNoDataSourceInspection
 QUERY_UPDATE_EVENT = """
-UPDATE Events SET title = ?, date = ?, time = ?, description = ?, is_past = ?, repeat_weekly = ?
+UPDATE Events SET title = ?, date = ?, time = ?, description = ?, is_past = ?, repeat_weekly = ?, remind_divisor = ?
   WHERE id = ?;
 """
 

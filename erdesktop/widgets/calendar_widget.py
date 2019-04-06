@@ -10,9 +10,13 @@ from erdesktop.cloud import CloudStorage
 from erdesktop.util import logger, log_msg, Worker
 from erdesktop.widgets.util import info, error, popup
 from erdesktop.settings import FONT_LARGE, FONT_NORMAL
+from erdesktop.dialogs.about_dialog import AboutDialog
 from erdesktop.util.exceptions import DatabaseException
+from erdesktop.dialogs.backup_dialog import BackupDialog
+from erdesktop.dialogs.account_dialog import AccountDialog
+from erdesktop.dialogs.settings_dialog import SettingsDialog
+from erdesktop.dialogs.event_details_dialog import EventDetailsDialog
 from erdesktop.settings.default import BADGE_COLOR, BADGE_LETTER_COLOR
-from erdesktop.dialogs import AboutDialog, BackupDialog, AccountDialog, SettingsDialog, EventDetailsDialog
 
 
 class CalendarWidget(QCalendarWidget):

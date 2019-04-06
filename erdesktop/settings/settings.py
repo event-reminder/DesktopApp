@@ -14,6 +14,7 @@ class Settings:
 		self.__settings = QSettings(settings_file, QSettings.IniFormat)
 		self.__is_dark_theme = self.__settings.value('app_user/is_dark_theme', APP_IS_DARK_THEME)
 		self.__autocommit = autocommit
+		self.__remind_time_multiplier = [1, 60, 1440, 10080]
 
 	def autocommit(self, val: bool):
 		self.__autocommit = val
@@ -97,9 +98,9 @@ class Settings:
 	def notification_duration(self):
 		return int(self.__settings.value('event_user/notification_duration', NOTIFICATION_DURATION))
 
-	@property
-	def remind_time_before_event(self):
-		return int(self.__settings.value('event_user/remind_time_before_event', REMIND_TIME))
+	def remind_time_before_event(self, to_minutes=False):
+		remind_time = int(self.__settings.value('event_user/remind_time_before_event', REMIND_TIME))
+		return remind_time if not to_minutes else self._remind_time_to_minutes(remind_time, self.remind_time_unit)
 
 	@property
 	def remind_time_unit(self):
@@ -169,7 +170,7 @@ class Settings:
 			'remove_event_after_time_up': self.remove_event_after_time_up,
 			'start_in_tray': self.start_in_tray,
 			'notification_duration': self.notification_duration,
-			'remind_time_before_event': self.remind_time_before_event,
+			'remind_time_before_event': self.remind_time_before_event(),
 			'remind_time_unit': self.remind_time_unit,
 			'auto_start': self.run_with_system_start,
 			'lang': self.app_lang,
@@ -195,3 +196,6 @@ class Settings:
 		self.set_include_settings_backup(data.get('backup_settings', INCLUDE_SETTINGS_BACKUP))
 		self.set_max_backups(data.get('max_backups', MAX_BACKUPS))
 		self.commit()
+
+	def _remind_time_to_minutes(self, remind_time, units):
+		return self.__remind_time_multiplier[units] * remind_time

@@ -117,7 +117,7 @@ class SettingsDialog(QDialog):
 		self.include_settings_backup_check_box.setChecked(self.settings.include_settings_backup)
 		self.remove_after_time_up_check_box.setChecked(self.settings.remove_event_after_time_up)
 		self.notification_duration_input.setText(str(self.settings.notification_duration))
-		self.remind_time_before_event_input.setText(str(self.settings.remind_time_before_event))
+		self.remind_time_before_event_input.setText(str(self.settings.remind_time_before_event()))
 		self.remind_time_units_combo_box.setCurrentIndex(self.settings.remind_time_unit)
 
 	def setup_ui(self):
@@ -197,11 +197,13 @@ class SettingsDialog(QDialog):
 
 		layout.addWidget(QLabel(self.tr('Notification duration (sec)')), 1, 0)
 		self.notification_duration_input.setValidator(QIntValidator())
+		self.notification_duration_input.setMaxLength(3)
 		self.notification_duration_input.textChanged.connect(self.notification_duration_changed)
 		layout.addWidget(self.notification_duration_input, 1, 1)
 
 		layout.addWidget(QLabel(self.tr('Notify before event')), 2, 0)
 		self.remind_time_before_event_input.setValidator(QIntValidator())
+		self.remind_time_before_event_input.setMaxLength(2)
 		self.remind_time_before_event_input.textChanged.connect(self.remind_time_before_event_changed)
 		layout.addWidget(self.remind_time_before_event_input, 2, 1)
 

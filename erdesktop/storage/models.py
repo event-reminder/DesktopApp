@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from erdesktop.storage.sql import (
 	QUERY_INSERT_EVENT,
@@ -21,7 +21,7 @@ class EventModel:
 	def __init__(self, fields):
 		if isinstance(fields, dict):
 			fields = self.to_tuple(fields)
-		elif isinstance(fields, tuple) and len(fields) != 7:
+		elif isinstance(fields, tuple) and len(fields) != 8:
 			fields = (None,) + fields
 		self.id = fields[0]
 		self.title = fields[1]
@@ -43,6 +43,7 @@ class EventModel:
 		self.description = fields[4]
 		self.is_past = True if fields[5] == 1 else False
 		self.repeat_weekly = True if fields[6] == 1 else False
+		self.remind_divisor = fields[7]
 
 	@staticmethod
 	def to_tuple(fields: dict):
@@ -53,7 +54,8 @@ class EventModel:
 			fields.get('time', None),
 			fields.get('description', None),
 			fields.get('is_past', None),
-			fields.get('repeat_weekly', None)
+			fields.get('repeat_weekly', None),
+			fields.get('remind_divisor', None)
 		)
 
 	def to_dict(self):
@@ -63,7 +65,8 @@ class EventModel:
 			'time': self.time.strftime(self.TIME_FORMAT),
 			'description': self.description,
 			'is_past': 1 if self.is_past is True else 0,
-			'repeat_weekly': 1 if self.repeat_weekly is True else 0
+			'repeat_weekly': 1 if self.repeat_weekly is True else 0,
+			'remind_divisor': self.remind_divisor
 		}
 
 	@staticmethod
@@ -102,6 +105,7 @@ class EventModel:
 			model.description,
 			model.is_past,
 			model.repeat_weekly,
+			model.remind_divisor,
 			model.id
 		))
 		return model.id
@@ -114,10 +118,17 @@ class EventModel:
 		return False
 
 	@staticmethod
-	def select(cursor, date=None, time=None):
+	def select(cursor, date=None, time=None, delta=None):
 		condition = ''
 		if date is not None:
-			condition += 'date = \'{}\''.format(date.strftime(EventModel.DATE_FORMAT))
+			condition += '(date '
+			if delta is not None:
+				condition += 'BETWEEN \'{}\' AND \'{}\')'.format(
+					date.strftime(EventModel.DATE_FORMAT),
+					(date + timedelta(minutes=delta)).strftime(EventModel.DATE_FORMAT)
+				)
+			else:
+				condition += '= \'{}\')'.format(date.strftime(EventModel.DATE_FORMAT))
 		if time is not None:
 			time_condition = 'time = \'{}\''.format(time.strftime(EventModel.TIME_FORMAT))
 			if condition != '':
@@ -127,3 +138,6 @@ class EventModel:
 			condition = 'WHERE ' + condition
 		query_result = cursor.execute(QUERY_SELECT_EVENTS_BY.format(condition)).fetchall()
 		return [EventModel(item) for item in query_result]
+
+	def expired(self, now):
+		return now >= datetime.combine(self.date, self.time)
