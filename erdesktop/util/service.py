@@ -46,7 +46,7 @@ class ReminderService(QThread):
 			now = datetime.now()
 			divided_remind_time = remind_time / event.remind_divisor
 			now_plus_delta = (
-				now + timedelta(minutes=divided_remind_time if divided_remind_time > 1 else 0)
+				now + timedelta(minutes=divided_remind_time if divided_remind_time >= 1 else 0)
 			).replace(microsecond=0)
 			if event.is_past is False and ((event.date == now.date() and event.time <= now_plus_delta.time()) or event.date < now_plus_delta.date()):
 				self.__send_notification(event)
