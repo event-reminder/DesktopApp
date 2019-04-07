@@ -84,7 +84,7 @@ class Settings:
 
 	@property
 	def remove_event_after_time_up(self):
-		return self.__settings.value('event_user/remove_event_after_time_up', REMOVE_EVENT_AFTER_TIME_UP) == 'true'
+		return self.__settings.value('app_user/remove_event_after_time_up', REMOVE_EVENT_AFTER_TIME_UP) == 'true'
 
 	@property
 	def start_in_tray(self):

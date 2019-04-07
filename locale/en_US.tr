@@ -410,6 +410,22 @@
 		<source>events</source>
 		<translation>events</translation>
 	</message>
+	<message>
+		<source>Deleting events</source>
+		<translation>Deleting events</translation>
+	</message>
+	<message>
+		<source>Do you really want to delete events</source>
+		<translation>Do you really want to delete events</translation>
+	</message>
+	<message>
+		<source>Deleting an event</source>
+		<translation>Deleting an event</translation>
+	</message>
+	<message>
+		<source>Do you really want to delete the event</source>
+		<translation>Do you really want to delete the event</translation>
+	</message>
 </context>
 <context>
 	<name>EventListWidget</name>
@@ -497,8 +513,8 @@
 		<translation>Notification duration (sec)</translation>
 	</message>
 	<message>
-		<source>Notify before event (min)</source>
-		<translation>Notify before event (min)</translation>
+		<source>Notify before event</source>
+		<translation>Notify before event</translation>
 	</message>
 	<message>
 		<source>Events</source>

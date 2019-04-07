@@ -189,7 +189,7 @@ class CalendarWidget(QCalendarWidget):
 	def delete_event_click(self):
 		if len(self.events_list.selected_ids()) > 1:
 			self.perform_deleting(
-				self.tr('Deleting set of events'),
+				self.tr('Deleting events'),
 				self.tr('Do you really want to delete events'),
 				self.delete_events,
 				*(self.events_list.selected_ids(),)

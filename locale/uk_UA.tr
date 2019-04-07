@@ -425,6 +425,22 @@
 		<source>events</source>
 		<translation>подій</translation>
 	</message>
+	<message>
+		<source>Deleting events</source>
+		<translation>Видалення подій</translation>
+	</message>
+	<message>
+		<source>Do you really want to delete events</source>
+		<translation>Ви справді хочете видалити вибрані події</translation>
+	</message>
+	<message>
+		<source>Deleting an event</source>
+		<translation>Видалення події</translation>
+	</message>
+	<message>
+		<source>Do you really want to delete the event</source>
+		<translation>Ви справді хочете видалити вибрану подію</translation>
+	</message>
 </context>
 <context>
 	<name>EventListWidget</name>
@@ -505,15 +521,15 @@
 	</message>
 	<message>
 		<source>Remove event after time is up</source>
-		<translation>Видаляти подію після закінчення її часу</translation>
+		<translation>Видаляти подію після її завершення</translation>
 	</message>
 	<message>
 		<source>Notification duration (sec)</source>
 		<translation>Тривалість сповіщення (сек)</translation>
 	</message>
 	<message>
-		<source>Notify before event (min)</source>
-		<translation>Сповістити перед подією (хв)</translation>
+		<source>Notify before event</source>
+		<translation>Сповістити перед подією</translation>
 	</message>
 	<message>
 		<source>Events</source>
