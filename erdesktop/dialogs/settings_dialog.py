@@ -12,8 +12,13 @@ from erdesktop.system import autostart
 from erdesktop.cloud import CloudStorage
 from erdesktop.widgets.util import PushButton, popup
 from erdesktop.widgets.waiting_spinner import WaitingSpinner
-from erdesktop.settings import Settings, FONT_LARGE, FONT_SMALL, FONT_NORMAL, AVAILABLE_LANGUAGES, AVAILABLE_LANGUAGES_IDX
-from erdesktop.util.exceptions import UserUpdatingError, RequestTokenError, ResetPasswordError, CloudStorageException, AutoStartIsNotSupportedError
+from erdesktop.settings import (
+	Settings, FONT_LARGE, FONT_SMALL, FONT_NORMAL, AVAILABLE_LANGUAGES,
+	AVAILABLE_LANGUAGES_IDX, UNIT_MINUTES, UNIT_HOURS, UNIT_DAYS, UNIT_WEEKS
+)
+from erdesktop.util.exceptions import (
+	UserUpdatingError, RequestTokenError, ResetPasswordError, CloudStorageException, AutoStartIsNotSupportedError
+)
 
 
 class SettingsDialog(QDialog):
@@ -51,6 +56,7 @@ class SettingsDialog(QDialog):
 		self.remove_after_time_up_check_box = QCheckBox()
 		self.notification_duration_input = QLineEdit()
 		self.remind_time_before_event_input = QLineEdit()
+		self.remind_time_units_combo_box = QComboBox()
 
 		self.include_settings_backup_check_box = QCheckBox()
 
@@ -111,7 +117,8 @@ class SettingsDialog(QDialog):
 		self.include_settings_backup_check_box.setChecked(self.settings.include_settings_backup)
 		self.remove_after_time_up_check_box.setChecked(self.settings.remove_event_after_time_up)
 		self.notification_duration_input.setText(str(self.settings.notification_duration))
-		self.remind_time_before_event_input.setText(str(self.settings.remind_time_before_event))
+		self.remind_time_before_event_input.setText(str(self.settings.remind_time_before_event()))
+		self.remind_time_units_combo_box.setCurrentIndex(self.settings.remind_time_unit)
 
 	def setup_ui(self):
 		content = QVBoxLayout()
@@ -190,13 +197,21 @@ class SettingsDialog(QDialog):
 
 		layout.addWidget(QLabel(self.tr('Notification duration (sec)')), 1, 0)
 		self.notification_duration_input.setValidator(QIntValidator())
+		self.notification_duration_input.setMaxLength(3)
 		self.notification_duration_input.textChanged.connect(self.notification_duration_changed)
 		layout.addWidget(self.notification_duration_input, 1, 1)
 
-		layout.addWidget(QLabel(self.tr('Notify before event (min)')), 2, 0)
+		layout.addWidget(QLabel(self.tr('Notify before event')), 2, 0)
 		self.remind_time_before_event_input.setValidator(QIntValidator())
+		self.remind_time_before_event_input.setMaxLength(2)
 		self.remind_time_before_event_input.textChanged.connect(self.remind_time_before_event_changed)
 		layout.addWidget(self.remind_time_before_event_input, 2, 1)
+
+		self.remind_time_units_combo_box.currentIndexChanged.connect(self.remind_time_units_changed)
+		self.remind_time_units_combo_box.addItems(
+			[self.tr(UNIT_MINUTES), self.tr(UNIT_HOURS), self.tr(UNIT_DAYS), self.tr(UNIT_WEEKS)]
+		)
+		layout.addWidget(self.remind_time_units_combo_box, 2, 2)
 
 		tab.setLayout(layout)
 		tabs.addTab(tab, self.tr('Events'))
@@ -231,11 +246,15 @@ class SettingsDialog(QDialog):
 
 		self.new_password_repeat_input.setEchoMode(QLineEdit.Password)
 		layout.addLayout(
-			self.create_field(self.tr('Repeat Password'), False, self.change_password_inputs_changed, self.new_password_repeat_input)
+			self.create_field(
+				self.tr('Repeat Password'), False, self.change_password_inputs_changed, self.new_password_repeat_input
+			)
 		)
 
 		layout.addLayout(
-			self.create_field(self.tr('Verification Token'), False, self.change_password_inputs_changed, self.verification_token_input)
+			self.create_field(
+				self.tr('Verification Token'), False, self.change_password_inputs_changed, self.verification_token_input
+			)
 		)
 
 		h_layout = QHBoxLayout()
@@ -271,6 +290,10 @@ class SettingsDialog(QDialog):
 			font = QFont('SansSerif', new_font)
 			self.settings.set_font(new_font)
 			self.calendar.reset_font(font)
+
+	def remind_time_units_changed(self, current):
+		if self.ui_is_loaded:
+			self.settings.set_remind_time_unit(current)
 
 	def start_in_tray_changed(self):
 		if self.ui_is_loaded:

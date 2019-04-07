@@ -10,8 +10,13 @@ from erdesktop.cloud import CloudStorage
 from erdesktop.util import logger, log_msg, Worker
 from erdesktop.widgets.util import info, error, popup
 from erdesktop.settings import FONT_LARGE, FONT_NORMAL
+from erdesktop.dialogs.about_dialog import AboutDialog
 from erdesktop.util.exceptions import DatabaseException
-from erdesktop.dialogs import AboutDialog, BackupDialog, AccountDialog, SettingsDialog, EventDetailsDialog
+from erdesktop.dialogs.backup_dialog import BackupDialog
+from erdesktop.dialogs.account_dialog import AccountDialog
+from erdesktop.dialogs.settings_dialog import SettingsDialog
+from erdesktop.dialogs.event_details_dialog import EventDetailsDialog
+from erdesktop.settings.default import BADGE_COLOR, BADGE_LETTER_COLOR
 
 
 class CalendarWidget(QCalendarWidget):
@@ -63,6 +68,7 @@ class CalendarWidget(QCalendarWidget):
 
 		self.marked_dates = []
 		self.past_events = []
+
 		self.update()
 
 	@staticmethod
@@ -74,6 +80,10 @@ class CalendarWidget(QCalendarWidget):
 			if event.is_past:
 				past_events.append(event.date)
 		return events_dates, past_events
+
+	def showEvent(self, event):
+		super().showEvent(event)
+		self.load_events(self.selectedDate())
 
 	def update(self, *__args):
 		try:
@@ -139,20 +149,23 @@ class CalendarWidget(QCalendarWidget):
 			if is_past:
 				painter.setBrush(QColor(0, 0, 0))
 			else:
-				painter.setBrush(QColor(self.settings.badge_color))
+				painter.setBrush(QColor(BADGE_COLOR))
 		else:
 			painter.setBrush(QColor(196, 196, 196))
 		painter.setPen(Qt.NoPen)
 		painter.drawRect(ellipse_rect)
 		if self.monthShown() == date.month():
-			painter.setBrush(QColor(self.settings.badge_letter_color))
+			painter.setBrush(QColor(BADGE_LETTER_COLOR))
 		else:
 			painter.setBrush(QColor(255, 255, 255))
 		painter.setPen(QPen(QColor(255, 255, 255)))
-		if 1 < num < 5:
+		num_repr = repr(num)
+		if len(num_repr) > 1 and int(num_repr[-2]) == 1:
+			text = self.tr('events')
+		elif 1 < int(num_repr[-1]) < 5:
 			text = self.tr('events*')
 		else:
-			text = self.tr('event{}'.format('s' if num > 1 else ''))
+			text = self.tr('event{}'.format('s' if int(num_repr[-1]) > 1 or num % 2 == 0 else ''))
 		painter.drawText(text_rect.center(), '{} {}'.format(num, text))
 
 	def edit_event_click(self):
@@ -176,7 +189,7 @@ class CalendarWidget(QCalendarWidget):
 	def delete_event_click(self):
 		if len(self.events_list.selected_ids()) > 1:
 			self.perform_deleting(
-				self.tr('Deleting set of events'),
+				self.tr('Deleting events'),
 				self.tr('Do you really want to delete events'),
 				self.delete_events,
 				*(self.events_list.selected_ids(),)

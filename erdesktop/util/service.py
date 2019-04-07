@@ -39,24 +39,31 @@ class ReminderService(QThread):
 			self.storage.disconnect()
 
 	def __process_events(self, today, date_filter=None):
-		events = self.__storage.get_events(date_filter)
+		remind_time = self.__settings.remind_time_before_event(True)
+		events = self.__storage.get_events(date_filter, delta=remind_time)
 		need_to_update = False
 		for event in events:
 			now = datetime.now()
-			now_plus_delta = (now + timedelta(minutes=self.__settings.remind_time_before_event)).replace(microsecond=0)
+			divided_remind_time = remind_time / event.remind_divisor
+			now_plus_delta = (
+				now + timedelta(minutes=divided_remind_time if divided_remind_time >= 1 else 0)
+			).replace(microsecond=0)
 			if event.is_past is False and ((event.date == now.date() and event.time <= now_plus_delta.time()) or event.date < now_plus_delta.date()):
 				self.__send_notification(event)
-				if event.repeat_weekly is True:
-					new_date = event.date
-					while new_date <= today:
-						new_date += timedelta(days=7)
-					self.__storage.update_event(pk=event.id, e_date=new_date)
-				else:
-					if self.__settings.remove_event_after_time_up is True:
-						self.__storage.delete_event(event.id)
+				if event.expired(now):
+					if event.repeat_weekly is True:
+						new_date = event.date
+						while new_date <= today:
+							new_date += timedelta(days=7)
+						self.__storage.update_event(pk=event.id, e_date=new_date, remind_divisor=1)
 					else:
-						self.__storage.update_event(pk=event.id, is_past=True)
-				need_to_update = True
+						if self.__settings.remove_event_after_time_up is True:
+							self.__storage.delete_event(event.id)
+						else:
+							self.__storage.update_event(pk=event.id, is_past=True)
+					need_to_update = True
+				else:
+					self.__storage.update_event(pk=event.id, remind_divisor=event.remind_divisor * 2)
 		if need_to_update:
 			self.__calendar.update()
 

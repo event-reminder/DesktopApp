@@ -2,559 +2,591 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US" sourcelanguage="en_US">
 <context>
-    <name>MainWindow</name>
-    <message>
-        <source>Open</source>
-        <translation>Open</translation>
-    </message>
-    <message>
-        <source>Minimize To Tray</source>
-        <translation>Minimize To Tray</translation>
-    </message>
-    <message>
-        <source>Quit</source>
-        <translation>Quit</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation>File</translation>
-    </message>
-    <message>
-        <source>New Event</source>
-        <translation>New Event</translation>
-    </message>
-    <message>
-        <source>Se{}ttings</source>
-        <translation>Se{}ttings</translation>
-    </message>
-    <message>
-        <source>Backup and Restore</source>
-        <translation>Backup and Restore</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation>Help</translation>
-    </message>
-    <message>
-        <source>Account</source>
-        <translation>Account</translation>
-    </message>
-    <message>
-        <source>About</source>
-        <translation>About</translation>
-    </message>
-    <message>
-        <source>Shortcut icon is not supported on {} by application</source>
-        <translation>Shortcut icon is not supported on {} by application</translation>
-    </message>
-    <message>
-        <source>Unable to create shortcut icon</source>
-        <translation>Unable to create shortcut icon</translation>
-    </message>
-    <message>
-        <source>Create shortcut icon...</source>
-        <translation>Create shortcut icon...</translation>
-    </message>
-    <message>
-        <source>Shortcut icon has been created</source>
-        <translation>Shortcut icon has been created</translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation>New</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation>Edit</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation>Delete</translation>
-    </message>
+	<name>MainWindow</name>
+	<message>
+		<source>Open</source>
+		<translation>Open</translation>
+	</message>
+	<message>
+		<source>Minimize To Tray</source>
+		<translation>Minimize To Tray</translation>
+	</message>
+	<message>
+		<source>Quit</source>
+		<translation>Quit</translation>
+	</message>
+	<message>
+		<source>File</source>
+		<translation>File</translation>
+	</message>
+	<message>
+		<source>New Event</source>
+		<translation>New Event</translation>
+	</message>
+	<message>
+		<source>Se{}ttings</source>
+		<translation>Se{}ttings</translation>
+	</message>
+	<message>
+		<source>Backup and Restore</source>
+		<translation>Backup and Restore</translation>
+	</message>
+	<message>
+		<source>Help</source>
+		<translation>Help</translation>
+	</message>
+	<message>
+		<source>Account</source>
+		<translation>Account</translation>
+	</message>
+	<message>
+		<source>About</source>
+		<translation>About</translation>
+	</message>
+	<message>
+		<source>Shortcut icon is not supported on {} by application</source>
+		<translation>Shortcut icon is not supported on {} by application</translation>
+	</message>
+	<message>
+		<source>Unable to create shortcut icon</source>
+		<translation>Unable to create shortcut icon</translation>
+	</message>
+	<message>
+		<source>Create shortcut icon...</source>
+		<translation>Create shortcut icon...</translation>
+	</message>
+	<message>
+		<source>Shortcut icon has been created</source>
+		<translation>Shortcut icon has been created</translation>
+	</message>
+	<message>
+		<source>New</source>
+		<translation>New</translation>
+	</message>
+	<message>
+		<source>Details</source>
+		<translation>Details</translation>
+	</message>
+	<message>
+		<source>Delete</source>
+		<translation>Delete</translation>
+	</message>
 </context>
 <context>
-    <name>AccountDialog</name>
-    <message>
-        <source>Account</source>
-        <translation>Account</translation>
-    </message>
-    <message>
-        <source>Remember me</source>
-        <translation>Remember me</translation>
-    </message>
-    <message>
-        <source>Username</source>
-        <translation>Username</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation>Email</translation>
-    </message>
-    <message>
-        <source>Password</source>
-        <translation>Password</translation>
-    </message>
-    <message>
-        <source>Login</source>
-        <translation>Login</translation>
-    </message>
-    <message>
-        <source>Register</source>
-        <translation>Register</translation>
-    </message>
-    <message>
-        <source>Logout</source>
-        <translation>Logout</translation>
-    </message>
-    <message>
-        <source>Connection error</source>
-        <translation>Connection error</translation>
-    </message>
-    <message>
-        <source>Server is not working or your internet connection is failed</source>
-        <translation>Server is not working or your internet connection is failed</translation>
-    </message>
-    <message>
-        <source>Check your connection and reopen this dialog</source>
-        <translation>Check your connection and reopen this dialog</translation>
-    </message>
-    <message>
-        <source>New account</source>
-        <translation>New account</translation>
-    </message>
-    <message>
-        <source>Username field can not be empty</source>
-        <translation>Username field can not be empty</translation>
-    </message>
-    <message>
-        <source>Email field can not be empty</source>
-        <translation>Email field can not be empty</translation>
-    </message>
-    <message>
-        <source>Email is not valid</source>
-        <translation>Email is not valid</translation>
-    </message>
-    <message>
-        <source>Password field can not be empty</source>
-        <translation>Password field can not be empty</translation>
-    </message>
-    <message>
-        <source>Thank you for registration</source>
-        <translation>Thank you for registration</translation>
-    </message>
-    <message>
-        <source>Check out {} for credentials information</source>
-        <translation>Check out {} for credentials information</translation>
-    </message>
-    <message>
-        <source>To activate, simply login to Your account, otherwise it will be deleted in 24 hours after registration</source>
-        <translation>To activate, simply login to Your account, otherwise it will be deleted in 24 hours after registration</translation>
-    </message>
-    <message>
-        <source>Logged in as</source>
-        <translation>Logged in as</translation>
-    </message>
-    <message>
-        <source>Successfully logged out</source>
-        <translation>Successfully logged out</translation>
-    </message>
-    <message>
-        <source>Login failure: unable to log in with provided credentials</source>
-        <translation>Login failure: unable to log in with provided credentials</translation>
-    </message>
-    <message>
-        <source>Login failure: unable to log in, status</source>
-        <translation>Login failure: unable to log in, status</translation>
-    </message>
-    <message>
-        <source>Logout failure: unable to log out, status</source>
-        <translation>Logout failure: unable to log out, status</translation>
-    </message>
-    <message>
-        <source>Registration failure: username is not provided</source>
-        <translation>Registration failure: username is not provided</translation>
-    </message>
-    <message>
-        <source>Registration failure: email is not provided</source>
-        <translation>Registration failure: email is not provided</translation>
-    </message>
-    <message>
-        <source>Registration failure: user already exists</source>
-        <translation>Registration failure: user already exists</translation>
-    </message>
-    <message>
-        <source>Registration failure: unable to register an account, status</source>
-        <translation>Registration failure: unable to register an account, status</translation>
-    </message>
-    <message>
-        <source>Reading account failure: authentication is required</source>
-        <translation>Reading account failure: authentication is required</translation>
-    </message>
-    <message>
-        <source>Reading account failure: unable to retrieve account information, status</source>
-        <translation>Reading account failure: unable to retrieve account information, status</translation>
-    </message>
+	<name>AccountDialog</name>
+	<message>
+		<source>Account</source>
+		<translation>Account</translation>
+	</message>
+	<message>
+		<source>Remember me</source>
+		<translation>Remember me</translation>
+	</message>
+	<message>
+		<source>Username</source>
+		<translation>Username</translation>
+	</message>
+	<message>
+		<source>Email</source>
+		<translation>Email</translation>
+	</message>
+	<message>
+		<source>Password</source>
+		<translation>Password</translation>
+	</message>
+	<message>
+		<source>Login</source>
+		<translation>Login</translation>
+	</message>
+	<message>
+		<source>Register</source>
+		<translation>Register</translation>
+	</message>
+	<message>
+		<source>Logout</source>
+		<translation>Logout</translation>
+	</message>
+	<message>
+		<source>Connection error</source>
+		<translation>Connection error</translation>
+	</message>
+	<message>
+		<source>Server is not working or your internet connection is failed</source>
+		<translation>Server is not working or your internet connection is failed</translation>
+	</message>
+	<message>
+		<source>Check your connection and reopen this dialog</source>
+		<translation>Check your connection and reopen this dialog</translation>
+	</message>
+	<message>
+		<source>New account</source>
+		<translation>New account</translation>
+	</message>
+	<message>
+		<source>Username field can not be empty</source>
+		<translation>Username field can not be empty</translation>
+	</message>
+	<message>
+		<source>Email field can not be empty</source>
+		<translation>Email field can not be empty</translation>
+	</message>
+	<message>
+		<source>Email is not valid</source>
+		<translation>Email is not valid</translation>
+	</message>
+	<message>
+		<source>Password field can not be empty</source>
+		<translation>Password field can not be empty</translation>
+	</message>
+	<message>
+		<source>Thank you for registration</source>
+		<translation>Thank you for registration</translation>
+	</message>
+	<message>
+		<source>Check out {} for credentials information</source>
+		<translation>Check out {} for credentials information</translation>
+	</message>
+	<message>
+		<source>To activate, simply login to Your account, otherwise it will be deleted in 24 hours after registration</source>
+		<translation>To activate, simply login to Your account, otherwise it will be deleted in 24 hours after registration</translation>
+	</message>
+	<message>
+		<source>Logged in as</source>
+		<translation>Logged in as</translation>
+	</message>
+	<message>
+		<source>Successfully logged out</source>
+		<translation>Successfully logged out</translation>
+	</message>
+	<message>
+		<source>Login failure: unable to log in with provided credentials</source>
+		<translation>Login failure: unable to log in with provided credentials</translation>
+	</message>
+	<message>
+		<source>Login failure: unable to log in, status</source>
+		<translation>Login failure: unable to log in, status</translation>
+	</message>
+	<message>
+		<source>Logout failure: unable to log out, status</source>
+		<translation>Logout failure: unable to log out, status</translation>
+	</message>
+	<message>
+		<source>Registration failure: username is not provided</source>
+		<translation>Registration failure: username is not provided</translation>
+	</message>
+	<message>
+		<source>Registration failure: email is not provided</source>
+		<translation>Registration failure: email is not provided</translation>
+	</message>
+	<message>
+		<source>Registration failure: user already exists</source>
+		<translation>Registration failure: user already exists</translation>
+	</message>
+	<message>
+		<source>Registration failure: unable to register an account, status</source>
+		<translation>Registration failure: unable to register an account, status</translation>
+	</message>
+	<message>
+		<source>Reading account failure: authentication is required</source>
+		<translation>Reading account failure: authentication is required</translation>
+	</message>
+	<message>
+		<source>Reading account failure: unable to retrieve account information, status</source>
+		<translation>Reading account failure: unable to retrieve account information, status</translation>
+	</message>
 </context>
 <context>
-    <name>EventDetailsDialog</name>
-    <message>
-        <source>New Event</source>
-        <translation>New Event</translation>
-    </message>
-    <message>
-        <source>Repeat weekly</source>
-        <translation>Repeat weekly</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation>Title</translation>
-    </message>
-    <message>
-        <source>Description (optional)</source>
-        <translation>Description (optional)</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>Date</translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation>Time</translation>
-    </message><message>
-        <source>Save</source>
-        <translation>Save</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation>Delete</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>Cancel</translation>
-    </message>
-    <message>
-        <source>Update Event</source>
-        <translation>Update Event</translation>
-    </message>
-    <message>
-        <source>Deleting an event</source>
-        <translation>Deleting an event</translation>
-    </message>
-    <message>
-        <source>Do you really want to delete the event</source>
-        <translation>Do you really want to delete the event</translation>
-    </message>
-    <message>
-        <source>Event is already removed</source>
-        <translation>Event is already removed</translation>
-    </message>
-    <message>
-        <source>Provide title for the event</source>
-        <translation>Provide title for the event</translation>
-    </message>
-    <message>
-        <source>Unable to set past event, check date input</source>
-        <translation>Unable to set past event, check date input</translation>
-    </message>
-    <message>
-        <source>Unable to set past event, check time input</source>
-        <translation>Unable to set past event, check time input</translation>
-    </message>
-    <message>
-        <source>Saving event to database failed</source>
-        <translation>Saving event to database failed</translation>
-    </message>
-    <message>
-        <source>Saved successfully</source>
-        <translation>Saved successfully</translation>
-    </message>
+	<name>EventDetailsDialog</name>
+	<message>
+		<source>New Event</source>
+		<translation>New Event</translation>
+	</message>
+	<message>
+		<source>Repeat weekly</source>
+		<translation>Repeat weekly</translation>
+	</message>
+	<message>
+		<source>Title</source>
+		<translation>Title</translation>
+	</message>
+	<message>
+		<source>Description (optional)</source>
+		<translation>Description (optional)</translation>
+	</message>
+	<message>
+		<source>Date</source>
+		<translation>Date</translation>
+	</message>
+	<message>
+		<source>Time</source>
+		<translation>Time</translation>
+	</message><message>
+		<source>Save</source>
+		<translation>Save</translation>
+	</message>
+	<message>
+		<source>Delete</source>
+		<translation>Delete</translation>
+	</message>
+	<message>
+		<source>Cancel</source>
+		<translation>Cancel</translation>
+	</message>
+	<message>
+		<source>Update Event</source>
+		<translation>Update Event</translation>
+	</message>
+	<message>
+		<source>Deleting an event</source>
+		<translation>Deleting an event</translation>
+	</message>
+	<message>
+		<source>Do you really want to delete the event</source>
+		<translation>Do you really want to delete the event</translation>
+	</message>
+	<message>
+		<source>Event is already removed</source>
+		<translation>Event is already removed</translation>
+	</message>
+	<message>
+		<source>Provide title for the event</source>
+		<translation>Provide title for the event</translation>
+	</message>
+	<message>
+		<source>Unable to set past event, check date input</source>
+		<translation>Unable to set past event, check date input</translation>
+	</message>
+	<message>
+		<source>Unable to set past event, check time input</source>
+		<translation>Unable to set past event, check time input</translation>
+	</message>
+	<message>
+		<source>Saving event to database failed</source>
+		<translation>Saving event to database failed</translation>
+	</message>
+	<message>
+		<source>Saved successfully</source>
+		<translation>Saved successfully</translation>
+	</message>
 </context>
 <context>
-    <name>BackupDialog</name>
-    <message>
-        <source>Backup and Restore</source>
-        <translation>Backup and Restore</translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation>Start</translation>
-    </message>
-    <message>
-        <source>Upload</source>
-        <translation>Upload</translation>
-    </message>
-    <message>
-        <source>Download</source>
-        <translation>Download</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation>Delete</translation>
-    </message>
-    <message>
-        <source>Local</source>
-        <translation>Local</translation>
-    </message>
-    <message>
-        <source>Cloud</source>
-        <translation>Cloud</translation>
-    </message>
-    <message>
-        <source>Location</source>
-        <translation>Location</translation>
-    </message>
-    <message>
-        <source>Create full backup of your calendar notes</source>
-        <translation>Create full backup of your calendar notes</translation>
-    </message>
-    <message>
-        <source>Backup</source>
-        <translation>Backup</translation>
-    </message>
-    <message>
-        <source>Restore all your calendar notes with backup file</source>
-        <translation>Restore all your calendar notes with backup file</translation>
-    </message>
-    <message>
-        <source>Restore</source>
-        <translation>Restore</translation>
-    </message>
-    <message>
-        <source>Select Directory</source>
-        <translation>Select Directory</translation>
-    </message>
-    <message>
-        <source>Open file</source>
-        <translation>Open file</translation>
-    </message>
-    <message>
-        <source>Data has been restored</source>
-        <translation>Data has been restored</translation>
-    </message>
-    <message>
-        <source>Backup has been created</source>
-        <translation>Backup has been created</translation>
-    </message>
-    <message>
-        <source>Backup was successfully uploaded to the cloud</source>
-        <translation>Backup was successfully uploaded to the cloud</translation>
-    </message>
-    <message>
-        <source>Backup was successfully downloaded. Restart application to set all restored settings.</source>
-        <translation>Backup was successfully downloaded. Restart application to set all restored settings.</translation>
-    </message>
-    <message>
-        <source>Backup was deleted successfully</source>
-        <translation>Backup was deleted successfully</translation>
-    </message>
-    <message>
-        <source>Account access failure: authentication is required</source>
-        <translation>Account access failure: authentication is required</translation>
-    </message>
-    <message>
-        <source>Reading account failure: unable to retrieve account information, status</source>
-        <translation>Reading account failure: unable to retrieve account information, status</translation>
-    </message>
-    <message>
-        <source>Reading backups failure: unable to retrieve backups data from the server, status</source>
-        <translation>Reading backups failure: unable to retrieve backups data from the server, status</translation>
-    </message>
-    <message>
-        <source>Upload failure: backup already exists</source>
-        <translation>Upload failure: backup already exists</translation>
-    </message>
-    <message>
-        <source>Download failure: unable to download backup</source>
-        <translation>Download failure: unable to download backup</translation>
-    </message>
-    <message>
-        <source>Deleting failure: unable to delete backup</source>
-        <translation>Deleting failure: unable to delete backup</translation>
-    </message>
+	<name>BackupDialog</name>
+	<message>
+		<source>Backup and Restore</source>
+		<translation>Backup and Restore</translation>
+	</message>
+	<message>
+		<source>Start</source>
+		<translation>Start</translation>
+	</message>
+	<message>
+		<source>Upload</source>
+		<translation>Upload</translation>
+	</message>
+	<message>
+		<source>Download</source>
+		<translation>Download</translation>
+	</message>
+	<message>
+		<source>Delete</source>
+		<translation>Delete</translation>
+	</message>
+	<message>
+		<source>Local</source>
+		<translation>Local</translation>
+	</message>
+	<message>
+		<source>Cloud</source>
+		<translation>Cloud</translation>
+	</message>
+	<message>
+		<source>Location</source>
+		<translation>Location</translation>
+	</message>
+	<message>
+		<source>Create full backup of your calendar notes</source>
+		<translation>Create full backup of your calendar notes</translation>
+	</message>
+	<message>
+		<source>Backup</source>
+		<translation>Backup</translation>
+	</message>
+	<message>
+		<source>Restore all your calendar notes with backup file</source>
+		<translation>Restore all your calendar notes with backup file</translation>
+	</message>
+	<message>
+		<source>Restore</source>
+		<translation>Restore</translation>
+	</message>
+	<message>
+		<source>Select Directory</source>
+		<translation>Select Directory</translation>
+	</message>
+	<message>
+		<source>Open file</source>
+		<translation>Open file</translation>
+	</message>
+	<message>
+		<source>Data has been restored</source>
+		<translation>Data has been restored</translation>
+	</message>
+	<message>
+		<source>Backup has been created</source>
+		<translation>Backup has been created</translation>
+	</message>
+	<message>
+		<source>Backup was successfully uploaded to the cloud</source>
+		<translation>Backup was successfully uploaded to the cloud</translation>
+	</message>
+	<message>
+		<source>Backup was successfully downloaded. Restart application to enable all restored settings.</source>
+		<translation>Backup was successfully downloaded. Restart application to enable all restored settings.</translation>
+	</message>
+	<message>
+		<source>Backup was deleted successfully</source>
+		<translation>Backup was deleted successfully</translation>
+	</message>
+	<message>
+		<source>Account access failure: authentication is required</source>
+		<translation>Account access failure: authentication is required</translation>
+	</message>
+	<message>
+		<source>Reading account failure: unable to retrieve account information, status</source>
+		<translation>Reading account failure: unable to retrieve account information, status</translation>
+	</message>
+	<message>
+		<source>Reading backups failure: unable to retrieve backups data from the server, status</source>
+		<translation>Reading backups failure: unable to retrieve backups data from the server, status</translation>
+	</message>
+	<message>
+		<source>Upload failure: backup already exists</source>
+		<translation>Upload failure: backup already exists</translation>
+	</message>
+	<message>
+		<source>Download failure: unable to download backup</source>
+		<translation>Download failure: unable to download backup</translation>
+	</message>
+	<message>
+		<source>Deleting failure: unable to delete backup</source>
+		<translation>Deleting failure: unable to delete backup</translation>
+	</message>
 </context>
 <context>
-    <name>CalendarWidget</name>
-    <message>
-        <source>Unable to find related database, it will be created automatically</source>
-        <translation>Unable to find related database, it will be created automatically</translation>
-    </message>
-    <message>
-        <source>Error occurred</source>
-        <translation>Error occurred</translation>
-    </message>
-    <message>
-        <source>Create new event</source>
-        <translation>Create new event</translation>
-    </message>
-    <message>
-        <source>Database error</source>
-        <translation>Database error</translation>
-    </message>
-    <message>
-        <source>Can not set reminder to the past</source>
-        <translation>Can not set reminder to the past</translation>
-    </message>
-    <message>
-        <source>Retrieving failure: connect to the database first</source>
-        <translation>Retrieving failure: connect to the database first</translation>
-    </message>
-    <message>
-        <source>event</source>
-        <translation>event</translation>
-    </message>
-    <message>
-        <source>events*</source>
-        <translation>events</translation>
-    </message>
-    <message>
-        <source>events</source>
-        <translation>events</translation>
-    </message>
+	<name>CalendarWidget</name>
+	<message>
+		<source>Unable to find related database, it will be created automatically</source>
+		<translation>Unable to find related database, it will be created automatically</translation>
+	</message>
+	<message>
+		<source>Error occurred</source>
+		<translation>Error occurred</translation>
+	</message>
+	<message>
+		<source>Create new event</source>
+		<translation>Create new event</translation>
+	</message>
+	<message>
+		<source>Database error</source>
+		<translation>Database error</translation>
+	</message>
+	<message>
+		<source>Can not set reminder to the past</source>
+		<translation>Can not set reminder to the past</translation>
+	</message>
+	<message>
+		<source>Retrieving failure: connect to the database first</source>
+		<translation>Retrieving failure: connect to the database first</translation>
+	</message>
+	<message>
+		<source>event</source>
+		<translation>event</translation>
+	</message>
+	<message>
+		<source>events*</source>
+		<translation>events</translation>
+	</message>
+	<message>
+		<source>events</source>
+		<translation>events</translation>
+	</message>
+	<message>
+		<source>Deleting events</source>
+		<translation>Deleting events</translation>
+	</message>
+	<message>
+		<source>Do you really want to delete events</source>
+		<translation>Do you really want to delete events</translation>
+	</message>
+	<message>
+		<source>Deleting an event</source>
+		<translation>Deleting an event</translation>
+	</message>
+	<message>
+		<source>Do you really want to delete the event</source>
+		<translation>Do you really want to delete the event</translation>
+	</message>
 </context>
 <context>
-    <name>EventListWidget</name>
-    <message>
-        <source>No events</source>
-        <translation>No events</translation>
-    </message>
+	<name>EventListWidget</name>
+	<message>
+		<source>No events</source>
+		<translation>No events</translation>
+	</message>
 </context>
 <context>
-    <name>SettingsDialog</name>
-    <message>
-        <source>Settings</source>
-        <translation>Settings</translation>
-    </message>
-    <message>
-        <source>Send Confirmation</source>
-        <translation>Send Confirmation</translation>
-    </message>
-    <message>
-        <source>Theme</source>
-        <translation>Theme</translation>
-    </message>
-    <message>
-        <source>Light</source>
-        <translation>Light</translation>
-    </message>
-    <message>
-        <source>Dark</source>
-        <translation>Dark</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation>Font</translation>
-    </message>
-    <message>
-        <source>Small</source>
-        <translation>Small</translation>
-    </message>
-    <message>
-        <source>Normal</source>
-        <translation>Normal</translation>
-    </message>
-    <message>
-        <source>Large</source>
-        <translation>Large</translation>
-    </message>
-    <message>
-        <source>Start in tray</source>
-        <translation>Start in tray</translation>
-    </message>
-    <message>
-        <source>Run with system start</source>
-        <translation>Run with system start</translation>
-    </message>
-    <message>
-        <source>Auto start setting is not supported on {}</source>
-        <translation>Auto start setting is not supported on {}</translation>
-    </message>
-    <message>
-        <source>Always on top (restart required)</source>
-        <translation>Always on top (restart required)</translation>
-    </message>
-    <message>
-        <source>Backup settings</source>
-        <translation>Backup settings</translation>
-    </message>
-    <message>
-        <source>Language (restart required)</source>
-        <translation>Language (restart required)</translation>
-    </message>
-    <message>
-        <source>Maximum backups number</source>
-        <translation>Maximum backups number</translation>
-    </message>
-    <message>
-        <source>App</source>
-        <translation>App</translation>
-    </message>
-    <message>
-        <source>Remove event after time is up</source>
-        <translation>Remove event after time is up</translation>
-    </message>
-    <message>
-        <source>Notification duration (sec)</source>
-        <translation>Notification duration (sec)</translation>
-    </message>
-    <message>
-        <source>Notify before event (min)</source>
-        <translation>Notify before event (min)</translation>
-    </message>
-    <message>
-        <source>Events</source>
-        <translation>Events</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation>Email</translation>
-    </message>
-    <message>
-        <source>New Password</source>
-        <translation>New Password</translation>
-    </message>
-    <message>
-        <source>Repeat Password</source>
-        <translation>Repeat Password</translation>
-    </message>
-    <message>
-        <source>Verification Token</source>
-        <translation>Verification Token</translation>
-    </message>
-    <message>
-        <source>Reset Inputs</source>
-        <translation>Reset Inputs</translation>
-    </message>
-    <message>
-        <source>Reset Password</source>
-        <translation>Reset Password</translation>
-    </message>
-    <message>
-        <source>Password confirmation failed</source>
-        <translation>Password confirmation failed</translation>
-    </message>
-    <message>
-        <source>Check your email box for verification token</source>
-        <translation>Check your email box for verification token</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation>Change</translation>
-    </message>
-    <message>
-        <source>New password has been set</source>
-        <translation>New password has been set</translation>
-    </message>
-    <message>
-        <source>Updating user failure: unable to update user account, status</source>
-        <translation>Updating user failure: unable to update user account, status</translation>
-    </message>
-    <message>
-        <source>Reset password failure: unable to request token, status</source>
-        <translation>Reset password failure: unable to request token, status</translation>
-    </message>
-    <message>
-        <source>Reset password failure: unable to reset user password, status</source>
-        <translation>Reset password failure: unable to reset user password, status</translation>
-    </message>
+	<name>SettingsDialog</name>
+	<message>
+		<source>Settings</source>
+		<translation>Settings</translation>
+	</message>
+	<message>
+		<source>Send Confirmation</source>
+		<translation>Send Confirmation</translation>
+	</message>
+	<message>
+		<source>Theme</source>
+		<translation>Theme</translation>
+	</message>
+	<message>
+		<source>Light</source>
+		<translation>Light</translation>
+	</message>
+	<message>
+		<source>Dark</source>
+		<translation>Dark</translation>
+	</message>
+	<message>
+		<source>Font</source>
+		<translation>Font</translation>
+	</message>
+	<message>
+		<source>Small</source>
+		<translation>Small</translation>
+	</message>
+	<message>
+		<source>Normal</source>
+		<translation>Normal</translation>
+	</message>
+	<message>
+		<source>Large</source>
+		<translation>Large</translation>
+	</message>
+	<message>
+		<source>Start in tray</source>
+		<translation>Start in tray</translation>
+	</message>
+	<message>
+		<source>Run with system start</source>
+		<translation>Run with system start</translation>
+	</message>
+	<message>
+		<source>Auto start setting is not supported on {}</source>
+		<translation>Auto start setting is not supported on {}</translation>
+	</message>
+	<message>
+		<source>Always on top (restart required)</source>
+		<translation>Always on top (restart required)</translation>
+	</message>
+	<message>
+		<source>Backup settings</source>
+		<translation>Backup settings</translation>
+	</message>
+	<message>
+		<source>Language (restart required)</source>
+		<translation>Language (restart required)</translation>
+	</message>
+	<message>
+		<source>Maximum backups number</source>
+		<translation>Maximum backups number</translation>
+	</message>
+	<message>
+		<source>App</source>
+		<translation>App</translation>
+	</message>
+	<message>
+		<source>Remove event after time is up</source>
+		<translation>Remove event after time is up</translation>
+	</message>
+	<message>
+		<source>Notification duration (sec)</source>
+		<translation>Notification duration (sec)</translation>
+	</message>
+	<message>
+		<source>Notify before event</source>
+		<translation>Notify before event</translation>
+	</message>
+	<message>
+		<source>Events</source>
+		<translation>Events</translation>
+	</message>
+	<message>
+		<source>Email</source>
+		<translation>Email</translation>
+	</message>
+	<message>
+		<source>New Password</source>
+		<translation>New Password</translation>
+	</message>
+	<message>
+		<source>Repeat Password</source>
+		<translation>Repeat Password</translation>
+	</message>
+	<message>
+		<source>Verification Token</source>
+		<translation>Verification Token</translation>
+	</message>
+	<message>
+		<source>Reset Inputs</source>
+		<translation>Reset Inputs</translation>
+	</message>
+	<message>
+		<source>Reset Password</source>
+		<translation>Reset Password</translation>
+	</message>
+	<message>
+		<source>Password confirmation failed</source>
+		<translation>Password confirmation failed</translation>
+	</message>
+	<message>
+		<source>Check your email box for verification token</source>
+		<translation>Check your email box for verification token</translation>
+	</message>
+	<message>
+		<source>Change</source>
+		<translation>Change</translation>
+	</message>
+	<message>
+		<source>New password has been set</source>
+		<translation>New password has been set</translation>
+	</message>
+	<message>
+		<source>Updating user failure: unable to update user account, status</source>
+		<translation>Updating user failure: unable to update user account, status</translation>
+	</message>
+	<message>
+		<source>Reset password failure: unable to request token, status</source>
+		<translation>Reset password failure: unable to request token, status</translation>
+	</message>
+	<message>
+		<source>Reset password failure: unable to reset user password, status</source>
+		<translation>Reset password failure: unable to reset user password, status</translation>
+	</message>
+	<message>
+		<source>Minutes</source>
+		<translation>Minutes</translation>
+	</message>
+	<message>
+		<source>Hours</source>
+		<translation>Hours</translation>
+	</message>
+	<message>
+		<source>Days</source>
+		<translation>Days</translation>
+	</message>
+	<message>
+		<source>Weeks</source>
+		<translation>Weeks</translation>
+	</message>
 </context>
 </TS>

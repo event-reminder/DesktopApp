@@ -1,17 +1,18 @@
-from datetime import datetime
-
 import qtawesome as qta
 
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt, QLocale
-from PyQt5.QtWidgets import QAction, QMainWindow, qApp, QMenu, QSystemTrayIcon, QHBoxLayout, QScrollArea, QListWidget, \
-	QLabel, QListWidgetItem, QWidget, QVBoxLayout, QSizePolicy
+from datetime import datetime
 
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import (
+	QAction, QMainWindow, qApp, QMenu, QSystemTrayIcon, QHBoxLayout, QScrollArea, QWidget, QVBoxLayout
+)
+from PyQt5.QtCore import Qt, QLocale
+
+from erdesktop.util import logger, log_msg
 from erdesktop.widgets import CalendarWidget
 from erdesktop.system import system, shortcut_icon
-from erdesktop.widgets.event_list_widget import EventListWidget
 from erdesktop.widgets.util import error, info, PushButton
-from erdesktop.util import logger, log_msg
+from erdesktop.widgets.event_list_widget import EventListWidget
 from erdesktop.util.exceptions import ShortcutIconIsNotSupportedError
 from erdesktop.settings import Settings, APP_NAME, AVAILABLE_LOCALES, APP_MIN_WIDTH, APP_MIN_HEIGHT
 
@@ -39,12 +40,7 @@ class MainWindow(QMainWindow):
 		self.calendar = self.init_calendar()
 
 		self.btn_new_event = PushButton(self.tr('New'), 90, 30, self.calendar.open_details_event)
-		self.btn_edit = PushButton(
-			self.tr('Edit'),
-			120 if self.settings.app_lang == 'uk_UA' else 90,
-			30,
-			self.calendar.edit_event_click
-		)
+		self.btn_edit = PushButton(self.tr('Details'), 90, 30, self.calendar.edit_event_click)
 		self.btn_delete = PushButton(self.tr('Delete'), 90, 30, self.calendar.delete_event_click)
 		events_widget = self.init_events_widget()
 
@@ -179,7 +175,7 @@ class MainWindow(QMainWindow):
 		self.setup_help_menu(main_menu)
 
 	@staticmethod
-	def new_action(target, title, fn, shortcut=None, tip=None, icon=None):
+	def create_action(target, title, fn, shortcut=None, tip=None, icon=None):
 		action = QAction(title, target)
 		if shortcut:
 			action.setShortcut(shortcut)
@@ -205,7 +201,7 @@ class MainWindow(QMainWindow):
 	def setup_file_menu(self, main_menu):
 		file_menu = main_menu.addMenu('&{}'.format(self.tr('File')))
 		file_menu.addAction(
-			self.new_action(
+			self.create_action(
 				self,
 				'{}...'.format(self.tr('New Event')),
 				self.calendar.open_details_event,
@@ -213,7 +209,7 @@ class MainWindow(QMainWindow):
 			)
 		)
 		file_menu.addAction(
-			self.new_action(
+			self.create_action(
 				self,
 				'{}...'.format(self.tr('Se{}ttings').format('&')),
 				self.calendar.open_settings,
@@ -221,14 +217,14 @@ class MainWindow(QMainWindow):
 				icon=qta.icon('mdi.settings')
 			)
 		)
-		file_menu.addAction(self.new_action(
+		file_menu.addAction(self.create_action(
 			self,
 			'&{}'.format(self.tr('Create shortcut icon...')),
 			self.create_shortcut,
 			icon=qta.icon('mdi.desktop-mac')
 		))
 		file_menu.addAction(
-			self.new_action(
+			self.create_action(
 				self, '{}...'.format(self.tr('Backup and Restore')),
 				self.calendar.open_backup_and_restore,
 				'Ctrl+Alt+B',
@@ -238,11 +234,11 @@ class MainWindow(QMainWindow):
 
 	def setup_help_menu(self, main_menu):
 		help_menu = main_menu.addMenu('&{}'.format(self.tr('Help')))
-		help_menu.addAction(self.new_action(
+		help_menu.addAction(self.create_action(
 			self, '&{}...'.format(self.tr('Account')),
 			self.calendar.open_account_info,
 			icon=qta.icon('mdi.account-circle')
 		))
-		help_menu.addAction(self.new_action(
+		help_menu.addAction(self.create_action(
 			self, '&{}'.format(self.tr('About')), self.calendar.open_about, icon=qta.icon('mdi.information-outline')
 		))

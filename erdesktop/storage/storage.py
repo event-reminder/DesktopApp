@@ -82,13 +82,14 @@ class Storage:
 			e_time,
 			description,
 			is_past,
-			repeat_weekly
+			repeat_weekly,
+			1
 		))
 		event.id = EventModel.insert(self.__cursor, event)
 		self.__db.commit()
 		return event
 
-	def update_event(self, pk, title=None, e_date=None, e_time=None, description=None, is_past=None, repeat_weekly=None):
+	def update_event(self, pk, title=None, e_date=None, e_time=None, description=None, is_past=None, repeat_weekly=None, remind_divisor=None):
 		if self.try_to_reconnect:
 			self.connect()
 		if not self.is_connected:
@@ -103,13 +104,14 @@ class Storage:
 				event.date = e_date
 			if description is not None:
 				event.description = description
-			if event.date >= datetime.today().date():
+			if event.date >= datetime.today().date() and is_past is None:
 				event.is_past = False
 			else:
-				if is_past is not None:
-					event.is_past = is_past
+				event.is_past = is_past
 			if repeat_weekly is not None:
 				event.repeat_weekly = repeat_weekly
+			if remind_divisor is not None:
+				event.remind_divisor = remind_divisor
 			EventModel.update(self.__cursor, event)
 			self.__db.commit()
 			return event
@@ -124,10 +126,10 @@ class Storage:
 		self.__db.commit()
 		return None
 
-	def get_events(self, e_date=None, e_time=None):
+	def get_events(self, e_date=None, e_time=None, delta=None):
 		if not self.is_connected:
 			raise DatabaseException('Retrieving failure: connect to the database first')
-		return EventModel.select(self.__cursor, e_date, e_time)
+		return EventModel.select(self.__cursor, e_date, e_time, delta)
 
 	def to_array(self):
 		self.connect()

@@ -2,574 +2,606 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="uk_UA" sourcelanguage="en_US">
 <context>
-    <name>MainWindow</name>
-    <message>
-        <source>Open</source>
-        <translation>Відкрити</translation>
-    </message>
-    <message>
-        <source>Minimize To Tray</source>
-        <translation>Згорнути до трею</translation>
-    </message>
-    <message>
-        <source>Quit</source>
-        <translation>Закрити</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation>Файл</translation>
-    </message>
-    <message>
-        <source>New Event</source>
-        <translation>Нова подія</translation>
-    </message>
-    <message>
-        <source>Se{}ttings</source>
-        <translation>Нала{}штування</translation>
-    </message>
-    <message>
-        <source>Backup and Restore</source>
-        <translation>Резервне копіювання</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation>Допомога</translation>
-    </message>
-    <message>
-        <source>Account</source>
-        <translation>Обліковий запис</translation>
-    </message>
-    <message>
-        <source>About</source>
-        <translation>Інформація</translation>
-    </message>
-    <message>
-        <source>Shortcut icon is not supported on {} by application</source>
-        <translation>Створення ярлика не підтримується на {} додатком</translation>
-    </message>
-    <message>
-        <source>Unable to create shortcut icon</source>
-        <translation>Не вдалося створити ярлик</translation>
-    </message>
-    <message>
-        <source>Create shortcut icon...</source>
-        <translation>Створити ярлик...</translation>
-    </message>
-    <message>
-        <source>Shortcut icon has been created</source>
-        <translation>Ярлик додано</translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation>Додати</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation>Редагувати</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation>Видалити</translation>
-    </message>
-</context>
-<context>
-    <name>AccountDialog</name>
-    <message>
-        <source>Account</source>
-        <translation>Обліковий запис</translation>
-    </message>
-    <message>
-        <source>Remember me</source>
-        <translation>Запам&apos;ятати мене</translation>
-    </message>
-    <message>
-        <source>Username</source>
-        <translation>Ім&apos;я користувача</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation>Електронна пошта</translation>
-    </message>
-    <message>
-        <source>Password</source>
-        <translation>Пароль</translation>
-    </message>
-    <message>
-        <source>Login</source>
-        <translation>Увійти</translation>
-    </message>
-    <message>
-        <source>Register</source>
-        <translation>Зареєструватися</translation>
-    </message>
-    <message>
-        <source>Logout</source>
-        <translation>Вихід</translation>
-    </message>
-    <message>
-        <source>Connection error</source>
-        <translation>Помилка з&apos;єднання</translation>
-    </message>
-    <message>
-        <source>Server is not working or your internet connection is failed</source>
-        <translation>Сервер не працює або не вдалося підключитися до мережі</translation>
-    </message>
-    <message>
-        <source>Check your connection and reopen this dialog</source>
-        <translation>Перевірте своє з&apos;єднання та знову відкрийте це діалогове вікно</translation>
-    </message>
-    <message>
-        <source>New account</source>
-        <translation>Новий обліковий запис</translation>
-    </message>
-    <message>
-        <source>Username field can not be empty</source>
-        <translation>Поле &quot;ім&apos;я користувача&quot; не може бути порожнім</translation>
-    </message>
-    <message>
-        <source>Email field can not be empty</source>
-        <translation>Поле &quot;елекронна пошта&quot; не може бути порожнім</translation>
-    </message>
-    <message>
-        <source>Email is not valid</source>
-        <translation>Електронна пошта є неправильною</translation>
-    </message>
-    <message>
-        <source>Password field can not be empty</source>
-        <translation>Поле &quot;пароль&quot; не може бути порожнім</translation>
-    </message>
-    <message>
-        <source>Thank you for registration</source>
-        <translation>Дякуємо Вам за реєстрацію</translation>
-    </message>
-    <message>
-        <source>Check out {} for credentials information</source>
-        <translation>Перевірте {} на інформацію про облікові дані</translation>
-    </message>
-    <message>
-        <source>To activate, simply login to Your account, otherwise it will be deleted in 24 hours after registration</source>
-        <translation>Щоб активувати, просто увійдіть до свого облікового запису, інакше він буде видалений через 24 години після реєстрації</translation>
-    </message>
-    <message>
-        <source>Logged in as</source>
-        <translation>Вхід здійснено під ім&apos;ям</translation>
-    </message>
-    <message>
-        <source>Successfully logged out</source>
-        <translation>Успішний вихід зі системи</translation>
-    </message>
-    <message>
-        <source>Login failure: unable to log in with provided credentials</source>
-        <translation>Помилка входу: не вдалося ввійти в обліковий запис із заданими даними</translation>
-    </message>
-    <message>
-        <source>Login failure: unable to log in, status</source>
-        <translation>Помилка входу: не вдалося ввійти в обліковий запис, статус</translation>
-    </message>
-    <message>
-        <source>Logout failure: unable to log out, status</source>
-        <translation>Помилка виходу, не вдалося вийти з облікового запису, статус</translation>
-    </message>
-    <message>
-        <source>Registration failure: username is not provided</source>
-        <translation>Помилка реєстрації облікового запису: не вказано ім&apos;я користувача</translation>
-    </message>
-    <message>
-        <source>Registration failure: email is not provided</source>
-        <translation>Помилка реєстрації облікового запису: не вказано елекронної пошти</translation>
-    </message>
-    <message>
-        <source>Registration failure: user already exists</source>
-        <translation>Помилка реєстрації: користувач із такими даними існує</translation>
-    </message>
-    <message>
-        <source>Registration failure: unable to register an account, status</source>
-        <translation>Помилка реєстрації: не вдалося створити обліковий запис, статус</translation>
-    </message>
-    <message>
-        <source>Reading account failure: authentication is required</source>
-        <translation>Помилка отримання даних облікового запису: необхідно увійти до системи</translation>
-    </message>
-    <message>
-        <source>Reading account failure: unable to retrieve account information, status</source>
-        <translation>Помилка отримання даних: не вдалося отримати дані облікового запису, статус</translation>
-    </message>
-</context>
-<context>
-    <name>EventDetailsDialog</name>
-    <message>
-        <source>New Event</source>
-        <translation>Нова подія</translation>
-    </message>
-    <message>
-        <source>Repeat weekly</source>
-        <translation>Повторювати щотижня</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation>Заголовок</translation>
-    </message>
-    <message>
-        <source>Description (optional)</source>
-        <translation>Опис (необов'язково)</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>Дата</translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation>Час</translation>
-    </message><message>
-        <source>Save</source>
-        <translation>Зберегти</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation>Видалити</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>Відмінити</translation>
-    </message>
-    <message>
-        <source>Update Event</source>
-        <translation>Оновити подію</translation>
-    </message>
-    <message>
-        <source>Deleting an event</source>
-        <translation>Видалення події</translation>
-    </message>
-    <message>
-        <source>Do you really want to delete the event</source>
-        <translation>Ви справді хочете видалити подію</translation>
-    </message>
-    <message>
-        <source>Event is already removed</source>
-        <translation>Подія вже видалена</translation>
-    </message>
-    <message>
-        <source>Provide title for the event</source>
-        <translation>Вкажіть заголовок події</translation>
-    </message>
-    <message>
-        <source>Unable to set past event, check date input</source>
-        <translation>Неможливо створити минулу подію, перевірте введення дати</translation>
-    </message>
-    <message>
-        <source>Unable to set past event, check time input</source>
-        <translation>Неможливо створити минулу подію, перевірте введення часу</translation>
-    </message>
-    <message>
-        <source>Saving event to database failed</source>
-        <translation>Не вдалося зберегти подію до бази даних</translation>
-    </message>
-    <message>
-        <source>Saved successfully</source>
-        <translation>Збережено успішно</translation>
-    </message>
-</context>
-<context>
-    <name>EventsListDialog</name>
-    <message>
-        <source>New</source>
-        <translation>Створити</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation>Закрити</translation>
-    </message>
-    <message>
-        <source>Events for</source>
-        <translation>Події на</translation>
-    </message>
-</context>
-<context>
-    <name>BackupDialog</name>
-    <message>
-        <source>Backup and Restore</source>
-        <translation>Резервне копіювання та відновлення</translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation>Розпочати</translation>
-    </message>
-    <message>
-        <source>Upload</source>
-        <translation>Створити</translation>
-    </message>
-    <message>
-        <source>Download</source>
-        <translation>Завантажити</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation>Видалити</translation>
-    </message>
-    <message>
-        <source>Local</source>
-        <translation>Диск</translation>
-    </message>
-    <message>
-        <source>Cloud</source>
-        <translation>Хмарне сховище</translation>
-    </message>
-    <message>
-        <source>Location</source>
-        <translation>Розташування</translation>
-    </message>
-    <message>
-        <source>Create full backup of your calendar notes</source>
-        <translation>Створити повну резервну копію нотаток календаря</translation>
-    </message>
-    <message>
-        <source>Backup</source>
-        <translation>Резервне копіювання</translation>
-    </message>
-    <message>
-        <source>Restore all your calendar notes with backup file</source>
-        <translation>Відновити всі нотатки календаря за допомогою резервної копії</translation>
-    </message>
-    <message>
-        <source>Restore</source>
-        <translation>Відновлення</translation>
-    </message>
-    <message>
-        <source>Select Directory</source>
-        <translation>Вибрати каталог</translation>
-    </message>
-    <message>
-        <source>Open file</source>
-        <translation>Відкрити файл</translation>
-    </message>
-    <message>
-        <source>Data has been restored</source>
-        <translation>Дані відновлено</translation>
-    </message>
-    <message>
-        <source>Backup has been created</source>
-        <translation>Резервну копію створено</translation>
-    </message>
-    <message>
-        <source>Backup was successfully uploaded to the cloud</source>
-        <translation>Резервну копію успішно завантажено до хмарного сховища</translation>
-    </message>
-    <message>
-        <source>Backup was successfully downloaded. Restart application to set all restored settings.</source>
-        <translation>Резервну копію успішно завантажено із хмарного сховища. Перезапустіть додаток, щоб встановити всі відновлені параметри.</translation>
-    </message>
-    <message>
-        <source>Backup was deleted successfully</source>
-        <translation>Резервну копію успішно видалено із хмарного сховища</translation>
-    </message>
-    <message>
-        <source>Account access failure: authentication is required</source>
-        <translation>Помилка доступу до облікових даних: необхідно увійти до системи</translation>
-    </message>
-    <message>
-        <source>Reading account failure: unable to retrieve account information, status</source>
-        <translation>Помилка отримання облікових даних: не вдалося отримати дані користувача, статус</translation>
-    </message>
-    <message>
-        <source>Reading backups failure: unable to retrieve backups data from the server, status</source>
-        <translation>Помилка отримання даних: не вдалося отримати дані резервних копій, статус</translation>
-    </message>
-    <message>
-        <source>Upload failure: backup already exists</source>
-        <translation>Помилка створення резервної копії: ця резервна копія вже існує</translation>
-    </message>
-    <message>
-        <source>Download failure: unable to download backup</source>
-        <translation>Помилка завантаження: не вдалося завантажити резервну копію зі сервера</translation>
-    </message>
-    <message>
-        <source>Deleting failure: unable to delete backup</source>
-        <translation>Помилка видалення: не вдалося видалити резервну копію зі сервера</translation>
-    </message>
-</context>
-<context>
-    <name>CalendarWidget</name>
-    <message>
-        <source>Unable to find related database, it will be created automatically</source>
-        <translation>Неможливо знайти відповідну базу даних, вона буде створена автоматично</translation>
-    </message>
-    <message>
-        <source>Error occurred</source>
-        <translation>Сталася помилка</translation>
-    </message>
-    <message>
-        <source>Create new event</source>
-        <translation>Створити нову подію</translation>
-    </message>
-    <message>
-        <source>Database error</source>
-        <translation>Помилка роботи з базою даних</translation>
-    </message>
-    <message>
-        <source>Can not set reminder to the past</source>
-        <translation>Не можна встановити нагадування про минулу подію</translation>
-    </message>
-    <message>
-        <source>Retrieving failure: connect to the database first</source>
-        <translation>Помилка отримання даних: підключіться спочатку до бази даних</translation>
-    </message>
-    <message>
-        <source>event</source>
-        <translation>подія</translation>
-    </message>
+	<name>MainWindow</name>
 	<message>
-        <source>events*</source>
-        <translation>події</translation>
-    </message>
-    <message>
-        <source>events</source>
-        <translation>подій</translation>
-    </message>
+		<source>Open</source>
+		<translation>Відкрити</translation>
+	</message>
+	<message>
+		<source>Minimize To Tray</source>
+		<translation>Згорнути до трею</translation>
+	</message>
+	<message>
+		<source>Quit</source>
+		<translation>Закрити</translation>
+	</message>
+	<message>
+		<source>File</source>
+		<translation>Файл</translation>
+	</message>
+	<message>
+		<source>New Event</source>
+		<translation>Нова подія</translation>
+	</message>
+	<message>
+		<source>Se{}ttings</source>
+		<translation>Нала{}штування</translation>
+	</message>
+	<message>
+		<source>Backup and Restore</source>
+		<translation>Резервне копіювання</translation>
+	</message>
+	<message>
+		<source>Help</source>
+		<translation>Допомога</translation>
+	</message>
+	<message>
+		<source>Account</source>
+		<translation>Обліковий запис</translation>
+	</message>
+	<message>
+		<source>About</source>
+		<translation>Інформація</translation>
+	</message>
+	<message>
+		<source>Shortcut icon is not supported on {} by application</source>
+		<translation>Створення ярлика не підтримується на {} додатком</translation>
+	</message>
+	<message>
+		<source>Unable to create shortcut icon</source>
+		<translation>Не вдалося створити ярлик</translation>
+	</message>
+	<message>
+		<source>Create shortcut icon...</source>
+		<translation>Створити ярлик...</translation>
+	</message>
+	<message>
+		<source>Shortcut icon has been created</source>
+		<translation>Ярлик додано</translation>
+	</message>
+	<message>
+		<source>New</source>
+		<translation>Додати</translation>
+	</message>
+	<message>
+		<source>Details</source>
+		<translation>Деталі</translation>
+	</message>
+	<message>
+		<source>Delete</source>
+		<translation>Видалити</translation>
+	</message>
 </context>
 <context>
-    <name>EventListWidget</name>
-    <message>
-        <source>No events</source>
-        <translation>Події відсутні</translation>
-    </message>
+	<name>AccountDialog</name>
+	<message>
+		<source>Account</source>
+		<translation>Обліковий запис</translation>
+	</message>
+	<message>
+		<source>Remember me</source>
+		<translation>Запам&apos;ятати мене</translation>
+	</message>
+	<message>
+		<source>Username</source>
+		<translation>Ім&apos;я користувача</translation>
+	</message>
+	<message>
+		<source>Email</source>
+		<translation>Електронна пошта</translation>
+	</message>
+	<message>
+		<source>Password</source>
+		<translation>Пароль</translation>
+	</message>
+	<message>
+		<source>Login</source>
+		<translation>Увійти</translation>
+	</message>
+	<message>
+		<source>Register</source>
+		<translation>Зареєструватися</translation>
+	</message>
+	<message>
+		<source>Logout</source>
+		<translation>Вихід</translation>
+	</message>
+	<message>
+		<source>Connection error</source>
+		<translation>Помилка з&apos;єднання</translation>
+	</message>
+	<message>
+		<source>Server is not working or your internet connection is failed</source>
+		<translation>Сервер не працює або не вдалося підключитися до мережі</translation>
+	</message>
+	<message>
+		<source>Check your connection and reopen this dialog</source>
+		<translation>Перевірте своє з&apos;єднання та знову відкрийте це діалогове вікно</translation>
+	</message>
+	<message>
+		<source>New account</source>
+		<translation>Новий обліковий запис</translation>
+	</message>
+	<message>
+		<source>Username field can not be empty</source>
+		<translation>Поле &quot;ім&apos;я користувача&quot; не може бути порожнім</translation>
+	</message>
+	<message>
+		<source>Email field can not be empty</source>
+		<translation>Поле &quot;елекронна пошта&quot; не може бути порожнім</translation>
+	</message>
+	<message>
+		<source>Email is not valid</source>
+		<translation>Електронна пошта є неправильною</translation>
+	</message>
+	<message>
+		<source>Password field can not be empty</source>
+		<translation>Поле &quot;пароль&quot; не може бути порожнім</translation>
+	</message>
+	<message>
+		<source>Thank you for registration</source>
+		<translation>Дякуємо Вам за реєстрацію</translation>
+	</message>
+	<message>
+		<source>Check out {} for credentials information</source>
+		<translation>Перевірте {} на інформацію про облікові дані</translation>
+	</message>
+	<message>
+		<source>To activate, simply login to Your account, otherwise it will be deleted in 24 hours after registration</source>
+		<translation>Щоб активувати, просто увійдіть до свого облікового запису, інакше він буде видалений через 24 години після реєстрації</translation>
+	</message>
+	<message>
+		<source>Logged in as</source>
+		<translation>Вхід здійснено під ім&apos;ям</translation>
+	</message>
+	<message>
+		<source>Successfully logged out</source>
+		<translation>Успішний вихід зі системи</translation>
+	</message>
+	<message>
+		<source>Login failure: unable to log in with provided credentials</source>
+		<translation>Помилка входу: не вдалося ввійти в обліковий запис із заданими даними</translation>
+	</message>
+	<message>
+		<source>Login failure: unable to log in, status</source>
+		<translation>Помилка входу: не вдалося ввійти в обліковий запис, статус</translation>
+	</message>
+	<message>
+		<source>Logout failure: unable to log out, status</source>
+		<translation>Помилка виходу, не вдалося вийти з облікового запису, статус</translation>
+	</message>
+	<message>
+		<source>Registration failure: username is not provided</source>
+		<translation>Помилка реєстрації облікового запису: не вказано ім&apos;я користувача</translation>
+	</message>
+	<message>
+		<source>Registration failure: email is not provided</source>
+		<translation>Помилка реєстрації облікового запису: не вказано елекронної пошти</translation>
+	</message>
+	<message>
+		<source>Registration failure: user already exists</source>
+		<translation>Помилка реєстрації: користувач із такими даними існує</translation>
+	</message>
+	<message>
+		<source>Registration failure: unable to register an account, status</source>
+		<translation>Помилка реєстрації: не вдалося створити обліковий запис, статус</translation>
+	</message>
+	<message>
+		<source>Reading account failure: authentication is required</source>
+		<translation>Помилка отримання даних облікового запису: необхідно увійти до системи</translation>
+	</message>
+	<message>
+		<source>Reading account failure: unable to retrieve account information, status</source>
+		<translation>Помилка отримання даних: не вдалося отримати дані облікового запису, статус</translation>
+	</message>
 </context>
 <context>
-    <name>SettingsDialog</name>
-    <message>
-        <source>Settings</source>
-        <translation>Налаштування</translation>
-    </message>
-    <message>
-        <source>Send Confirmation</source>
-        <translation>Надіслати підтвердження</translation>
-    </message>
-    <message>
-        <source>Theme</source>
-        <translation>Тема</translation>
-    </message>
-    <message>
-        <source>Light</source>
-        <translation>Світла</translation>
-    </message>
-    <message>
-        <source>Dark</source>
-        <translation>Темна</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation>Шрифт</translation>
-    </message>
-    <message>
-        <source>Small</source>
-        <translation>Дрібний</translation>
-    </message>
-    <message>
-        <source>Normal</source>
-        <translation>Стандартний</translation>
-    </message>
-    <message>
-        <source>Large</source>
-        <translation>Великий</translation>
-    </message>
-    <message>
-        <source>Start in tray</source>
-        <translation>Запускати в трей</translation>
-    </message>
+	<name>EventDetailsDialog</name>
 	<message>
-        <source>Run with system start</source>
-        <translation>Запускати разом із системою</translation>
-    </message>
+		<source>New Event</source>
+		<translation>Нова подія</translation>
+	</message>
 	<message>
-        <source>Auto start setting is not supported on {}</source>
-        <translation>Налаштування автозапуску не підтримується на {}</translation>
-    </message>
-    <message>
-        <source>Always on top (restart required)</source>
-        <translation>Поверх всіх вікон (необхідний перезапуск)</translation>
-    </message>
-    <message>
-        <source>Backup settings</source>
-        <translation>Додати налаштування до резевної копії</translation>
-    </message>
-    <message>
-        <source>Language (restart required)</source>
-        <translation>Мова інтерфейсу (необхідний перезапуск)</translation>
-    </message>
-    <message>
-        <source>Maximum backups number</source>
-        <translation>Максимальна кількість резервних копій</translation>
-    </message>
-    <message>
-        <source>App</source>
-        <translation>Додаток</translation>
-    </message>
-    <message>
-        <source>Remove event after time is up</source>
-        <translation>Видаляти подію після закінчення її часу</translation>
-    </message>
-    <message>
-        <source>Notification duration (sec)</source>
-        <translation>Тривалість сповіщення (сек)</translation>
-    </message>
-    <message>
-        <source>Notify before event (min)</source>
-        <translation>Сповістити перед подією (хв)</translation>
-    </message>
-    <message>
-        <source>Events</source>
-        <translation>Події</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation>Електронна Пошта</translation>
-    </message>
-    <message>
-        <source>New Password</source>
-        <translation>Новий Пароль</translation>
-    </message>
-    <message>
-        <source>Repeat Password</source>
-        <translation>Повторіть Пароль</translation>
-    </message>
-    <message>
-        <source>Verification Token</source>
-        <translation>Токен Підтвердження</translation>
-    </message>
-    <message>
-        <source>Reset Inputs</source>
-        <translation>Скинути введення</translation>
-    </message>
-    <message>
-        <source>Reset Password</source>
-        <translation>Змінити пароль</translation>
-    </message>
-    <message>
-        <source>Password confirmation failed</source>
-        <translation>Помилка підтвердження пароля</translation>
-    </message>
-    <message>
-        <source>Check your email box for verification token</source>
-        <translation>Перевірте Вашу електронну скриньку на підтвердження скидання пароля</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation>Змінити</translation>
-    </message>
-    <message>
-        <source>New password has been set</source>
-        <translation>Новий пароль було встановлено успішно</translation>
-    </message>
-    <message>
-        <source>Updating user failure: unable to update user account, status</source>
-        <translation>Помилка оновлення користувача: не вдалося оновити облікові дані, статус</translation>
-    </message>
-    <message>
-        <source>Reset password failure: unable to request token, status</source>
-        <translation>Помилка скидання пароля: не вдалося надіслати повідомлення для підвердження, статус</translation>
-    </message>
-    <message>
-        <source>Reset password failure: unable to reset user password, status</source>
-        <translation>Помилка скидання пароля: не вдалося скинути пароль, статус</translation>
-    </message>
+		<source>Repeat weekly</source>
+		<translation>Повторювати щотижня</translation>
+	</message>
+	<message>
+		<source>Title</source>
+		<translation>Заголовок</translation>
+	</message>
+	<message>
+		<source>Description (optional)</source>
+		<translation>Опис (необов'язково)</translation>
+	</message>
+	<message>
+		<source>Date</source>
+		<translation>Дата</translation>
+	</message>
+	<message>
+		<source>Time</source>
+		<translation>Час</translation>
+	</message><message>
+		<source>Save</source>
+		<translation>Зберегти</translation>
+	</message>
+	<message>
+		<source>Delete</source>
+		<translation>Видалити</translation>
+	</message>
+	<message>
+		<source>Cancel</source>
+		<translation>Відмінити</translation>
+	</message>
+	<message>
+		<source>Update Event</source>
+		<translation>Оновити подію</translation>
+	</message>
+	<message>
+		<source>Deleting an event</source>
+		<translation>Видалення події</translation>
+	</message>
+	<message>
+		<source>Do you really want to delete the event</source>
+		<translation>Ви справді хочете видалити подію</translation>
+	</message>
+	<message>
+		<source>Event is already removed</source>
+		<translation>Подія вже видалена</translation>
+	</message>
+	<message>
+		<source>Provide title for the event</source>
+		<translation>Вкажіть заголовок події</translation>
+	</message>
+	<message>
+		<source>Unable to set past event, check date input</source>
+		<translation>Неможливо створити минулу подію, перевірте введення дати</translation>
+	</message>
+	<message>
+		<source>Unable to set past event, check time input</source>
+		<translation>Неможливо створити минулу подію, перевірте введення часу</translation>
+	</message>
+	<message>
+		<source>Saving event to database failed</source>
+		<translation>Не вдалося зберегти подію до бази даних</translation>
+	</message>
+	<message>
+		<source>Saved successfully</source>
+		<translation>Збережено успішно</translation>
+	</message>
+</context>
+<context>
+	<name>EventsListDialog</name>
+	<message>
+		<source>New</source>
+		<translation>Створити</translation>
+	</message>
+	<message>
+		<source>Close</source>
+		<translation>Закрити</translation>
+	</message>
+	<message>
+		<source>Events for</source>
+		<translation>Події на</translation>
+	</message>
+</context>
+<context>
+	<name>BackupDialog</name>
+	<message>
+		<source>Backup and Restore</source>
+		<translation>Резервне копіювання та відновлення</translation>
+	</message>
+	<message>
+		<source>Start</source>
+		<translation>Розпочати</translation>
+	</message>
+	<message>
+		<source>Upload</source>
+		<translation>Створити</translation>
+	</message>
+	<message>
+		<source>Download</source>
+		<translation>Завантажити</translation>
+	</message>
+	<message>
+		<source>Delete</source>
+		<translation>Видалити</translation>
+	</message>
+	<message>
+		<source>Local</source>
+		<translation>Диск</translation>
+	</message>
+	<message>
+		<source>Cloud</source>
+		<translation>Хмарне сховище</translation>
+	</message>
+	<message>
+		<source>Location</source>
+		<translation>Розташування</translation>
+	</message>
+	<message>
+		<source>Create full backup of your calendar notes</source>
+		<translation>Створити повну резервну копію нотаток календаря</translation>
+	</message>
+	<message>
+		<source>Backup</source>
+		<translation>Резервне копіювання</translation>
+	</message>
+	<message>
+		<source>Restore all your calendar notes with backup file</source>
+		<translation>Відновити всі нотатки календаря за допомогою резервної копії</translation>
+	</message>
+	<message>
+		<source>Restore</source>
+		<translation>Відновлення</translation>
+	</message>
+	<message>
+		<source>Select Directory</source>
+		<translation>Вибрати каталог</translation>
+	</message>
+	<message>
+		<source>Open file</source>
+		<translation>Відкрити файл</translation>
+	</message>
+	<message>
+		<source>Data has been restored</source>
+		<translation>Дані відновлено</translation>
+	</message>
+	<message>
+		<source>Backup has been created</source>
+		<translation>Резервну копію створено</translation>
+	</message>
+	<message>
+		<source>Backup was successfully uploaded to the cloud</source>
+		<translation>Резервну копію успішно завантажено до хмарного сховища</translation>
+	</message>
+	<message>
+		<source>Backup was successfully downloaded. Restart application to enable all restored settings.</source>
+		<translation>Резервну копію успішно завантажено із хмарного сховища. Перезапустіть додаток, щоб активувати всі відновлені параметри.</translation>
+	</message>
+	<message>
+		<source>Backup was deleted successfully</source>
+		<translation>Резервну копію успішно видалено із хмарного сховища</translation>
+	</message>
+	<message>
+		<source>Account access failure: authentication is required</source>
+		<translation>Помилка доступу до облікових даних: необхідно увійти до системи</translation>
+	</message>
+	<message>
+		<source>Reading account failure: unable to retrieve account information, status</source>
+		<translation>Помилка отримання облікових даних: не вдалося отримати дані користувача, статус</translation>
+	</message>
+	<message>
+		<source>Reading backups failure: unable to retrieve backups data from the server, status</source>
+		<translation>Помилка отримання даних: не вдалося отримати дані резервних копій, статус</translation>
+	</message>
+	<message>
+		<source>Upload failure: backup already exists</source>
+		<translation>Помилка створення резервної копії: ця резервна копія вже існує</translation>
+	</message>
+	<message>
+		<source>Download failure: unable to download backup</source>
+		<translation>Помилка завантаження: не вдалося завантажити резервну копію зі сервера</translation>
+	</message>
+	<message>
+		<source>Deleting failure: unable to delete backup</source>
+		<translation>Помилка видалення: не вдалося видалити резервну копію зі сервера</translation>
+	</message>
+</context>
+<context>
+	<name>CalendarWidget</name>
+	<message>
+		<source>Unable to find related database, it will be created automatically</source>
+		<translation>Неможливо знайти відповідну базу даних, вона буде створена автоматично</translation>
+	</message>
+	<message>
+		<source>Error occurred</source>
+		<translation>Сталася помилка</translation>
+	</message>
+	<message>
+		<source>Create new event</source>
+		<translation>Створити нову подію</translation>
+	</message>
+	<message>
+		<source>Database error</source>
+		<translation>Помилка роботи з базою даних</translation>
+	</message>
+	<message>
+		<source>Can not set reminder to the past</source>
+		<translation>Не можна встановити нагадування про минулу подію</translation>
+	</message>
+	<message>
+		<source>Retrieving failure: connect to the database first</source>
+		<translation>Помилка отримання даних: підключіться спочатку до бази даних</translation>
+	</message>
+	<message>
+		<source>event</source>
+		<translation>подія</translation>
+	</message>
+	<message>
+		<source>events*</source>
+		<translation>події</translation>
+	</message>
+	<message>
+		<source>events</source>
+		<translation>подій</translation>
+	</message>
+	<message>
+		<source>Deleting events</source>
+		<translation>Видалення подій</translation>
+	</message>
+	<message>
+		<source>Do you really want to delete events</source>
+		<translation>Ви справді хочете видалити вибрані події</translation>
+	</message>
+	<message>
+		<source>Deleting an event</source>
+		<translation>Видалення події</translation>
+	</message>
+	<message>
+		<source>Do you really want to delete the event</source>
+		<translation>Ви справді хочете видалити вибрану подію</translation>
+	</message>
+</context>
+<context>
+	<name>EventListWidget</name>
+	<message>
+		<source>No events</source>
+		<translation>Події відсутні</translation>
+	</message>
+</context>
+<context>
+	<name>SettingsDialog</name>
+	<message>
+		<source>Settings</source>
+		<translation>Налаштування</translation>
+	</message>
+	<message>
+		<source>Send Confirmation</source>
+		<translation>Надіслати підтвердження</translation>
+	</message>
+	<message>
+		<source>Theme</source>
+		<translation>Тема</translation>
+	</message>
+	<message>
+		<source>Light</source>
+		<translation>Світла</translation>
+	</message>
+	<message>
+		<source>Dark</source>
+		<translation>Темна</translation>
+	</message>
+	<message>
+		<source>Font</source>
+		<translation>Шрифт</translation>
+	</message>
+	<message>
+		<source>Small</source>
+		<translation>Дрібний</translation>
+	</message>
+	<message>
+		<source>Normal</source>
+		<translation>Стандартний</translation>
+	</message>
+	<message>
+		<source>Large</source>
+		<translation>Великий</translation>
+	</message>
+	<message>
+		<source>Start in tray</source>
+		<translation>Запускати в трей</translation>
+	</message>
+	<message>
+		<source>Run with system start</source>
+		<translation>Запускати разом із системою</translation>
+	</message>
+	<message>
+		<source>Auto start setting is not supported on {}</source>
+		<translation>Налаштування автозапуску не підтримується на {}</translation>
+	</message>
+	<message>
+		<source>Always on top (restart required)</source>
+		<translation>Поверх всіх вікон (необхідний перезапуск)</translation>
+	</message>
+	<message>
+		<source>Backup settings</source>
+		<translation>Додати налаштування до резевної копії</translation>
+	</message>
+	<message>
+		<source>Language (restart required)</source>
+		<translation>Мова інтерфейсу (необхідний перезапуск)</translation>
+	</message>
+	<message>
+		<source>Maximum backups number</source>
+		<translation>Максимальна кількість резервних копій</translation>
+	</message>
+	<message>
+		<source>App</source>
+		<translation>Додаток</translation>
+	</message>
+	<message>
+		<source>Remove event after time is up</source>
+		<translation>Видаляти подію після її завершення</translation>
+	</message>
+	<message>
+		<source>Notification duration (sec)</source>
+		<translation>Тривалість сповіщення (сек)</translation>
+	</message>
+	<message>
+		<source>Notify before event</source>
+		<translation>Сповістити перед подією</translation>
+	</message>
+	<message>
+		<source>Events</source>
+		<translation>Події</translation>
+	</message>
+	<message>
+		<source>Email</source>
+		<translation>Електронна Пошта</translation>
+	</message>
+	<message>
+		<source>New Password</source>
+		<translation>Новий Пароль</translation>
+	</message>
+	<message>
+		<source>Repeat Password</source>
+		<translation>Повторіть Пароль</translation>
+	</message>
+	<message>
+		<source>Verification Token</source>
+		<translation>Токен Підтвердження</translation>
+	</message>
+	<message>
+		<source>Reset Inputs</source>
+		<translation>Скинути введення</translation>
+	</message>
+	<message>
+		<source>Reset Password</source>
+		<translation>Скинути пароль</translation>
+	</message>
+	<message>
+		<source>Password confirmation failed</source>
+		<translation>Помилка підтвердження пароля</translation>
+	</message>
+	<message>
+		<source>Check your email box for verification token</source>
+		<translation>Перевірте Вашу електронну скриньку на підтвердження скидання пароля</translation>
+	</message>
+	<message>
+		<source>Change</source>
+		<translation>Змінити</translation>
+	</message>
+	<message>
+		<source>New password has been set</source>
+		<translation>Новий пароль було встановлено успішно</translation>
+	</message>
+	<message>
+		<source>Updating user failure: unable to update user account, status</source>
+		<translation>Помилка оновлення користувача: не вдалося оновити облікові дані, статус</translation>
+	</message>
+	<message>
+		<source>Reset password failure: unable to request token, status</source>
+		<translation>Помилка скидання пароля: не вдалося надіслати повідомлення для підвердження, статус</translation>
+	</message>
+	<message>
+		<source>Reset password failure: unable to reset user password, status</source>
+		<translation>Помилка скидання пароля: не вдалося скинути пароль, статус</translation>
+	</message>
+	<message>
+		<source>Minutes</source>
+		<translation>Хвилини</translation>
+	</message>
+	<message>
+		<source>Hours</source>
+		<translation>Години</translation>
+	</message>
+	<message>
+		<source>Days</source>
+		<translation>Дні</translation>
+	</message>
+	<message>
+		<source>Weeks</source>
+		<translation>Тижні</translation>
+	</message>
 </context>
 </TS>
