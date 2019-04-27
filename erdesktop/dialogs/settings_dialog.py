@@ -70,7 +70,7 @@ class SettingsDialog(QDialog):
 		if self.settings.app_lang != 'en_US':
 			btn_width = 230
 		self.change_password_btn = PushButton(
-			self.tr('Send Confirmation'), btn_width, 30, self.change_password_btn_click
+			self.tr('Send confirmation'), btn_width, 30, self.change_password_btn_click
 		)
 
 		self.run_with_system_start_check_box = QCheckBox()
@@ -241,19 +241,19 @@ class SettingsDialog(QDialog):
 
 		self.new_password_input.setEchoMode(QLineEdit.Password)
 		layout.addLayout(
-			self.create_field(self.tr('New Password'), False, self.change_password_inputs_changed, self.new_password_input)
+			self.create_field(self.tr('New password'), False, self.change_password_inputs_changed, self.new_password_input)
 		)
 
 		self.new_password_repeat_input.setEchoMode(QLineEdit.Password)
 		layout.addLayout(
 			self.create_field(
-				self.tr('Repeat Password'), False, self.change_password_inputs_changed, self.new_password_repeat_input
+				self.tr('Repeat password'), False, self.change_password_inputs_changed, self.new_password_repeat_input
 			)
 		)
 
 		layout.addLayout(
 			self.create_field(
-				self.tr('Verification Token'), False, self.change_password_inputs_changed, self.verification_token_input
+				self.tr('Confirmation code'), False, self.change_password_inputs_changed, self.verification_token_input
 			)
 		)
 
@@ -266,7 +266,7 @@ class SettingsDialog(QDialog):
 		if self.settings.app_lang != 'en_US':
 			btn_width = 200
 		reset_change_password_btn = PushButton(
-			self.tr('Reset Inputs'), btn_width, 30, self.reset_change_password_btn_click
+			self.tr('Reset inputs'), btn_width, 30, self.reset_change_password_btn_click
 		)
 
 		# noinspection PyArgumentList
@@ -274,7 +274,7 @@ class SettingsDialog(QDialog):
 		layout.addLayout(h_layout)
 
 		tab.setLayout(layout)
-		tabs.addTab(tab, self.tr('Reset Password'))
+		tabs.addTab(tab, self.tr('Reset password'))
 
 	def always_on_top_changed(self):
 		if self.ui_is_loaded:
@@ -354,7 +354,7 @@ class SettingsDialog(QDialog):
 		self.new_password_input.setEnabled(False)
 		self.new_password_repeat_input.setEnabled(False)
 		self.verification_token_input.setEnabled(False)
-		self.change_password_btn.setText(self.tr('Send Confirmation'))
+		self.change_password_btn.setText(self.tr('Send confirmation'))
 		self.change_password_btn.setEnabled(False)
 
 	def change_password_inputs_changed(self):
@@ -397,7 +397,7 @@ class SettingsDialog(QDialog):
 			)
 
 	def change_password_request_token_success(self):
-		popup.info(self, self.tr('Check your email box for verification token'))
+		popup.info(self, self.tr('Check your email box for confirmation code'))
 		self.token_is_sent = True
 		self.new_password_input.setEnabled(True)
 		self.new_password_input.setFocus()
@@ -409,6 +409,7 @@ class SettingsDialog(QDialog):
 	def change_password_success(self):
 		self.reset_change_password_btn_click()
 		self.cloud.remove_token()
+		self.token_is_sent = False
 		popup.info(self, self.tr('New password has been set'))
 
 	def exec_worker(self, fn, fn_success, fn_param_success, *args, **kwargs):

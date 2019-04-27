@@ -117,12 +117,12 @@ class CloudStorage:
 		return response.json()
 
 	@failure_wrapper(method_desc='Password reset')
-	def reset_password(self, email, new_password, new_password_confirm, token):
+	def reset_password(self, email, new_password, new_password_confirm, confirmation_code):
 		response = self.client.post(routes.ACCOUNT_PASSWORD_RESET, json={
 			'email': email,
 			'new_password': new_password,
 			'new_password_confirm': new_password_confirm,
-			'confirmation_token': token
+			'confirmation_code': confirmation_code
 		})
 		if response.status_code != status.HTTP_201_CREATED:
 			raise exc.ResetPasswordError(response.status_code)
