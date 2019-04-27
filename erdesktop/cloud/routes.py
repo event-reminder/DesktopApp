@@ -13,7 +13,7 @@ ACCOUNT_EDIT = '{}/edit'.format(_ACCOUNTS)
 ACCOUNT_DETAILS = '{}/user'.format(_ACCOUNTS)
 ACCOUNT_CREATE = '{}/create'.format(_ACCOUNTS)
 ACCOUNT_DELETE = '{}/delete'.format(_ACCOUNTS)
-ACCOUNT_SEND_TOKEN = '{}/send/token'.format(_ACCOUNTS)
+ACCOUNT_SEND_TOKEN = '{}/send/confirmation/code'.format(_ACCOUNTS)
 ACCOUNT_PASSWORD_RESET = '{}/password/reset'.format(_ACCOUNTS)
 
 

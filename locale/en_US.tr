@@ -441,8 +441,8 @@
 		<translation>Settings</translation>
 	</message>
 	<message>
-		<source>Send Confirmation</source>
-		<translation>Send Confirmation</translation>
+		<source>Send confirmation</source>
+		<translation>Send confirmation</translation>
 	</message>
 	<message>
 		<source>Theme</source>
@@ -525,32 +525,32 @@
 		<translation>Email</translation>
 	</message>
 	<message>
-		<source>New Password</source>
-		<translation>New Password</translation>
+		<source>New password</source>
+		<translation>New password</translation>
 	</message>
 	<message>
-		<source>Repeat Password</source>
-		<translation>Repeat Password</translation>
+		<source>Repeat password</source>
+		<translation>Repeat password</translation>
 	</message>
 	<message>
-		<source>Verification Token</source>
-		<translation>Verification Token</translation>
+		<source>Confirmation code</source>
+		<translation>Confirmation code</translation>
 	</message>
 	<message>
-		<source>Reset Inputs</source>
-		<translation>Reset Inputs</translation>
+		<source>Reset inputs</source>
+		<translation>Reset inputs</translation>
 	</message>
 	<message>
-		<source>Reset Password</source>
-		<translation>Reset Password</translation>
+		<source>Reset password</source>
+		<translation>Reset password</translation>
 	</message>
 	<message>
 		<source>Password confirmation failed</source>
 		<translation>Password confirmation failed</translation>
 	</message>
 	<message>
-		<source>Check your email box for verification token</source>
-		<translation>Check your email box for verification token</translation>
+		<source>Check your email box for confirmation code</source>
+		<translation>Check your email box for confirmation code</translation>
 	</message>
 	<message>
 		<source>Change</source>

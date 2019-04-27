@@ -456,7 +456,7 @@
 		<translation>Налаштування</translation>
 	</message>
 	<message>
-		<source>Send Confirmation</source>
+		<source>Send confirmation</source>
 		<translation>Надіслати підтвердження</translation>
 	</message>
 	<message>
@@ -537,26 +537,26 @@
 	</message>
 	<message>
 		<source>Email</source>
-		<translation>Електронна Пошта</translation>
+		<translation>Електронна пошта</translation>
 	</message>
 	<message>
-		<source>New Password</source>
-		<translation>Новий Пароль</translation>
+		<source>New password</source>
+		<translation>Новий пароль</translation>
 	</message>
 	<message>
-		<source>Repeat Password</source>
-		<translation>Повторіть Пароль</translation>
+		<source>Repeat password</source>
+		<translation>Повторіть пароль</translation>
 	</message>
 	<message>
-		<source>Verification Token</source>
-		<translation>Токен Підтвердження</translation>
+		<source>Confirmation code</source>
+		<translation>Код підтвердження</translation>
 	</message>
 	<message>
-		<source>Reset Inputs</source>
+		<source>Reset inputs</source>
 		<translation>Скинути введення</translation>
 	</message>
 	<message>
-		<source>Reset Password</source>
+		<source>Reset password</source>
 		<translation>Скинути пароль</translation>
 	</message>
 	<message>
@@ -564,7 +564,7 @@
 		<translation>Помилка підтвердження пароля</translation>
 	</message>
 	<message>
-		<source>Check your email box for verification token</source>
+		<source>Check your email box for confirmation code</source>
 		<translation>Перевірте Вашу електронну скриньку на підтвердження скидання пароля</translation>
 	</message>
 	<message>
