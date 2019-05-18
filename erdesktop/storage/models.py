@@ -16,6 +16,7 @@ class EventModel:
 
 	DATE_FORMAT = '%Y-%m-%d'
 	TIME_FORMAT = '%H:%M:%S'
+	TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 	DATE_TIME_FORMAT = '{} {}'.format(DATE_FORMAT, TIME_FORMAT)
 
 	def __init__(self, fields):

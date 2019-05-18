@@ -48,7 +48,6 @@ class SettingsDialog(QDialog):
 		self.thread_pool = QThreadPool()
 		self.cloud = kwargs.get('cloud_storage', CloudStorage())
 
-		self.always_on_top_check_box = QCheckBox()
 		self.font_combo_box = QComboBox()
 		self.start_in_tray_check_box = QCheckBox()
 		self.theme_combo_box = QComboBox()
@@ -113,7 +112,7 @@ class SettingsDialog(QDialog):
 		self.font_combo_box.setCurrentIndex(curr_idx)
 		self.start_in_tray_check_box.setChecked(self.settings.start_in_tray)
 		self.run_with_system_start_check_box.setChecked(self.settings.run_with_system_start)
-		self.always_on_top_check_box.setChecked(self.settings.is_always_on_top)
+
 		self.include_settings_backup_check_box.setChecked(self.settings.include_settings_backup)
 		self.remove_after_time_up_check_box.setChecked(self.settings.remove_event_after_time_up)
 		self.notification_duration_input.setText(str(self.settings.notification_duration))
@@ -151,10 +150,6 @@ class SettingsDialog(QDialog):
 		layout.addWidget(QLabel(self.tr('Start in tray')), 2, 0)
 		self.start_in_tray_check_box.stateChanged.connect(self.start_in_tray_changed)
 		layout.addWidget(self.start_in_tray_check_box, 2, 1)
-
-		layout.addWidget(QLabel(self.tr('Always on top (restart required)')), 3, 0)
-		self.always_on_top_check_box.stateChanged.connect(self.always_on_top_changed)
-		layout.addWidget(self.always_on_top_check_box, 3, 1)
 
 		layout.addWidget(QLabel(self.tr('Backup settings')), 4, 0)
 		self.include_settings_backup_check_box.stateChanged.connect(self.include_settings_backup_changed)
@@ -275,10 +270,6 @@ class SettingsDialog(QDialog):
 
 		tab.setLayout(layout)
 		tabs.addTab(tab, self.tr('Reset password'))
-
-	def always_on_top_changed(self):
-		if self.ui_is_loaded:
-			self.settings.set_is_always_on_top(self.always_on_top_check_box.isChecked())
 
 	def font_changed(self, current):
 		if self.ui_is_loaded:

@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
 
 	def __init__(self, **kwargs):
 		self.settings = Settings()
-		super().__init__(None, Qt.WindowStaysOnTopHint if self.settings.is_always_on_top else Qt.WindowFlags())
+		super().__init__(None, Qt.WindowFlags())
 
 		self.window().setWindowTitle(APP_NAME)
 		self.resize(self.settings.app_size)
