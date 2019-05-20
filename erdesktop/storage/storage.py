@@ -145,32 +145,47 @@ class Storage:
 		self.__db.commit()
 
 	@staticmethod
-	def prepare_backup_data(db, timestamp, include_settings, username=None, settings=Settings().to_dict()):
+	def prepare_backup_data(events_array, timestamp, include_settings, username=None, settings=Settings().to_dict()):
 		data = {
-			'db': db
+			'db': events_array
 		}
 		if include_settings:
 			data['settings'] = settings
 		if username is not None:
 			data['username'] = username
-		data = pickle.dumps(json.dumps(data))
+		data = json.dumps(data).encode('utf8')
+		encoded_data = base64.b64encode(data)
 		return {
 			'digest': sha512(data).hexdigest(),
 			'timestamp': timestamp,
-			'backup': base64.b64encode(data)
+			'backup': encoded_data,
+			'backup_size': Storage.count_str_size(encoded_data),
+			'events_count': len(events_array),
+			'contains_settings': include_settings
 		}
+
+	@staticmethod
+	def count_str_size(_str):
+		units = ['BYTES', 'KB', 'MB', 'GB']
+		counter = 0
+		k = 1000
+		size_in_bytes = len(_str)
+		while size_in_bytes > k - 1 and counter < len(units):
+			size_in_bytes /= k
+			counter += 1
+		return str(round(size_in_bytes, 2)) + ' ' + units[counter]
 
 	def restore_from_dict(self, data):
 		err_template = 'Restore failure: {}.'
 		for key in ['digest', 'timestamp', 'backup']:
 			if key not in data:
 				raise DatabaseException(err_template.format('invalid backup file'))
-		if datetime.now() < datetime.strptime(data['timestamp'], '%Y-%m-%d %H:%M:%S'):
+		if datetime.now() < datetime.strptime(data['timestamp'], EventModel.TIMESTAMP_FORMAT):
 			raise DatabaseException(err_template.format('incorrect timestamp'))
 		backup_decoded = base64.b64decode(data['backup'])
 		if sha512(backup_decoded).hexdigest() != data['digest']:
 			raise DatabaseException(err_template.format('backup is broken'))
-		backup = json.loads(pickle.loads(backup_decoded))
+		backup = json.loads(backup_decoded.decode('utf8'))
 		if 'db' not in backup:
 			raise DatabaseException(err_template.format('invalid backup data'))
 		self.__cursor.execute(QUERY_DELETE_ALL_EVENTS)
@@ -179,10 +194,10 @@ class Storage:
 			Settings().from_dict(backup['settings'])
 
 	def backup(self, path: str, include_settings):
-		timestamp = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
+		timestamp = datetime.strftime(datetime.now(), EventModel.TIMESTAMP_FORMAT)
 		with open('{}/{} {}.bak'.format(path.rstrip('/'), self.__backup_file_name, timestamp), 'wb') as file:
 			file.write(pickle.dumps(self.prepare_backup_data(self.to_array(), timestamp, include_settings)))
 
 	def restore(self, file_path: str):
 		with open(file_path, 'rb') as file:
-			self.restore_from_dict(pickle.loads(file.read()))
+			self.restore_from_dict(file.read())

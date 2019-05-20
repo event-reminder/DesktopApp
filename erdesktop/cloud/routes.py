@@ -1,4 +1,8 @@
-_HOST = 'localhost:8000'
+
+_IP = 'localhost'
+_PORT = 8000
+
+_HOST = '{}:{}'.format(_IP, _PORT)
 
 _BASE = 'http://{}/api/v1'.format(_HOST)
 

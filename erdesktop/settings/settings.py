@@ -1,6 +1,7 @@
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize, QPoint, QSettings
 
+from erdesktop.settings import type_conv as tc
 from erdesktop.settings.default import *
 from erdesktop.settings.theme import dark_theme_palette, light_theme_palette
 
@@ -12,7 +13,7 @@ class Settings:
 
 	def __init__(self, autocommit=True, settings_file=SETTINGS_FILE):
 		self.__settings = QSettings(settings_file, QSettings.IniFormat)
-		self.__is_dark_theme = self.__settings.value('app_user/is_dark_theme', APP_IS_DARK_THEME)
+	# 	self.__is_dark_theme = self.__settings.value('app_user/is_dark_theme', tc.bool_to_str(APP_IS_DARK_THEME))
 		self.__autocommit = autocommit
 		self.__remind_time_multiplier = [1, 60, 1440, 10080]
 
@@ -64,11 +65,7 @@ class Settings:
 
 	@property
 	def is_dark_theme(self):
-		return self.__settings.value('app_user/is_dark_theme', APP_IS_DARK_THEME) == 'true'
-
-	@property
-	def is_always_on_top(self):
-		return self.__settings.value('app_user/is_always_on_top', ALWAYS_ON_TOP) == 'true'
+		return tc.s_bool_(self.__settings.value('app_user/is_dark_theme', tc.str_(APP_IS_DARK_THEME)))
 
 	@property
 	def app_font(self):
@@ -84,15 +81,19 @@ class Settings:
 
 	@property
 	def remove_event_after_time_up(self):
-		return self.__settings.value('app_user/remove_event_after_time_up', REMOVE_EVENT_AFTER_TIME_UP) == 'true'
+		return tc.s_bool_(
+			self.__settings.value('app_user/remove_event_after_time_up', tc.str_(REMOVE_EVENT_AFTER_TIME_UP))
+		)
 
 	@property
 	def start_in_tray(self):
-		return self.__settings.value('app_user/start_in_tray', START_IN_TRAY) == 'true'
+		return tc.s_bool_(self.__settings.value('app_user/start_in_tray', tc.str_(START_IN_TRAY)))
 
 	@property
 	def run_with_system_start(self):
-		return self.__settings.value('app_user/run_with_system_start', RUN_WITH_SYSTEM_START) == 'true'
+		return tc.s_bool_(
+			self.__settings.value('app_user/run_with_system_start', tc.str_(RUN_WITH_SYSTEM_START))
+		)
 
 	@property
 	def notification_duration(self):
@@ -108,7 +109,7 @@ class Settings:
 
 	@property
 	def include_settings_backup(self):
-		return self.__settings.value('app_user/include_settings_backup', INCLUDE_SETTINGS_BACKUP) == 'true'
+		return tc.s_bool_(self.__settings.value('app_user/include_settings_backup', tc.str_(INCLUDE_SETTINGS_BACKUP)))
 
 	def _set_value(self, key, value):
 		self.__settings.setValue(key, value)
@@ -127,10 +128,10 @@ class Settings:
 		self._set_value('app/last_restore_path', path)
 
 	def set_theme(self, is_dark: bool):
-		self._set_value('app_user/is_dark_theme', 'true' if is_dark else 'false')
+		self._set_value('app_user/is_dark_theme', tc.str_(is_dark))
 
 	def set_is_always_on_top(self, value: bool):
-		self._set_value('app_user/is_always_on_top', 'true' if value else 'false')
+		self._set_value('app_user/is_always_on_top', tc.str_(value))
 
 	def set_font(self, value: int):
 		self._set_value('app_user/font', value)
@@ -142,13 +143,13 @@ class Settings:
 		self._set_value('app_user/max_backups', value)
 
 	def set_remove_event_after_time_up(self, value: bool):
-		self._set_value('app_user/remove_event_after_time_up', 'true' if value else 'false')
+		self._set_value('app_user/remove_event_after_time_up', tc.str_(value))
 
 	def set_start_in_tray(self, value: bool):
-		self._set_value('app_user/start_in_tray', 'true' if value else 'false')
+		self._set_value('app_user/start_in_tray', tc.str_(value))
 
 	def set_run_with_system_start(self, value: bool):
-		self._set_value('app_user/run_with_system_start', 'true' if value else 'false')
+		self._set_value('app_user/run_with_system_start', tc.str_(value))
 
 	def set_notification_duration(self, value: int):
 		self._set_value('event_user/notification_duration', value)
@@ -160,42 +161,56 @@ class Settings:
 		self._set_value('event_user/remind_time_unit', value)
 
 	def set_include_settings_backup(self, value: bool):
-		self._set_value('app_user/include_settings_backup', 'true' if value else 'false')
+		self._set_value('app_user/include_settings_backup', tc.str_(value))
 
 	def to_dict(self):
 		return {
-			'is_dark_theme': self.is_dark_theme,
-			'is_always_on_top': self.is_always_on_top,
+			'is_dark_theme': tc.int_(self.is_dark_theme),
 			'font': self.app_font,
-			'remove_event_after_time_up': self.remove_event_after_time_up,
-			'start_in_tray': self.start_in_tray,
+			'remove_event_after_time_up': tc.int_(self.remove_event_after_time_up),
+			'start_in_tray': tc.int_(self.start_in_tray),
 			'notification_duration': self.notification_duration,
 			'remind_time_before_event': self.remind_time_before_event(),
 			'remind_time_unit': self.remind_time_unit,
-			'auto_start': self.run_with_system_start,
+			'auto_start': tc.int_(self.run_with_system_start),
 			'lang': self.app_lang,
-			'backup_settings': self.include_settings_backup,
+			'backup_settings': tc.int_(self.include_settings_backup),
 			'max_backups': self.app_max_backups,
 		}
 
 	def from_dict(self, data):
-		# required_keys = [
-		#   'lang', 'auto_start', 'backup_settings', 'remove_event_after_time_up',
-		# 	'remind_time_before_event', 'remind_time_unit', 'is_dark_theme', 'max_backups'
-		# ]
-		self.set_theme(data.get('is_dark_theme', APP_IS_DARK_THEME))
-		self.set_is_always_on_top(data.get('is_always_on_top', ALWAYS_ON_TOP))
+		self.set_theme(tc.bool_(
+			data.get('is_dark_theme', tc.int_(APP_IS_DARK_THEME)))
+		)
 		self.set_font(data.get('font', FONT))
-		self.set_remove_event_after_time_up(data.get('remove_event_after_time_up', REMOVE_EVENT_AFTER_TIME_UP))
-		self.set_start_in_tray(data.get('start_in_tray', START_IN_TRAY))
+		self.set_remove_event_after_time_up(
+			tc.bool_(data.get('remove_event_after_time_up', tc.int_(REMOVE_EVENT_AFTER_TIME_UP)))
+		)
+		self.set_start_in_tray(
+			tc.bool_(data.get('start_in_tray', tc.int_(START_IN_TRAY)))
+		)
 		self.set_notification_duration(data.get('notification_duration', NOTIFICATION_DURATION))
 		self.set_remind_time_before_event(data.get('remind_time_before_event', REMIND_TIME))
 		self.set_remind_time_unit(data.get('remind_time_unit', REMIND_UNIT))
-		self.set_run_with_system_start(data.get('auto_start', RUN_WITH_SYSTEM_START))
-		self.set_lang(data.get('lang', LANG))
-		self.set_include_settings_backup(data.get('backup_settings', INCLUDE_SETTINGS_BACKUP))
+		self.set_run_with_system_start(
+			tc.bool_(data.get('auto_start', tc.int_(RUN_WITH_SYSTEM_START)))
+		)
+		self.set_lang(self.__normalize_lang(data.get('lang', LANG)))
+		self.set_include_settings_backup(
+			tc.bool_(data.get('backup_settings', tc.int_(INCLUDE_SETTINGS_BACKUP)))
+		)
 		self.set_max_backups(data.get('max_backups', MAX_BACKUPS))
 		self.commit()
+
+	@staticmethod
+	def __normalize_lang(lang):
+		if lang == 'en':
+			lang = 'en_US'
+		elif lang == 'uk':
+			lang = 'uk_UA'
+		elif lang != 'uk_UA' or lang != 'en_US':
+			lang = 'en_US'
+		return lang
 
 	def _remind_time_to_minutes(self, remind_time, units):
 		return self.__remind_time_multiplier[units] * remind_time
