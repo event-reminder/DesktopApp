@@ -44,7 +44,7 @@ class EventModel:
 		self.description = fields[4]
 		self.is_past = True if fields[5] == 1 else False
 		self.repeat_weekly = True if fields[6] == 1 else False
-		self.remind_divisor = fields[7]
+		self.is_notified = fields[7]
 
 	@staticmethod
 	def to_tuple(fields: dict):
@@ -56,7 +56,7 @@ class EventModel:
 			fields.get('description', None),
 			fields.get('is_past', None),
 			fields.get('repeat_weekly', None),
-			fields.get('remind_divisor', None)
+			fields.get('is_notified', None) != 0
 		)
 
 	def to_dict(self):
@@ -67,7 +67,7 @@ class EventModel:
 			'description': self.description,
 			'is_past': 1 if self.is_past is True else 0,
 			'repeat_weekly': 1 if self.repeat_weekly is True else 0,
-			'remind_divisor': self.remind_divisor
+			'is_notified': self.is_notified
 		}
 
 	@staticmethod
@@ -106,7 +106,7 @@ class EventModel:
 			model.description,
 			model.is_past,
 			model.repeat_weekly,
-			model.remind_divisor,
+			model.is_notified,
 			model.id
 		))
 		return model.id

@@ -371,6 +371,26 @@
 		<source>Deleting failure: unable to delete backup</source>
 		<translation>Deleting failure: unable to delete backup</translation>
 	</message>
+	<message>
+		<source>event</source>
+		<translation>event</translation>
+	</message>
+	<message>
+		<source>events*</source>
+		<translation>events</translation>
+	</message>
+	<message>
+		<source>events</source>
+		<translation>events</translation>
+	</message>
+	<message>
+		<source>full backup</source>
+		<translation>full backup</translation>
+	</message>
+	<message>
+		<source>excluded settings</source>
+		<translation>excluded settings</translation>
+	</message>
 </context>
 <context>
 	<name>CalendarWidget</name>

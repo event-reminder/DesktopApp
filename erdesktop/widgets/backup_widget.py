@@ -13,10 +13,11 @@ class BackupWidget(QWidget):
 			self.setFont(kwargs.get('font'))
 
 		self.title_label = QLabel()
-		self.hash_sum_label = QLabel()
+		self.description_label = QLabel()
 
-		self.hash_sum = kwargs.get('hash_sum')
+		self.description = kwargs.get('description')
 		self.title = kwargs.get('title')
+		self.hash_sum = kwargs.get('hash_sum')
 
 		self.setup_ui()
 
@@ -25,7 +26,7 @@ class BackupWidget(QWidget):
 		layout.setAlignment(Qt.AlignLeft)
 		self.title_label.setText(self.title)
 		layout.addWidget(self.title_label, alignment=Qt.AlignLeft)
-		self.hash_sum_label.setText(self.hash_sum)
-		self.hash_sum_label.setStyleSheet('color: gray')
-		layout.addWidget(self.hash_sum_label, alignment=Qt.AlignLeft)
+		self.description_label.setText(self.description)
+		self.description_label.setStyleSheet('color: gray')
+		layout.addWidget(self.description_label, alignment=Qt.AlignLeft)
 		self.setLayout(layout)

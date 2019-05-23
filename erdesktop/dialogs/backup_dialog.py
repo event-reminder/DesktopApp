@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import (
 
 from requests.exceptions import RequestException
 
+from erdesktop.storage.models import EventModel
 from erdesktop.util import Worker
 from erdesktop.storage import Storage
 from erdesktop.settings import Settings
@@ -268,13 +269,26 @@ class BackupDialog(QDialog):
 			self.add_backup_widget(backup)
 
 	def add_backup_widget(self, backup_data):
+		num_repr = repr(backup_data['events_count'])
+		if len(num_repr) > 1 and int(num_repr[-2]) == 1:
+			text_label = self.tr('events')
+		elif 1 < int(num_repr[-1]) < 5:
+			text_label = self.tr('events*')
+		else:
+			text_label = self.tr('event{}'.format('s' if int(num_repr[-1]) > 1 or backup_data['events_count'] % 2 == 0 else ''))
 		backup_widget = BackupWidget(
 			flags=self.backups_cloud_list_widget.windowFlags(),
 			parent=self.backups_cloud_list_widget,
 			palette=self.palette(),
 			font=self.font(),
 			hash_sum=backup_data['digest'],
-			title=backup_data['timestamp']
+			title=datetime.strptime(backup_data['timestamp'], EventModel.TIMESTAMP_FORMAT).strftime(EventModel.DATE_TIME_FORMAT),
+			description='{} {} {}, {}'.format(
+				backup_data['backup_size'],
+				backup_data['events_count'],
+				text_label,
+				self.tr('full backup') if backup_data['contains_settings'] is True else self.tr('excluded settings')
+			)
 		)
 		list_widget_item = QListWidgetItem(self.backups_cloud_list_widget)
 		list_widget_item.setSizeHint(backup_widget.sizeHint())

@@ -1,10 +1,11 @@
-
-_IP = 'localhost'
 _PORT = 8000
+_IP = 'localhost'
+_PROTOCOL = 'http'
 
 _HOST = '{}:{}'.format(_IP, _PORT)
 
-_BASE = 'http://{}/api/v1'.format(_HOST)
+
+_BASE = '{}://{}/api/v1'.format(_PROTOCOL, _HOST)
 
 
 AUTH_LOGIN = '{}/login'.format(_BASE)
