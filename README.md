@@ -3,7 +3,7 @@
 ##### Desktop application which helps to finish all tasks in time.
 
 ### Download an Application
-You can try this app on your computer, install Python3 and after success, run the next command:
+You can try this app on your computer, install `Python3` and after success, run the next command:
 ```bash
 $ pip install erdesktop
 ```
