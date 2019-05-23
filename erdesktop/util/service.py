@@ -1,5 +1,4 @@
 import time
-import platform
 
 from PyQt5.QtCore import QThread
 
@@ -44,26 +43,27 @@ class ReminderService(QThread):
 		need_to_update = False
 		for event in events:
 			now = datetime.now()
-			divided_remind_time = remind_time / event.remind_divisor
 			now_plus_delta = (
-				now + timedelta(minutes=divided_remind_time if divided_remind_time >= 1 else 0)
+				now + timedelta(minutes=remind_time if remind_time >= 1 else 0)
 			).replace(microsecond=0)
 			if event.is_past is False and ((event.date == now.date() and event.time <= now_plus_delta.time()) or event.date < now_plus_delta.date()):
-				self.__send_notification(event)
 				if event.expired(now):
+					self.__send_notification(event)
 					if event.repeat_weekly is True:
 						new_date = event.date
 						while new_date <= today:
 							new_date += timedelta(days=7)
-						self.__storage.update_event(pk=event.id, e_date=new_date, remind_divisor=1)
+						self.__storage.update_event(pk=event.id, e_date=new_date)
 					else:
 						if self.__settings.remove_event_after_time_up is True:
 							self.__storage.delete_event(event.id)
 						else:
-							self.__storage.update_event(pk=event.id, is_past=True)
+							self.__storage.update_event(pk=event.id, is_past=True, is_notified=1)
 					need_to_update = True
 				else:
-					self.__storage.update_event(pk=event.id, remind_divisor=event.remind_divisor * 2)
+					if event.is_notified == 0:
+						self.__send_notification(event)
+						self.__storage.update_event(pk=event.id, is_notified=1)
 		if need_to_update:
 			self.__calendar.update()
 

@@ -84,7 +84,7 @@ class TestStorage(TestCase):
 	def test_update_event(self):
 		data = (
 			None,
-			'some_title_title',
+			'2019-05-02',
 			datetime.now().date(),
 			datetime.now().time().replace(microsecond=0),
 			'some description',
@@ -320,26 +320,3 @@ class TestStorage(TestCase):
 			self.assertEqual(actual[i][6], expected[i].get('repeat_weekly'))
 
 		self.clean_db()
-
-	def test_prepare_backup(self):
-		dt = '2019-03-24 00:15:00.862740'
-		db = [
-			{
-				'title': 'some title',
-				'date': '2019-03-24',
-				'time': '00:15:00',
-				'description': 'some description',
-				'is_past': True,
-				'repeat_weekly': False
-			}
-		]
-		settings = {
-			'param1': '1',
-			'param2': '2',
-			'param3': '3'
-		}
-
-		actual = self.storage.prepare_backup_data(db, dt, True, 'some user name', settings)
-		self.assertEqual(actual.get('digest'), '10f7c2ad600945707e468bfd42f7d4350def82f0138b125361421f49b32c87f7372dd1b5059130b172e3da704b6d3d2047c79812087bd6502142ce1302dccf7b')
-		self.assertEqual(actual.get('timestamp'), dt)
-		self.assertEqual(actual.get('backup'), b'gANY8AAAAHsiZGIiOiBbeyJ0aXRsZSI6ICJzb21lIHRpdGxlIiwgImRhdGUiOiAiMjAxOS0wMy0yNCIsICJ0aW1lIjogIjAwOjE1OjAwIiwgImRlc2NyaXB0aW9uIjogInNvbWUgZGVzY3JpcHRpb24iLCAiaXNfcGFzdCI6IHRydWUsICJyZXBlYXRfd2Vla2x5IjogZmFsc2V9XSwgInNldHRpbmdzIjogeyJwYXJhbTEiOiAiMSIsICJwYXJhbTIiOiAiMiIsICJwYXJhbTMiOiAiMyJ9LCAidXNlcm5hbWUiOiAic29tZSB1c2VyIG5hbWUifXEALg==')

@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS Events (
   description       TEXT         NOT NULL,
   is_past           INTEGER      NOT NULL,
   repeat_weekly     INTEGER      NOT NULL,
-  remind_divisor    INTEGER      DEFAULT 1
+  is_notified       INTEGER      DEFAULT 0
 );
 """
 
@@ -30,7 +30,7 @@ INSERT INTO Events(title, date, time, description, is_past, repeat_weekly)
 
 # noinspection SqlDialectInspection,SqlNoDataSourceInspection
 QUERY_UPDATE_EVENT = """
-UPDATE Events SET title = ?, date = ?, time = ?, description = ?, is_past = ?, repeat_weekly = ?, remind_divisor = ?
+UPDATE Events SET title = ?, date = ?, time = ?, description = ?, is_past = ?, repeat_weekly = ?, is_notified = ?
   WHERE id = ?;
 """
 

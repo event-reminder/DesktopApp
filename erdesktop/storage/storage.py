@@ -83,13 +83,13 @@ class Storage:
 			description,
 			is_past,
 			repeat_weekly,
-			1
+			0
 		))
 		event.id = EventModel.insert(self.__cursor, event)
 		self.__db.commit()
 		return event
 
-	def update_event(self, pk, title=None, e_date=None, e_time=None, description=None, is_past=None, repeat_weekly=None, remind_divisor=None):
+	def update_event(self, pk, title=None, e_date=None, e_time=None, description=None, is_past=None, repeat_weekly=None, is_notified=None):
 		if self.try_to_reconnect:
 			self.connect()
 		if not self.is_connected:
@@ -110,8 +110,8 @@ class Storage:
 				event.is_past = is_past
 			if repeat_weekly is not None:
 				event.repeat_weekly = repeat_weekly
-			if remind_divisor is not None:
-				event.remind_divisor = remind_divisor
+			if is_notified is not None:
+				event.is_notified = is_notified
 			EventModel.update(self.__cursor, event)
 			self.__db.commit()
 			return event

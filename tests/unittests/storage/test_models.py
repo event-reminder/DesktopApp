@@ -81,7 +81,8 @@ class TestStorage(TestCase):
 			'time': datetime.now().strftime(EventModel.TIME_FORMAT),
 			'description': 'Some description',
 			'is_past': 1,
-			'repeat_weekly': 0
+			'repeat_weekly': 0,
+			'is_notified': True
 		}
 		actual = EventModel(expected).to_dict()
 		self.assertDictEqual(expected, actual)

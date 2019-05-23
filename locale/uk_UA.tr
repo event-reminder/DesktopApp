@@ -386,6 +386,26 @@
 		<source>Deleting failure: unable to delete backup</source>
 		<translation>Помилка видалення: не вдалося видалити резервну копію зі сервера</translation>
 	</message>
+	<message>
+		<source>event</source>
+		<translation>подія</translation>
+	</message>
+	<message>
+		<source>events*</source>
+		<translation>події</translation>
+	</message>
+	<message>
+		<source>events</source>
+		<translation>подій</translation>
+	</message>
+	<message>
+		<source>full backup</source>
+		<translation>повна копія</translation>
+	</message>
+	<message>
+		<source>excluded settings</source>
+		<translation>без налаштувань</translation>
+	</message>
 </context>
 <context>
 	<name>CalendarWidget</name>
