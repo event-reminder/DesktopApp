@@ -200,4 +200,4 @@ class Storage:
 
 	def restore(self, file_path: str):
 		with open(file_path, 'rb') as file:
-			self.restore_from_dict(file.read())
+			self.restore_from_dict(pickle.loads(file.read()))
