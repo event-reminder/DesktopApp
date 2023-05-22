@@ -1,4 +1,4 @@
 PyQt5==5.11.3
-requests==2.21.0
+requests==2.31.0
 QtAwesome==0.5.7
 python-coveralls==2.9.1
